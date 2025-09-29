@@ -17,12 +17,12 @@ class AttributeScreen extends StatelessWidget{
           TextField(
             decoration: const InputDecoration(labelText: "Base do Atributo"),
             keyboardType: TextInputType.number,
-            onChanged: calculator.setBaseAttribute,
+            onChanged: null,
           ),
           TextField(
             decoration: const InputDecoration(labelText: "Nível"),
             keyboardType: TextInputType.number,
-            onChanged: calculator.setLevel,
+            onChanged: null,
           ),
           const SizedBox(height: 20),
           Consumer<AttributeCalculator>(
@@ -32,15 +32,6 @@ class AttributeScreen extends StatelessWidget{
                 style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               );
             },
-          ),
-          const SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () => calculator.addModifier(4),
-            child: const Text("Adicionar arma (+4)"),
-          ),
-          ElevatedButton(
-            onPressed: () => calculator.removeModifier(4),
-            child: const Text("Remover arma (+4)"),
           ),
         ],
       ),

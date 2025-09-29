@@ -4,12 +4,18 @@ class AttributeCalculator extends ChangeNotifier{
   final int divisor;
   AttributeCalculator({required this.divisor});
 
+  bool increaseEnabled = false;
   int baseAttribute = 0;
   int level = 0;
   final List<int> modifiers = [];
 
   int get attribute{
-    return baseAttribute + _growthBonus() + _sumModifiers();
+    if (increaseEnabled){
+      return baseAttribute + _growthBonus() + _sumModifiers();
+    }
+    else{
+      return baseAttribute + _sumModifiers();
+    }
   }
   void setBaseAttribute(String value){
     baseAttribute = int.tryParse(value) ?? 0 ;
