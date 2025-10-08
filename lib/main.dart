@@ -7,8 +7,8 @@ import 'package:fichas/common/attribute_box_widget.dart';
 import 'package:fichas/common/expertise_box_widget.dart';
 import 'package:fichas/common/advantages_widget.dart';
 import 'package:fichas/screens/advantagens_screen.dart';
-import 'package:fichas/screens/powers_screen.dart';
 import 'package:fichas/common/power_box_widget.dart';
+import 'package:fichas/screens/powers_screen.dart';
 
 void main() {
   runApp(MyApp());
