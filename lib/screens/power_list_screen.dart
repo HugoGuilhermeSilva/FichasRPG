@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fichas/common/power_box_widget.dart';
-import 'package:fichas/screens/power_list.dart';
+import 'package:fichas/data/power_list.dart';
 
 class PowerScreen extends StatefulWidget {
   const PowerScreen({super.key});

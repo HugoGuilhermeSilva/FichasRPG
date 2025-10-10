@@ -1,6 +1,3 @@
-import 'package:flutter/material.dart';
-import 'package:fichas/common/power_box_widget.dart';
-
 
   const List<Map<String, dynamic>> powersData = [
     {'name': 'Acelerar', 'description': 'Só pode ser comprado 1 vez a cada 5 níveis\nCada grau te concede 1 ação bonus adicional no seu turno', 'cost': 75},
