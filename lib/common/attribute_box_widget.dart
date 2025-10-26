@@ -9,7 +9,6 @@ class AttributeField extends StatelessWidget{
 
   @override
   Widget build(BuildContext context){
-
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -93,14 +92,6 @@ class AttributeBox extends StatelessWidget{
           ),
           SizedBox(height: 4),
           SizedBox(height: 16),
-          AttributeField(label: 'Força'),
-          AttributeField(label: 'Destreza'),
-          AttributeField(label: 'Agilidade'),
-          AttributeField(label: 'Vigor'),
-          AttributeField(label: 'Percepção'),
-          AttributeField(label: 'Inteligencia'),
-          AttributeField(label: 'Vontade'),
-          AttributeField(label: 'Carisma')
         ],
       ),
     );
