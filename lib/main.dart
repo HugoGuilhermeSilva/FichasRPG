@@ -1,29 +1,24 @@
-import 'package:fichas/models/atributes.dart';
-import 'package:fichas/screens/atributes_screen.dart';
-import 'package:fichas/state_management/attributes_provider.dart';
-import 'package:fichas/screens/passive_screen.dart';
-import 'package:flutter/material.dart';
-//import 'package:provider/provider.dart';
-//import 'package:fichas/models/atributes.dart';
-//import 'package:fichas/screens/atributes_screen.dart';
-import 'package:fichas/common/attribute_box_widget.dart';
-import 'package:fichas/common/expertise_box_widget.dart';
-import 'package:fichas/common/advantages_widget.dart';
-import 'package:fichas/screens/advantagens_screen.dart';
-import 'package:fichas/common/power_box_widget.dart';
-import 'package:fichas/screens/powers_screen.dart';
-import 'package:fichas/screens/archetype_screen.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:fichas/state_management/attributes_provider.dart';
 import 'package:fichas/screens/record_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:fichas/screens/archetype_screen.dart';
+import 'package:fichas/state_management/attributes_provider.dart';
+import 'package:fichas/state_management/character_provider.dart';
 
 void main() {
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => AttributesProvider(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => CharacterProvider()),
+        ChangeNotifierProxyProvider<CharacterProvider, AttributesProvider>(
+          create: (context) => AttributesProvider(),
+          update: (context, characterProvider, previousAttributesProvider){
+            final attributesProvider = previousAttributesProvider!;
+            attributesProvider.update(characterProvider);
+            return attributesProvider;
+          },
+        )
+      ],
       child: const MyApp(),
     ),
   );

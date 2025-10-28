@@ -4,13 +4,13 @@ class AttributeFields extends StatelessWidget {
   final String name;
   final TextEditingController base;
   final TextEditingController bonus;
-  final String total;
+  final TextEditingController total;
 
   const AttributeFields({
     required this.base,
     required this.bonus,
     required this.name,
-    this.total = '',
+    required this.total,
     super.key});
 
   @override
@@ -97,8 +97,8 @@ class AttributeFields extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              Text(
-                total,
+              TextField(
+                controller: total,
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 20,
