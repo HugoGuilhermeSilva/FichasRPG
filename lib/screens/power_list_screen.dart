@@ -1,3 +1,4 @@
+import 'package:fichas/common/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:fichas/common/power_box_widget.dart';
 import 'package:fichas/data/power_list.dart';
@@ -10,7 +11,6 @@ class PowerScreen extends StatefulWidget {
 }
 
 class _PowerScreenState extends State<PowerScreen> {
-  // Conversão dos dados em objetos Powers usando map()
   List<Powers> get allPowers => powersData.map((data) => Powers(
     name: data['name'] as String,
     description: data['description'] as String,
@@ -23,6 +23,7 @@ class _PowerScreenState extends State<PowerScreen> {
     final general = allPowers.where((a) => !a.selected).toList();
 
     return Scaffold(
+      drawer: const MyDrawer(),
       appBar: AppBar(
         title: const Text(
           'Poderes',

@@ -1,3 +1,4 @@
+import 'package:fichas/common/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:fichas/common/archetype_widget.dart';
@@ -11,6 +12,7 @@ class ArchetypeScreen extends StatelessWidget{
   Widget build(BuildContext context) {
     final characterProvider = context.watch<CharacterProvider>();
     return Scaffold(
+      drawer: MyDrawer(),
       appBar: AppBar(
         title: Text('Arquetipos',
           style: TextStyle(

@@ -1,3 +1,4 @@
+import 'package:fichas/common/drawer.dart';
 import 'package:fichas/common/expertise_fields.dart';
 import 'package:fichas/state_management/character_provider.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,7 @@ class RecordScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: const MyDrawer(),
       backgroundColor: Colors.grey[900],
       appBar: AppBar(
         title: const Text("Ficha"),
@@ -147,6 +149,34 @@ class RecordScreen extends StatelessWidget {
                       ),
                       decoration: InputDecoration(
                         labelText: 'Pontos de Atributo Disponiveis',
+                        labelStyle: TextStyle(
+                          color: Colors.deepPurple,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.deepPurple,
+                            width: 2
+                          )
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.purpleAccent,
+                            width: 3
+                          )
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 8,),
+                    TextField(
+                      controller: context.read<AttributesProvider>().remainingExpertisePointsController,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      decoration: InputDecoration(
+                        labelText: 'Pontos de Pericia Disponiveis',
                         labelStyle: TextStyle(
                           color: Colors.deepPurple,
                           fontWeight: FontWeight.bold,
