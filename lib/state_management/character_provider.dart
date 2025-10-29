@@ -29,34 +29,41 @@ class CharacterProvider with ChangeNotifier{
   void _recalculateAllStats(){
     activeArchetype = null;
     if (_selectedSkillNames.isNotEmpty){
-      final lastSelectedSkill = _selectedSkillNames.last;
-     for(var archetype in allArchetypes){
-       if(archetype.skills.any((skill) => skill.name == lastSelectedSkill)){
-         activeArchetype = archetype.name;
-         break;
-       }
-     }
+      for (String skillName in _selectedSkillNames) {
+        for (var archetype in allArchetypes) {
+          if (archetype.skills.first.name == skillName) {
+            activeArchetype = archetype.name;
+            break;
+          }
+        }
+        if (activeArchetype != null) {
+          break;
+        }
+      }
     }
-    if(activeArchetype != null){
+    if (activeArchetype != null) {
       final archetypeData = allArchetypes.firstWhere((arch) => arch.name == activeArchetype);
       lifeBase = archetypeData.baseHp * level;
       skillPointPerLevel = archetypeData.skillPointsPerLevel * level;
       baseXp = archetypeData.baseXp * level;
       baseAttributePoints = archetypeData.attributePoints * level + 2;
-    } else{
+    } else {
       lifeBase = 0;
       skillPointPerLevel = 0;
       baseXp = 0;
       baseAttributePoints = 2;
     }
-    for(String skillName in _selectedSkillNames){
-     if(skillName == 'Prodígio'){
-      baseXp = 25 * level;
-     }
-     if(skillName == 'Muralha'){
-       lifeBase = lifeBase * 10;
-     }
+
+    for (String skillName in _selectedSkillNames) {
+      if (skillName == 'Prodígio') {
+        baseXp = 25 * level;
+      }
+      if (skillName == 'Muralha') {
+        lifeBase = lifeBase * 10;
+      }
+
     }
+
     notifyListeners();
   }
   @override

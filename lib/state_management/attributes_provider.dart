@@ -11,6 +11,7 @@ class AttributesProvider with ChangeNotifier {
   final TextEditingController remainingAttributesController = TextEditingController();
   final TextEditingController remainingExpertisePointsController = TextEditingController();
   final TextEditingController totalLifeController = TextEditingController();
+
   final Map<String, int> _attributesTotals = {};
   final Map<String, int> _expertiseTotals = {};
   final Map<String, int> _combatTotals = {};

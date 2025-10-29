@@ -112,119 +112,135 @@ class RecordScreen extends StatelessWidget {
                 child: Padding(padding: const EdgeInsets.all(8),
                 child: Column(
                   children: [
-                    TextField(
-                      controller: context.read<CharacterProvider>().levelController,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      decoration: InputDecoration(
-                        labelText: 'Nivel Atual',
-                        labelStyle: TextStyle(
-                          color: Colors.deepPurple,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.deepPurple,
-                            width: 2
-                          )
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.purpleAccent,
-                            width: 3
-                          )
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 8,),
-                    TextField(
-                      readOnly: true,
-                      controller: context.read<AttributesProvider>().remainingAttributesController,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      decoration: InputDecoration(
-                        labelText: 'Pontos de Atributo Disponiveis',
-                        labelStyle: TextStyle(
-                          color: Colors.deepPurple,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.deepPurple,
-                            width: 2
-                          )
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.purpleAccent,
-                            width: 3
-                          )
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 8,),
-                    TextField(
-                      readOnly: true,
-                      controller: context.read<AttributesProvider>().remainingExpertisePointsController,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      decoration: InputDecoration(
-                        labelText: 'Pontos de Pericia Disponiveis',
-                        labelStyle: TextStyle(
-                          color: Colors.deepPurple,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.deepPurple,
-                            width: 2
-                          )
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.purpleAccent,
-                            width: 3
-                          )
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 8,),
-                    TextField(
-                      readOnly: true,
-                      controller: context.read<AttributesProvider>().totalLifeController,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      decoration: InputDecoration(
-                        labelText: 'Vida Total',
-                        labelStyle: TextStyle(
-                          color: Colors.deepPurple,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: context.read<CharacterProvider>().levelController,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            decoration: InputDecoration(
+                              labelText: 'Nivel Atual',
+                              labelStyle: TextStyle(
                                 color: Colors.deepPurple,
-                                width: 2
-                            )
+                                fontWeight: FontWeight.bold,
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.deepPurple,
+                                  width: 2
+                                )
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.purpleAccent,
+                                  width: 3
+                                )
+                              ),
+                            ),
+                          ),
                         ),
-                        focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Colors.purpleAccent,
-                                width: 3
-                            )
+                        SizedBox(width: 2,),
+                        Expanded(
+                          child: TextField(
+                            readOnly: true,
+                            controller: context.read<AttributesProvider>().remainingAttributesController,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            decoration: InputDecoration(
+                              labelText: 'Pontos de Atributo',
+                              labelStyle: TextStyle(
+                                color: Colors.deepPurple,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.deepPurple,
+                                  width: 2
+                                )
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.purpleAccent,
+                                  width: 3
+                                )
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
+                    ),
+                    SizedBox(height: 8,),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            readOnly: true,
+                            controller: context.read<AttributesProvider>().remainingExpertisePointsController,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            decoration: InputDecoration(
+                              labelText: 'Pontos de Pericia',
+                              labelStyle: TextStyle(
+                                color: Colors.deepPurple,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.deepPurple,
+                                  width: 2
+                                )
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.purpleAccent,
+                                  width: 3
+                                )
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 2,),
+                        Expanded(
+                          child: TextField(
+                            readOnly: true,
+                            controller: context.read<AttributesProvider>().totalLifeController,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            decoration: InputDecoration(
+                              labelText: 'Vida Total',
+                              labelStyle: TextStyle(
+                                color: Colors.deepPurple,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Colors.deepPurple,
+                                      width: 2
+                                  )
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Colors.purpleAccent,
+                                      width: 3
+                                  )
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 )
