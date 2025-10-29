@@ -1,5 +1,5 @@
 import 'package:fichas/screens/archetype_screen.dart';
-import 'package:fichas/screens/power_list_screen.dart';
+import 'package:fichas/screens/power_screen.dart';
 import 'package:fichas/screens/record_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -21,7 +21,6 @@ class MyDrawer extends StatelessWidget{
                 style: TextStyle(color: Colors.white, fontSize: 24),),
             ),
             ListTile(
-              leading: const Icon(Icons.home, color: Colors.white,),
               title: const Text('Ficha', style: TextStyle(color: Colors.white),),
               onTap: () {
                 Navigator.pop(context);
@@ -30,7 +29,6 @@ class MyDrawer extends StatelessWidget{
               },
             ),
             ListTile(
-              leading: const Icon(Icons.home, color: Colors.white,),
               title: const Text('Arquetipos', style: TextStyle(color: Colors.white),),
               onTap: () {
                 Navigator.pop(context);
@@ -39,7 +37,6 @@ class MyDrawer extends StatelessWidget{
               },
             ),
             ListTile(
-              leading: const Icon(Icons.home, color: Colors.white,),
               title: const Text('Poderes', style: TextStyle(color: Colors.white),),
               onTap: () {
                 Navigator.pop(context);

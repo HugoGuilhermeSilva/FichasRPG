@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fichas/common/advantages_widget.dart';
+import 'package:fichas/models/advantages_widget.dart';
 
 class AdvantagesScreen extends StatefulWidget{
   const AdvantagesScreen({super.key});

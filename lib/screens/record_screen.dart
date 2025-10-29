@@ -1,9 +1,9 @@
 import 'package:fichas/common/drawer.dart';
-import 'package:fichas/common/expertise_fields.dart';
+import 'package:fichas/models/expertise_fields.dart';
 import 'package:fichas/state_management/character_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:fichas/common/attribute_fields.dart';
+import 'package:fichas/models/attribute_fields.dart';
 import 'package:fichas/state_management/attributes_provider.dart';
 import 'package:fichas/data/attribute_and_expertise_data.dart';
 

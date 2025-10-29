@@ -1,17 +1,16 @@
 import 'package:fichas/screens/record_screen.dart';
+import 'package:fichas/state_management/power_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:fichas/state_management/character_provider.dart';
 import 'package:fichas/state_management/attributes_provider.dart';
-import 'package:fichas/screens/archetype_screen.dart';
 
 void main() {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (context) => CharacterProvider(),
-        ),
+        ChangeNotifierProvider(create: (context) => CharacterProvider()),
+        ChangeNotifierProvider(create: (context) => PowerProvider()),
         ChangeNotifierProxyProvider<CharacterProvider, AttributesProvider>(
           create: (context) => AttributesProvider(),
           update: (context, characterProvider, previousAttributesProvider) {

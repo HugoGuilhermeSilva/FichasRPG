@@ -5,6 +5,7 @@ class CharacterProvider with ChangeNotifier{
   int get level => int.tryParse(levelController.text) ?? 1;
   final List<String> _selectedSkillNames = [];
   List<String> get selectedSkillNames => _selectedSkillNames;
+  int finalLife = 0;
   int baseAttributePoints = 0;
   int baseXp = 0;
   int lifeBase = 0;
@@ -53,7 +54,6 @@ class CharacterProvider with ChangeNotifier{
       baseXp = 0;
       baseAttributePoints = 2;
     }
-
     for (String skillName in _selectedSkillNames) {
       if (skillName == 'Prodígio') {
         baseXp = 25 * level;
@@ -61,9 +61,7 @@ class CharacterProvider with ChangeNotifier{
       if (skillName == 'Muralha') {
         lifeBase = lifeBase * 10;
       }
-
     }
-
     notifyListeners();
   }
   @override

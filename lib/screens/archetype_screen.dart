@@ -1,7 +1,7 @@
 import 'package:fichas/common/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:fichas/common/archetype_widget.dart';
+import 'package:fichas/models/archetype_widget.dart';
 import 'package:fichas/data/archetype_data.dart';
 import 'package:fichas/state_management/character_provider.dart';
 

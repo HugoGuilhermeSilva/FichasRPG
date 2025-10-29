@@ -1,5 +1,7 @@
+import 'package:fichas/data/power_model.dart';
 
-  const List<Map<String, dynamic>> powersData = [
+final List<Power> allPowers = _powersData.map((data) => Power.fromMap(data)).toList();
+  const List<Map<String, dynamic>> _powersData = [
     {'name': 'Acelerar', 'description': 'Só pode ser comprado 1 vez a cada 5 níveis\nCada grau te concede 1 ação bonus adicional no seu turno', 'cost': 75},
     {'name': 'Alcance', 'description': 'Cada grau aumenta seu alcance em 5 metros', 'cost': 25},
     {'name': 'Área', 'description': 'Ter esse pode comprado te permite atacar em área divindindo o dano entre os alvos antingidos, cada grau aumenta em 3 metros a área do ataque', 'cost': 25},
