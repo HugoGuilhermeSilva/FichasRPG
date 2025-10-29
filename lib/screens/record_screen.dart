@@ -97,309 +97,375 @@ class RecordScreen extends StatelessWidget {
               ),
             ),
           SizedBox(width: 8,),
-          Column(
-            children: [
-              SizedBox(height: 8,),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                decoration: BoxDecoration(
-                  color: Colors.black,
-                  border: Border.all(
-                    color: Colors.deepPurple,
-                  ),
-                  borderRadius: BorderRadius.circular(16)),
-                width: 410,
-                height: 800,
-                child: Padding(padding: const EdgeInsets.all(8),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            controller: context.read<CharacterProvider>().levelController,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            decoration: InputDecoration(
-                              labelText: 'Nivel Atual',
-                              labelStyle: TextStyle(
-                                color: Colors.deepPurple,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.deepPurple,
-                                  width: 2
-                                )
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.purpleAccent,
-                                  width: 3
-                                )
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: 2,),
-                        Expanded(
-                          child: TextField(
-                            readOnly: true,
-                            controller: context.read<AttributesProvider>().remainingAttributesController,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            decoration: InputDecoration(
-                              labelText: 'Pontos de Atributo',
-                              labelStyle: TextStyle(
-                                color: Colors.deepPurple,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.deepPurple,
-                                  width: 2
-                                )
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.purpleAccent,
-                                  width: 3
-                                )
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+          SingleChildScrollView(
+            child: Column(
+              children: [
+                SizedBox(height: 8,),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: Colors.black,
+                    border: Border.all(
+                      color: Colors.deepPurple,
                     ),
-                    SizedBox(height: 8,),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            readOnly: true,
-                            controller: context.read<AttributesProvider>().remainingExpertisePointsController,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            decoration: InputDecoration(
-                              labelText: 'Pontos de Pericia',
-                              labelStyle: TextStyle(
-                                color: Colors.deepPurple,
+                    borderRadius: BorderRadius.circular(16)),
+                  width: 410,
+                  height: 800,
+                  child: Padding(padding: const EdgeInsets.all(8),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              controller: context.read<CharacterProvider>().levelController,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
                                 fontWeight: FontWeight.bold,
                               ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
+                              decoration: InputDecoration(
+                                labelText: 'Nivel Atual',
+                                labelStyle: TextStyle(
                                   color: Colors.deepPurple,
-                                  width: 2
-                                )
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.purpleAccent,
-                                  width: 3
-                                )
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: 2,),
-                        Expanded(
-                          child: Consumer<AttributesProvider>(
-                            builder: (context, provider, _) {
-                              return TextField(
-                                readOnly: true,
-                                controller: TextEditingController(
-                                  text: provider.currentLife.toString(),
-                                ),
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  color: Colors.white,
                                   fontWeight: FontWeight.bold,
                                 ),
-                                decoration: const InputDecoration(
-                                  labelText: 'Vida Atual',
-                                  labelStyle: TextStyle(
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
                                     color: Colors.deepPurple,
+                                    width: 2
+                                  )
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Colors.purpleAccent,
+                                    width: 3
+                                  )
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 2,),
+                          Expanded(
+                            child: TextField(
+                              readOnly: true,
+                              controller: context.read<AttributesProvider>().remainingAttributesController,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              decoration: InputDecoration(
+                                labelText: 'Pontos de Atributo',
+                                labelStyle: TextStyle(
+                                  color: Colors.deepPurple,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Colors.deepPurple,
+                                    width: 2
+                                  )
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Colors.purpleAccent,
+                                    width: 3
+                                  )
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 8,),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              readOnly: true,
+                              controller: context.read<AttributesProvider>().remainingExpertisePointsController,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              decoration: InputDecoration(
+                                labelText: 'Pontos de Pericia',
+                                labelStyle: TextStyle(
+                                  color: Colors.deepPurple,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Colors.deepPurple,
+                                    width: 2
+                                  )
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Colors.purpleAccent,
+                                    width: 3
+                                  )
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 2,),
+                          Expanded(
+                            child: Consumer<AttributesProvider>(
+                              builder: (context, provider, _) {
+                                return TextField(
+                                  readOnly: true,
+                                  controller: TextEditingController(
+                                    text: provider.currentLife.toString(),
+                                  ),
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    color: Colors.white,
                                     fontWeight: FontWeight.bold,
                                   ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
+                                  decoration: const InputDecoration(
+                                    labelText: 'Vida Atual',
+                                    labelStyle: TextStyle(
                                       color: Colors.deepPurple,
-                                      width: 2,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Colors.deepPurple,
+                                        width: 2,
+                                      ),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Colors.purpleAccent,
+                                        width: 3,
+                                      ),
                                     ),
                                   ),
-                                  focusedBorder: OutlineInputBorder(
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 8,),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              readOnly: true,
+                              controller: context.read<AttributesProvider>().initiativeController,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              decoration: InputDecoration(
+                                labelText: 'Iniciativa',
+                                labelStyle: TextStyle(
+                                  color: Colors.deepPurple,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                enabledBorder: OutlineInputBorder(
                                     borderSide: BorderSide(
-                                      color: Colors.purpleAccent,
-                                      width: 3,
-                                    ),
-                                  ),
+                                        color: Colors.deepPurple,
+                                        width: 2
+                                    )
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Colors.purpleAccent,
+                                        width: 3
+                                    )
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 2,),
+                          Expanded(
+                            child: TextField(
+                              controller: context.read<AttributesProvider>().lostLifeController,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              decoration: InputDecoration(
+                                labelText: 'Dano Recebido',
+                                labelStyle: TextStyle(
+                                  color: Colors.deepPurple,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Colors.deepPurple,
+                                        width: 2
+                                    )
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Colors.purpleAccent,
+                                        width: 3
+                                    )
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 8,),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              controller: context.read<CharacterProvider>().manaController,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              decoration: InputDecoration(
+                                labelText: 'Mana total',
+                                labelStyle: TextStyle(
+                                  color: Colors.deepPurple,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Colors.deepPurple,
+                                    width: 2
+                                  )
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Colors.purpleAccent,
+                                    width: 3
+                                  )
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 2,),
+                          Expanded(
+                            child: TextField(
+                              controller: context.read<PowerProvider>().displacementController,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              decoration: InputDecoration(
+                                labelText: 'Deslocamento',
+                                labelStyle: TextStyle(
+                                  color: Colors.deepPurple,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Colors.deepPurple,
+                                        width: 2
+                                    )
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Colors.purpleAccent,
+                                        width: 3
+                                    )
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 8,),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              controller: context.read<PowerProvider>().totalDamageController,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              decoration: InputDecoration(
+                                labelText: 'Graus de dano',
+                                labelStyle: TextStyle(
+                                  color: Colors.deepPurple,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Colors.deepPurple,
+                                        width: 2
+                                    )
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Colors.purpleAccent,
+                                        width: 3
+                                    )
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 2,),
+                          Expanded(
+                            child: TextField(
+                              controller: context.read<PowerProvider>().baseDamageController,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              decoration: InputDecoration(
+                                labelText: 'Dano Fixo',
+                                labelStyle: TextStyle(
+                                  color: Colors.deepPurple,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Colors.deepPurple,
+                                        width: 2
+                                    )
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Colors.purpleAccent,
+                                        width: 3
+                                    )
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Consumer<AttributesProvider>(
+                        builder: (context, provider, child) {
+                          return Column(
+                            children: combatValue.map((name) {
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                child: ExpertiseFields(
+                                  name: name,
+                                  bonus: provider.combatBonusControllers[name] ??
+                                      TextEditingController(),
+                                  total: provider.getCombatTotalFor(name),
                                 ),
                               );
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 8,),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            readOnly: true,
-                            controller: context.read<AttributesProvider>().initiativeController,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            decoration: InputDecoration(
-                              labelText: 'Iniciativa',
-                              labelStyle: TextStyle(
-                                color: Colors.deepPurple,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Colors.deepPurple,
-                                      width: 2
-                                  )
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Colors.purpleAccent,
-                                      width: 3
-                                  )
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: 2,),
-                        Expanded(
-                          child: TextField(
-                            controller: context.read<AttributesProvider>().lostLifeController,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            decoration: InputDecoration(
-                              labelText: 'Dano Recebido',
-                              labelStyle: TextStyle(
-                                color: Colors.deepPurple,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Colors.deepPurple,
-                                      width: 2
-                                  )
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Colors.purpleAccent,
-                                      width: 3
-                                  )
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 8,),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            controller: context.read<CharacterProvider>().manaController,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            decoration: InputDecoration(
-                              labelText: 'Mana total',
-                              labelStyle: TextStyle(
-                                color: Colors.deepPurple,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.deepPurple,
-                                  width: 2
-                                )
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.purpleAccent,
-                                  width: 3
-                                )
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: 2,),
-                        Expanded(
-                          child: TextField(
-                            controller: context.read<PowerProvider>().displacementController,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            decoration: InputDecoration(
-                              labelText: 'Deslocamento',
-                              labelStyle: TextStyle(
-                                color: Colors.deepPurple,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Colors.deepPurple,
-                                      width: 2
-                                  )
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Colors.purpleAccent,
-                                      width: 3
-                                  )
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Consumer<AttributesProvider>(
-                      builder: (context, provider, child) {
-                        return Column(
-                          children: combatValue.map((name) {
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 8.0),
-                              child: ExpertiseFields(
-                                name: name,
-                                bonus: provider.combatBonusControllers[name] ??
-                                    TextEditingController(),
-                                total: provider.getCombatTotalFor(name),
-                              ),
-                            );
-                          }).toList(),
-                        );
-                      },
-                    ),
-                  ],
+                            }).toList(),
+                          );
+                        },
+                      ),
+                    ],
+                  )
+                  ),
                 )
-                ),
-              )
-            ],
+              ],
+            ),
           )
         ]
         ),

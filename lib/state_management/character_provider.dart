@@ -1,11 +1,14 @@
+import 'package:fichas/state_management/power_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:fichas/data/archetype_data.dart';
 class CharacterProvider with ChangeNotifier{
+  final TextEditingController xpController = TextEditingController();
   final TextEditingController manaController = TextEditingController();
   final TextEditingController levelController = TextEditingController(text: '1');
   int get level => int.tryParse(levelController.text) ?? 1;
   final List<String> _selectedSkillNames = [];
   List<String> get selectedSkillNames => _selectedSkillNames;
+  PowerProvider? _powerProvider;
   int baseMana = 0;
   int finalLife = 0;
   int baseAttributePoints = 0;
@@ -15,8 +18,11 @@ class CharacterProvider with ChangeNotifier{
   String? activeArchetype;
 
   CharacterProvider(){
-    levelController.addListener(_recalculateAllStats);
-    _recalculateAllStats();
+    levelController.addListener(recalculateAllStats);
+    recalculateAllStats();
+  }
+  void setPowerProvider(PowerProvider powerProvider) {
+    _powerProvider = powerProvider;
   }
   void toggleSkill(String skillName){
     if(_selectedSkillNames.contains(skillName)){
@@ -24,12 +30,12 @@ class CharacterProvider with ChangeNotifier{
   } else {
     _selectedSkillNames.add(skillName);
   }
-    _recalculateAllStats();
+    recalculateAllStats();
   }
   bool isSkillSelected(String skillName){
     return _selectedSkillNames.contains(skillName);
   }
-  void _recalculateAllStats(){
+  void recalculateAllStats(){
     activeArchetype = null;
     if (_selectedSkillNames.isNotEmpty){
       for (String skillName in _selectedSkillNames) {
@@ -44,6 +50,15 @@ class CharacterProvider with ChangeNotifier{
         }
       }
     }
+    for (String skillName in _selectedSkillNames) {
+      if (skillName == 'Prodígio') {
+        baseXp = (baseXp + 25) * level;
+      }
+      if (skillName == 'Muralha') {
+        lifeBase = lifeBase * 10;
+      }
+    }
+    manaController.text = baseMana.toString();
     if (activeArchetype != null) {
       final archetypeData = allArchetypes.firstWhere((arch) => arch.name == activeArchetype);
       lifeBase = archetypeData.baseHp * level;
@@ -58,17 +73,13 @@ class CharacterProvider with ChangeNotifier{
       baseAttributePoints = 2;
       baseMana = 0;
     }
-    for (String skillName in _selectedSkillNames) {
-      if (skillName == 'Prodígio') {
-        baseXp = (baseXp + 25) * level;
-      }
-      if (skillName == 'Muralha') {
-        lifeBase = lifeBase * 10;
-      }
-    }
-    manaController.text = baseMana.toString();
+    int currentXp = baseXp;
+    final powersCost = _powerProvider?.totalPowersCost ?? 0;
+    currentXp -= powersCost;
+    xpController.text = currentXp.toString();
     notifyListeners();
   }
+
   @override
   void dispose() {
     levelController.dispose();

@@ -61,7 +61,7 @@ class PowerScreen extends StatelessWidget {
                             child: Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                               child: Text(
-                                'XP Disponível = ${provider.baseXp}',
+                                'XP Disponível = ${provider.xpController.text}',
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 22,

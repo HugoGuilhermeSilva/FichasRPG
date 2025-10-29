@@ -9,8 +9,16 @@ void main() {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => CharacterProvider()),
         ChangeNotifierProvider(create: (context) => PowerProvider()),
+        ChangeNotifierProxyProvider<PowerProvider, CharacterProvider>(
+          create: (context) => CharacterProvider(),
+          update: (context, powerProvider, characterProvider) {
+            if (characterProvider == null) return CharacterProvider();
+            characterProvider.setPowerProvider(powerProvider);
+            powerProvider.addListener(characterProvider.recalculateAllStats);
+            return characterProvider;
+          },
+        ),
         ChangeNotifierProxyProvider<CharacterProvider, AttributesProvider>(
           create: (context) => AttributesProvider(),
           update: (context, characterProvider, previousAttributesProvider) {
