@@ -10,6 +10,7 @@ class AttributesProvider with ChangeNotifier {
   final Map<String, TextEditingController> combatBonusControllers = {};
   final TextEditingController remainingAttributesController = TextEditingController();
   final TextEditingController remainingExpertisePointsController = TextEditingController();
+  final TextEditingController totalLifeController = TextEditingController();
   final Map<String, int> _attributesTotals = {};
   final Map<String, int> _expertiseTotals = {};
   final Map<String, int> _combatTotals = {};
@@ -51,6 +52,7 @@ class AttributesProvider with ChangeNotifier {
   void _recalculateAndNotify() {
     remainingAttributesController.text = remainingAttributePoints.toString();
     remainingExpertisePointsController.text = remainingExpertisePoints.toString();
+    totalLifeController.text = totalLife.toString();
     notifyListeners();
   }
 
@@ -75,7 +77,13 @@ class AttributesProvider with ChangeNotifier {
     final remaining = totalAvailable - spentAttributePoints;
     return remaining;
   }
-
+  int get totalLife {
+    final currentLevel = _characterProvider?.level ?? 1;
+    final currentForce = _attributesTotals['Vigor'] ?? 0;
+    final currentLife = _characterProvider?.lifeBase ?? 0;
+    final totalLife = currentLife + (currentForce * currentLevel);
+    return totalLife;
+  }
   int get remainingExpertisePoints {
     final pointsPerLevel = _characterProvider?.skillPointPerLevel ?? 0;
     final totalAvailable = pointsPerLevel;
@@ -171,6 +179,7 @@ class AttributesProvider with ChangeNotifier {
   @override
   void dispose() {
     _characterProvider?.removeListener(_recalculateAndNotify);
+    totalLifeController.dispose();
     remainingAttributesController.dispose();
     remainingExpertisePointsController.dispose();
     for (var c in baseControllers.values) {

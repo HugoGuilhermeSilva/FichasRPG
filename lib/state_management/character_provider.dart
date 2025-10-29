@@ -53,6 +53,9 @@ class CharacterProvider with ChangeNotifier{
      if(skillName == 'Prodígio'){
       baseXp = 25 * level;
      }
+     if(skillName == 'Muralha'){
+       lifeBase = lifeBase * 10;
+     }
     }
     notifyListeners();
   }

@@ -141,6 +141,7 @@ class RecordScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 8,),
                     TextField(
+                      readOnly: true,
                       controller: context.read<AttributesProvider>().remainingAttributesController,
                       textAlign: TextAlign.center,
                       style: TextStyle(
@@ -169,6 +170,7 @@ class RecordScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 8,),
                     TextField(
+                      readOnly: true,
                       controller: context.read<AttributesProvider>().remainingExpertisePointsController,
                       textAlign: TextAlign.center,
                       style: TextStyle(
@@ -192,6 +194,35 @@ class RecordScreen extends StatelessWidget {
                             color: Colors.purpleAccent,
                             width: 3
                           )
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 8,),
+                    TextField(
+                      readOnly: true,
+                      controller: context.read<AttributesProvider>().totalLifeController,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      decoration: InputDecoration(
+                        labelText: 'Vida Total',
+                        labelStyle: TextStyle(
+                          color: Colors.deepPurple,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Colors.deepPurple,
+                                width: 2
+                            )
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Colors.purpleAccent,
+                                width: 3
+                            )
                         ),
                       ),
                     ),
