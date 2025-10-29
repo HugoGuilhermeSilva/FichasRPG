@@ -77,9 +77,8 @@ class AttributesProvider with ChangeNotifier {
   }
 
   int get remainingExpertisePoints {
-    final level = _characterProvider?.level ?? 1;
     final pointsPerLevel = _characterProvider?.skillPointPerLevel ?? 0;
-    final totalAvailable = pointsPerLevel * level;
+    final totalAvailable = pointsPerLevel;
     final remaining = totalAvailable - spentExpertisePoints;
     return remaining;
   }
