@@ -16,7 +16,6 @@ class PowerScreen extends StatelessWidget {
       builder: (context, powerProvider, child) {
         final List<Power> selected = [];
         final List<Power> general = [];
-
         for (var power in allPowers) {
           if (powerProvider.isPowerSelected(power.name)) {
             selected.add(power);
@@ -24,7 +23,6 @@ class PowerScreen extends StatelessWidget {
             general.add(power);
           }
         }
-
         return Scaffold(
           drawer: const MyDrawer(),
           appBar: AppBar(
@@ -48,29 +46,29 @@ class PowerScreen extends StatelessWidget {
                   child: SizedBox(
                     width: 300,
                     child: Consumer<CharacterProvider>(
-                        builder: (context, provider, consumerChild) {
-                          return Card(
-                            shape: RoundedRectangleBorder(
-                                side: const BorderSide(
-                                  color: Colors.purpleAccent,
-                                  width: 2,
-                                ),
-                                borderRadius: BorderRadius.circular(8)),
-                            color: Colors.black,
-                            elevation: 4,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                              child: Text(
-                                'XP Disponível = ${provider.xpController.text}',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 22,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
+                      builder: (context, provider, consumerChild) {
+                        return Card(
+                          shape: RoundedRectangleBorder(
+                            side: const BorderSide(
+                              color: Colors.purpleAccent,
+                              width: 2,
                             ),
-                          );
-                        }),
+                            borderRadius: BorderRadius.circular(8)),
+                          color: Colors.black,
+                          elevation: 4,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                            child: Text(
+                              'XP Disponível = ${provider.xpController.text}',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 22,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        );
+                      }),
                   ),
                 ),
                 SizedBox(height: 16),
@@ -96,9 +94,7 @@ class PowerScreen extends StatelessWidget {
                   alignment: WrapAlignment.center,
                   spacing: 4,
                   runSpacing: 4,
-                  children: selected
-                      .map((power) => PowerCard(power: power))
-                      .toList(),
+                  children: selected.map((power) => PowerCard(power: power)).toList(),
                 ),
                 const Divider(color: Colors.white, height: 40),
                 const Text(
@@ -113,9 +109,7 @@ class PowerScreen extends StatelessWidget {
                   alignment: WrapAlignment.center,
                   spacing: 4,
                   runSpacing: 4,
-                  children: general
-                      .map((power) => PowerCard(power: power))
-                      .toList(),
+                  children: general.map((power) => PowerCard(power: power)).toList(),
                 ),
               ],
             ),

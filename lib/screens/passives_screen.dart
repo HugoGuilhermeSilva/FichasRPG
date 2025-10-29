@@ -36,35 +36,36 @@ class _PassivesScreenState extends State<PassivesScreen>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: MyDrawer(),
+      drawer: const MyDrawer(),
       backgroundColor: Colors.grey[900],
       appBar: AppBar(
         title: const Text("Passivas, Armas e Anotações"),
         backgroundColor: Colors.deepPurple,
       ),
-      body: SingleChildScrollView(
-        child: Expanded(
-          child: TextField(
-            maxLines: 100,
-            controller: passivesController,
-            textAlign: TextAlign.start,
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: TextField(
+          controller: passivesController,
+          maxLines: null,
+          expands: true,
+          textAlignVertical: TextAlignVertical.top,
+          textAlign: TextAlign.start,
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+          decoration: const InputDecoration(
+            enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                    color: Colors.deepPurple,
+                    width: 2
+                )
             ),
-            decoration: InputDecoration(
-              enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                      color: Colors.deepPurple,
-                      width: 2
-                  )
-              ),
-              focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                      color: Colors.purpleAccent,
-                      width: 3
-                  )
-              ),
+            focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                    color: Colors.purpleAccent,
+                    width: 3
+                )
             ),
           ),
         ),

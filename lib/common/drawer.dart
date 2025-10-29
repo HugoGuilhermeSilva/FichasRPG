@@ -1,6 +1,6 @@
 import 'package:fichas/screens/advantagens_screen.dart';
 import 'package:fichas/screens/archetype_screen.dart';
-import 'package:fichas/screens/passivesScreen.dart';
+import 'package:fichas/screens/passives_screen.dart';
 import 'package:fichas/screens/power_screen.dart';
 import 'package:fichas/screens/record_screen.dart';
 import 'package:flutter/material.dart';

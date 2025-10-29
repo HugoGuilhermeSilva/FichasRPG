@@ -1,4 +1,5 @@
 import 'package:fichas/screens/record_screen.dart';
+import 'package:fichas/state_management/advantages_provider.dart';
 import 'package:fichas/state_management/power_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -9,6 +10,7 @@ void main() {
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (context) => AdvantagesProvider()),
         ChangeNotifierProvider(create: (context) => PowerProvider()),
         ChangeNotifierProxyProvider<PowerProvider, CharacterProvider>(
           create: (context) => CharacterProvider(),
