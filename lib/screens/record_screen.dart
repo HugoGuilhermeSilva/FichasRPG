@@ -93,8 +93,10 @@ class RecordScreen extends StatelessWidget {
               ],
                         ),
             ),
+          SizedBox(width: 8,),
           Column(
             children: [
+              SizedBox(height: 8,),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
                 decoration: BoxDecoration(
@@ -110,6 +112,7 @@ class RecordScreen extends StatelessWidget {
                   children: [
                     TextField(
                       controller: context.read<CharacterProvider>().levelController,
+                      textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -134,16 +137,33 @@ class RecordScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Consumer<AttributesProvider>(
-                      builder: (context, provider, consumerChild){
-                        return Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-
-                          ],
-                        );
-                      }
+                    SizedBox(height: 8,),
+                    TextField(
+                      controller: context.read<AttributesProvider>().remainingAttributesController,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      decoration: InputDecoration(
+                        labelText: 'Pontos de Atributo Disponiveis',
+                        labelStyle: TextStyle(
+                          color: Colors.deepPurple,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.deepPurple,
+                            width: 2
+                          )
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.purpleAccent,
+                            width: 3
+                          )
+                        ),
+                      ),
                     ),
                   ],
                 )

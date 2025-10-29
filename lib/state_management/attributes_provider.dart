@@ -4,30 +4,16 @@ import 'package:fichas/state_management/character_provider.dart';
 
 class AttributesProvider with ChangeNotifier {
   CharacterProvider? _characterProvider;
-
-  // --- CONTROLLERS EDITÁVEIS (Mantidos) ---
   final Map<String, TextEditingController> baseControllers = {};
   final Map<String, TextEditingController> bonusControllers = {};
   final Map<String, TextEditingController> expertiseBonusControllers = {};
   final Map<String, TextEditingController> combatBonusControllers = {};
-
-  // --- CONTROLLERS PARA VALORES CALCULADOS (Mantidos) ---
   final TextEditingController remainingAttributesController = TextEditingController();
   final TextEditingController remainingExpertisePointsController = TextEditingController();
-
-  // --- MAPAS INTERNOS PARA OS TOTAIS (Mantidos) ---
   final Map<String, int> _attributesTotals = {};
   final Map<String, int> _expertiseTotals = {};
   final Map<String, int> _combatTotals = {};
-
-  // --- CONTROLLERS DE TOTAL (REMOVIDOS) ---
-  // final Map<String, TextEditingController> attributeTotalControllers = {};
-  // final Map<String, TextEditingController> expertiseTotalControllers = {};
-  // final Map<String, TextEditingController> combatTotalControllers = {};
-
-
   AttributesProvider() {
-    // Inicializa os controllers e adiciona os listeners
     for (final name in attributeNames) {
       baseControllers[name] = TextEditingController();
       bonusControllers[name] = TextEditingController();
@@ -49,23 +35,25 @@ class AttributesProvider with ChangeNotifier {
       combatBonusControllers[name]!.addListener(() =>
           _updateTotalsFor(combatName: name));
     }
-    // Faz um cálculo inicial para garantir que os valores não comecem zerados
     for (final name in attributeNames) {
       _updateTotalsFor(attributeName: name);
     }
+    _recalculateAndNotify();
   }
 
-  // Função para linkar com o CharacterProvider
   void update(CharacterProvider characterProvider) {
-    // Evita notificações desnecessárias se o provider não mudou
     if (_characterProvider != characterProvider) {
       _characterProvider = characterProvider;
-      // Notifica a UI para reconstruir com os dados agora disponíveis
-      notifyListeners();
+      _characterProvider!.addListener(_recalculateAndNotify);
+      _recalculateAndNotify();
     }
   }
+  void _recalculateAndNotify() {
+    remainingAttributesController.text = remainingAttributePoints.toString();
+    remainingExpertisePointsController.text = remainingExpertisePoints.toString();
+    notifyListeners();
+  }
 
-  // --- GETTERS PARA PONTOS GASTOS ---
   int get spentAttributePoints {
     int totalSpent = 0;
     for (var controller in baseControllers.values) {
@@ -81,13 +69,10 @@ class AttributesProvider with ChangeNotifier {
     }
     return totalSpent;
   }
-
-  // --- GETTERS PARA PONTOS RESTANTES ---
   int get remainingAttributePoints {
-    final totalAvailable = _characterProvider?.baseAttributePoints ?? 0;
+    final currentLevel = _characterProvider?.level ?? 1;
+    final totalAvailable = 2 + (currentLevel * 6);
     final remaining = totalAvailable - spentAttributePoints;
-    // Atualiza o controller do campo de exibição
-    remainingAttributesController.text = remaining.toString();
     return remaining;
   }
 
@@ -96,12 +81,8 @@ class AttributesProvider with ChangeNotifier {
     final pointsPerLevel = _characterProvider?.skillPointPerLevel ?? 0;
     final totalAvailable = pointsPerLevel * level;
     final remaining = totalAvailable - spentExpertisePoints;
-    // Atualiza o controller do campo de exibição
-    remainingExpertisePointsController.text = remaining.toString();
     return remaining;
   }
-
-  // --- GETTERS PARA OS TOTAIS (Usados pela UI) ---
   String getAttributeTotalFor(String attributeName) =>
       (_attributesTotals[attributeName] ?? 0).toString();
 
@@ -111,7 +92,6 @@ class AttributesProvider with ChangeNotifier {
   String getCombatTotalFor(String combatName) =>
       (_combatTotals[combatName] ?? 0).toString();
 
-  // --- LÓGICA DE ATUALIZAÇÃO ---
   void _updateTotalsFor(
       {String? attributeName, String? expertiseName, String? combatName}) {
     bool somethingChanged = false;
@@ -125,10 +105,7 @@ class AttributesProvider with ChangeNotifier {
 
       if (_attributesTotals[attributeName] != newTotal) {
         _attributesTotals[attributeName] = newTotal;
-        // A linha que atualizava o `attributeTotalControllers` foi REMOVIDA
         somethingChanged = true;
-
-        // Atualiza perícias e valores de combate que dependem deste atributo
         for (var entry in expertiseAttributeMap.entries) {
           if (entry.value == attributeName) {
             _updateExpertiseTotal(entry.key);
@@ -153,11 +130,8 @@ class AttributesProvider with ChangeNotifier {
         somethingChanged = true;
       }
     }
-
-    // CORREÇÃO CRÍTICA: Notifica a UI apenas UMA VEZ e SOMENTE se algo mudou.
-    // Isso evita o loop infinito que causa os erros de layout.
     if (somethingChanged) {
-      notifyListeners();
+      _recalculateAndNotify();
     }
   }
 
@@ -173,7 +147,6 @@ class AttributesProvider with ChangeNotifier {
 
     if (_expertiseTotals[expertiseName] != newTotal) {
       _expertiseTotals[expertiseName] = newTotal;
-      // A linha que atualizava o `expertiseTotalControllers` foi REMOVIDA
       return true;
     }
     return false;
@@ -191,7 +164,6 @@ class AttributesProvider with ChangeNotifier {
 
     if (_combatTotals[combatName] != newTotal) {
       _combatTotals[combatName] = newTotal;
-      // A linha que atualizava o `combatTotalControllers` foi REMOVIDA
       return true;
     }
     return false;
@@ -199,7 +171,7 @@ class AttributesProvider with ChangeNotifier {
 
   @override
   void dispose() {
-    // Limpa todos os controllers que ainda existem
+    _characterProvider?.removeListener(_recalculateAndNotify);
     remainingAttributesController.dispose();
     remainingExpertisePointsController.dispose();
     for (var c in baseControllers.values) {
@@ -214,7 +186,6 @@ class AttributesProvider with ChangeNotifier {
     for (var c in combatBonusControllers.values) {
       c.dispose();
     }
-    // As linhas do dispose dos controllers de total foram REMOVIDAS
     super.dispose();
   }
 }
