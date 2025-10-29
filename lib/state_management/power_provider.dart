@@ -1,13 +1,30 @@
 import 'package:fichas/data/power_model.dart';
+import 'package:fichas/services/sotrage_Service.dart';
 import 'package:flutter/material.dart';
 import 'package:fichas/data/power_list.dart';
 
 class PowerProvider with ChangeNotifier{
-  final Map<String, int> _selectedPowers = {};
+  final StorageService _storageService = StorageService();
+  Map<String, int> _selectedPowers = {};
   Map<String, int> get selectedPowers => _selectedPowers;
   final TextEditingController displacementController = TextEditingController();
   final TextEditingController totalDamageController = TextEditingController();
   final TextEditingController baseDamageController = TextEditingController();
+
+  PowerProvider() {
+    _loadPowers();
+    _updateCalculatedValues();
+  }
+  Future<void> _loadPowers() async {
+    final loadedData = await _storageService.loadMap('selected_powers');
+    if (loadedData != null) {
+      _selectedPowers = loadedData.map((key, value) => MapEntry(key, value as int));
+      notifyListeners();
+    }
+  }
+  Future<void> _savePowers() async {
+    await _storageService.saveMap('selected_powers', _selectedPowers);
+  }
 
   bool isPowerSelected(String powerName){
     return _selectedPowers.containsKey(powerName);
@@ -24,11 +41,13 @@ class PowerProvider with ChangeNotifier{
       _selectedPowers.remove(powerName);
     }
     _updateCalculatedValues();
+    _savePowers();
   }
   void incrementPowerLevel(String powerName){
     if(_selectedPowers.containsKey(powerName)){
       _selectedPowers[powerName] = _selectedPowers[powerName]! + 1;
       _updateCalculatedValues();
+      _savePowers();
     }
   }
   void decrementPowerLevel(String powerName){
@@ -40,6 +59,7 @@ class PowerProvider with ChangeNotifier{
         _selectedPowers.remove(powerName);
       }
       _updateCalculatedValues();
+      _savePowers();
     }
   }
   void setPowerLevel(String powerName, int level) {
