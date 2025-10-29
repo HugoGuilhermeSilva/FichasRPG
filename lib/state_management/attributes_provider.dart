@@ -8,6 +8,7 @@ class AttributesProvider with ChangeNotifier {
   final Map<String, TextEditingController> bonusControllers = {};
   final Map<String, TextEditingController> expertiseBonusControllers = {};
   final Map<String, TextEditingController> combatBonusControllers = {};
+  final TextEditingController initiativeController = TextEditingController();
   final TextEditingController remainingAttributesController = TextEditingController();
   final TextEditingController remainingExpertisePointsController = TextEditingController();
   final TextEditingController totalLifeController = TextEditingController();
@@ -54,6 +55,7 @@ class AttributesProvider with ChangeNotifier {
     remainingAttributesController.text = remainingAttributePoints.toString();
     remainingExpertisePointsController.text = remainingExpertisePoints.toString();
     totalLifeController.text = totalLife.toString();
+    initiativeController.text = totalInitiative.toString();
     notifyListeners();
   }
 
@@ -71,6 +73,12 @@ class AttributesProvider with ChangeNotifier {
       totalSpent += int.tryParse(controller.text) ?? 0;
     }
     return totalSpent;
+  }
+  int get totalInitiative{
+    final totalAgility = _attributesTotals['Agilidade'] ?? 0;
+    final totalReadness= _expertiseTotals['Prontidão'] ?? 0;
+    final totalInitiative = totalAgility + totalReadness;
+    return totalInitiative;
   }
   int get remainingAttributePoints {
     final currentLevel = _characterProvider?.level ?? 1;
@@ -181,6 +189,7 @@ class AttributesProvider with ChangeNotifier {
   void dispose() {
     _characterProvider?.removeListener(_recalculateAndNotify);
     totalLifeController.dispose();
+    initiativeController.dispose();
     remainingAttributesController.dispose();
     remainingExpertisePointsController.dispose();
     for (var c in baseControllers.values) {

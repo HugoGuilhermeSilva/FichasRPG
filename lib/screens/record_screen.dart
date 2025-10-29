@@ -226,6 +226,41 @@ class RecordScreen extends StatelessWidget {
                                 fontWeight: FontWeight.bold,
                               ),
                               enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.deepPurple,
+                                  width: 2
+                                )
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.purpleAccent,
+                                  width: 3
+                                )
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 8,),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            readOnly: true,
+                            controller: context.read<AttributesProvider>().initiativeController,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            decoration: InputDecoration(
+                              labelText: 'Iniciativa',
+                              labelStyle: TextStyle(
+                                color: Colors.deepPurple,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              enabledBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
                                       color: Colors.deepPurple,
                                       width: 2
@@ -240,6 +275,8 @@ class RecordScreen extends StatelessWidget {
                             ),
                           ),
                         ),
+                        SizedBox(width: 2,),
+
                       ],
                     ),
                   ],
