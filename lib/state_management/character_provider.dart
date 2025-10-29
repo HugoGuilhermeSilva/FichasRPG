@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:fichas/data/archetype_data.dart';
 class CharacterProvider with ChangeNotifier{
+  final TextEditingController manaController = TextEditingController();
   final TextEditingController levelController = TextEditingController(text: '1');
   int get level => int.tryParse(levelController.text) ?? 1;
   final List<String> _selectedSkillNames = [];
   List<String> get selectedSkillNames => _selectedSkillNames;
+  int baseMana = 0;
   int finalLife = 0;
   int baseAttributePoints = 0;
   int baseXp = 0;
@@ -48,20 +50,23 @@ class CharacterProvider with ChangeNotifier{
       skillPointPerLevel = archetypeData.skillPointsPerLevel * level;
       baseXp = archetypeData.baseXp * level;
       baseAttributePoints = archetypeData.attributePoints * level + 2;
+      baseMana = archetypeData.mana * level;
     } else {
       lifeBase = 0;
       skillPointPerLevel = 0;
       baseXp = 0;
       baseAttributePoints = 2;
+      baseMana = 0;
     }
     for (String skillName in _selectedSkillNames) {
       if (skillName == 'Prodígio') {
-        baseXp = 25 * level;
+        baseXp = (baseXp + 25) * level;
       }
       if (skillName == 'Muralha') {
         lifeBase = lifeBase * 10;
       }
     }
+    manaController.text = baseMana.toString();
     notifyListeners();
   }
   @override

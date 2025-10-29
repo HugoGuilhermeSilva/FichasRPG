@@ -1,3 +1,4 @@
+import 'package:fichas/screens/advantagens_screen.dart';
 import 'package:fichas/screens/archetype_screen.dart';
 import 'package:fichas/screens/power_screen.dart';
 import 'package:fichas/screens/record_screen.dart';
@@ -41,6 +42,14 @@ class MyDrawer extends StatelessWidget{
               onTap: () {
                 Navigator.pop(context);
                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => PowerScreen())
+                );
+              },
+            ),
+            ListTile(
+              title: const Text('Vantagens', style: TextStyle(color: Colors.white),),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AdvantagesScreen())
                 );
               },
             ),

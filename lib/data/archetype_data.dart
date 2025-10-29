@@ -10,6 +10,7 @@ class Skill {
 }
 class Archetype {
   final String name;
+  final int mana;
   final int attributePoints;
   final int baseXp;
   final String description;
@@ -17,6 +18,7 @@ class Archetype {
   final int skillPointsPerLevel;
   final List<Skill> skills;
   const Archetype({
+    required this.mana,
     required this.name,
     this.attributePoints = 6,
     this.baseXp = 100,
@@ -29,6 +31,7 @@ class Archetype {
 const List<Archetype> allArchetypes = [
   Archetype(
     name: 'Atirador',
+    mana: 5,
     baseHp: 12,
     skillPointsPerLevel: 5,
     description: 'Atiradores recebem 10m de alcance ao invés de 5 por grau comprado e podem converter seus graus de acelerar para ataques.',
@@ -52,6 +55,7 @@ const List<Archetype> allArchetypes = [
   ),
   Archetype(
     name: 'Lutador',
+    mana: 5,
     baseHp: 30,
     skillPointsPerLevel: 5,
     description: 'Lutadores podem converter seu acelear em ataques.',
@@ -75,6 +79,7 @@ const List<Archetype> allArchetypes = [
   ),
   Archetype(
     name: 'Ladino',
+    mana: 7,
     baseHp: 15,
     skillPointsPerLevel: 7,
     description: 'Ladinos podem converter seu acelerar para ataques ou ações de movimento adicionais',
@@ -98,6 +103,7 @@ const List<Archetype> allArchetypes = [
   ),
   Archetype(
     name: 'Suporte',
+    mana: 10,
     baseHp: 15,
     skillPointsPerLevel: 6,
     description: 'Suportes podem converter seu acelerar para uma ação de cura,ataque ou movimento adicional',
@@ -122,6 +128,7 @@ const List<Archetype> allArchetypes = [
   Archetype(
     name: 'Perito',
     baseHp: 14,
+    mana: 8,
     skillPointsPerLevel: 8,
     description: 'Peritos podem converter seu acelerar em ataques adicionais',
     skills: [

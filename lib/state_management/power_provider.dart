@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class PowerProvider with ChangeNotifier{
   final Map<String, int> _selectedPowers = {};
   Map<String, int> get selectedPowers => _selectedPowers;
+  final TextEditingController displacementController = TextEditingController();
 
   bool isPowerSelected(String powerName){
     return _selectedPowers.containsKey(powerName);
@@ -10,20 +11,20 @@ class PowerProvider with ChangeNotifier{
   int getPowerLevel(String powerName){
     return _selectedPowers[powerName] ?? 0;
   }
-  void togglePowerSelection(String powerName, bool isSelected){
-    if(isSelected){
-      if(!_selectedPowers.containsKey(powerName)){
+  void togglePowerSelection(String powerName, bool isSelected) {
+    if (isSelected) {
+      if (!_selectedPowers.containsKey(powerName)) {
         _selectedPowers[powerName] = 1;
-      }else{
-        _selectedPowers.remove(powerName);
       }
-      notifyListeners();
+    } else {
+      _selectedPowers.remove(powerName);
     }
+    _updateCalculatedValues();
   }
   void incrementPowerLevel(String powerName){
     if(_selectedPowers.containsKey(powerName)){
       _selectedPowers[powerName] = _selectedPowers[powerName]! + 1;
-      notifyListeners();
+      _updateCalculatedValues();
     }
   }
   void decrementPowerLevel(String powerName){
@@ -34,7 +35,7 @@ class PowerProvider with ChangeNotifier{
       } else{
         _selectedPowers.remove(powerName);
       }
-      notifyListeners();
+      _updateCalculatedValues();
     }
   }
   void setPowerLevel(String powerName, int level) {
@@ -43,6 +44,15 @@ class PowerProvider with ChangeNotifier{
     } else {
       _selectedPowers.remove(powerName);
     }
+  }
+  int get totalDisplacement {
+    const int baseDisplacement = 10;
+    final moveLevel = getPowerLevel('Mover-se');
+    return baseDisplacement + (5 * moveLevel);
+  }
+  void _updateCalculatedValues() {
+    displacementController.text = totalDisplacement.toString();
+    notifyListeners();
   }
   void notifyExternalChange() {
     notifyListeners();

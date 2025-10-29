@@ -13,6 +13,7 @@ class AttributesProvider with ChangeNotifier {
   final TextEditingController remainingExpertisePointsController = TextEditingController();
   final TextEditingController totalLifeController = TextEditingController();
   final TextEditingController lostLifeController = TextEditingController();
+
   int _accumulatedDamage = 0;
   int _lastInputValue = 0;
 

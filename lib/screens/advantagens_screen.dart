@@ -1,5 +1,9 @@
+import 'package:fichas/common/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:fichas/models/advantages_widget.dart';
+import 'package:fichas/data/advantages_data.dart';
+import 'package:fichas/state_management/character_provider.dart';
+import 'package:provider/provider.dart';
 
 class AdvantagesScreen extends StatefulWidget{
   const AdvantagesScreen({super.key});
@@ -7,107 +11,49 @@ class AdvantagesScreen extends StatefulWidget{
   State<AdvantagesScreen> createState() => _AdvantagesScreenState();
 }
 class _AdvantagesScreenState extends State<AdvantagesScreen>{
-  List<Advantage> allAdvantages = [
-    Advantage(name: 'Abusador do Medo', description: 'O personagem causa 1/2 do dano a mais quando ataca um alvo que esteja intimidado ou amedrontado por ele.'),
-    Advantage(name: 'Agil', description: 'Permite substituir o atributo força por agilidade em todas as pericias que usem força. Tambem permite somar 1/2 nivel em iniciativa. '),
-    Advantage(name: 'Alquimista', description: 'Permine que o personagem possa criar itens dentro do combate, os itens são definidos pela criatividade do player e tem o balanceamento do mestre.'),
-    Advantage(name: 'Alquimista', description: 'Sempre que o usuário cria algo ele recebe um dado de sorte pelo resto da sessão. Quem usar o item também pode usar o dado, porém cada criação só tem 1 dado.'),
-    Advantage(name: 'Alvo Marcado', description: 'Caso voce consiga rastrear um alvo voce causa 1/2 do dano a mais durante a cena.'),
-    Advantage(name: 'Ambidestria', description: 'Permite atacar 3x ao inves de uma com seu ataque padrão. Tamebm permite utilizar 2 armas no lugar de um acessório ao invés de 1. '),
-    Advantage(name: 'Anjo da Morte', description: 'Todo o dano do personagem passa a ser letal e caso o personagem cause dano letal o alvo não fica em death save, ele morre instantaneamente.'),
-    Advantage(name: 'Aperfeiçoamento', description: 'Recebe 1/3+2 do nivel em combate corporal.'),
-    Advantage(name: 'Aprendiz Rápido', description: 'Recebe +1 ponto de pericia por nivel e o limite de pontos de pericia passa a ser o nivel. '),
-    Advantage(name: 'Aproveitador', description: 'Recebe 1/4+2 do nível em ações bônus. '),
-    Advantage(name: 'Ás do volante', description: 'Voce é proficiente em qualquer tipo de veiculo, e também recebe um veiculo do mestre.'),
-    Advantage(name: 'Ataque Agravante', description: 'Ganha 5x o seu nivel em dano fixo no dano por turno, ou seu nivel em dano fixo no dano normal.'),
-    Advantage(name: 'Ataque Brutal', description: 'Pode givar 1 de acerto para receber 1/2 nivel em graus de dano a mais para cada 1 de acerto que perdeu. '),
-    Advantage(name: 'Ataque descuidado', description: 'Voce recebe vantagem em todas as rolagens de dano, porém todos os inimigos tem vantagem para te acertar ate o inicio do seu proximo turno.'),
-    Advantage(name: 'Ataques Rápidos', description: 'Pode usar agilidade para atacar corpo a corpo no lugar de força.'),
-    Advantage(name: 'Aterrorizante', description: 'Tem vantagem em testes de intimidação. '),
-    Advantage(name: 'Atirador', description: 'Recebe 1/3+2 do nível em acerto em combate a distancia.'),
-    Advantage(name: 'Centro das Atenções', description: 'Recebe o triplo de reputação.'),
-    Advantage(name: 'Clone Perfeito', description: 'O clone do personagem conta como copia perfeita do personagem tendo todos seus poderes e habilidades (menos ultimate). '),
-    Advantage(name: 'Combate Agarrado', description: 'Passa a poder agarrar o inimigo, enquanto agarrado recebe vantagem nos ataques contra ele. Porém tem desvantagem em esquiva e bloqueio contra outros alvos.'),
-    Advantage(name: 'Combate Audacioso', description: 'Permite ao personagem realizar um combo de ataques onde cada ataque no seu turno recebe uma nota diferente, dependendo da note recebe um bônus diferente pelo resto da cena. A partir da nota S sempre que voce errar um ataque voce volta para a nota S.\nE - +1 de acerto e 1 grau de dano\nD - +2 de acerto e +2 graus de dano\nC - +3 de acerto e +3 graus de dano\nB - +4 de acerto e +4 graus de dano.\nA - +5 de acerto e +5 graus de dano.\nS - +6 de acerto e +6 graus de dano.\nSS - Recebe seu nível em reputação\nSSS - Recebe 2x seu nível em reputação.'),
-    Advantage(name: 'Companheiro Animal', description: 'Você recebe um companheiro do mestre, ele pode ser ofensivo, defensivo ou  utilitário, recebendo 1/3 do nivel de bônus para acerto/esquiva, bloqueio, ou em 4 pericias a sua escolha.'),
-    Advantage(name: 'Conhecimento Infinito', description: 'Recebe 1/5 nivel em conhecimentos da tabela. '),
-    Advantage(name: 'Consciência Cósmica', description: 'Pode escolher 1/5 do nível de pericias para ter vantagem nas rolagens. '),
-    Advantage(name: 'Constituição Aprimorada', description: 'Tem vantagem para resistir a efeitos.'),
-    Advantage(name: 'Contra Ataque', description: 'Pode gastar sua reação para fazer um ataque sempre que um ataque não te acerta, caso o ataque te acerte voce pode gastar 3 reações para fazer o ataque e voce tem vantagem na rolagem. '),
-    Advantage(name: 'Critico Aprimorado', description: 'Aumenta o multiplicador do critico em 1 e diminui a margem em 1'),
-    Advantage(name: 'De pé', description: 'O personagem não pode ser derrubado.'),
-    Advantage(name: 'Descansado', description: 'Permite descansar na metade do tempo normal.'),
-    Advantage(name: 'Despertar do Mana', description: 'Recebe a lista de magias e spellslots do DND uma classe a sua escolha. Caso a magia seja de dano ela causa metade dos seus graus de dano por dado de dano da magia. Seu nivel da classe escolhida é igual ao seu nivel - 5. '),
-    Advantage(name: 'Despistar', description: 'Recebe 1/2 do nivel em furtividade e tem vantagem nos testes contando que possa se mover livremente. '),
-    Advantage(name: 'Diligente', description: 'Abre mão de qualquer movimentação até seu proximo turno para dobrar o bonus de uma pericia. '),
-    Advantage(name: 'Dois Poderes', description: 'O personagem herdou tanto a quirk do pai quanto da mãe recebendo uma passiva adicional.(personagens com essa vantagem não podem comprar bestiario mistico)'),
-    Advantage(name: 'Driblar a Morte', description: 'O personagem não perde o death save a menos que seja atacado.'),
-    Advantage(name: 'Duro como pedra', description: 'Recebe graus de vida temporários iguais ao seu defender comprado.'),
-    Advantage(name: 'Duro de matar', description: 'Adiciona o nivel em turnos no deah save.'),
-    Advantage(name: 'Duvido', description: 'Quando alguem tem essa vantagem o mestre pode lançar um desafio para a pessoa a qualquer momento, se voce cumprir o desafio recebe 1 ponto heroico seu nivel em reputação (depende do desafio) e 25 willcoins.'),
-    Advantage(name: 'Efeito Aprimorado', description: 'Dobra a duração dos efeitos do personagem.'),
-    Advantage(name: 'Empreendedor', description: 'Voce tem um negocio de sucesso lhe dando 25 willcoins por sessão.(essa vantagem pode ser escolhida mais de 1 vez)'),
-    Advantage(name: 'Esguio', description: 'Caso voce tenha menos de 100 de vida maxima, voce recebe xp dobrada.'),
-    Advantage(name: 'Esconderijo', description: 'Voce tem um ponto seguro que sempre pode acessar, a qualquer momento pode fugir para ele.'),
-    Advantage(name: 'Especialista Médica', description: 'A cura do peronagem passa a receber 3x o nivel como cura fixa, também torna o personagem capaz de realizar cirurgias simples. '),
-    Advantage(name: 'Estilo Corpo a Corpo', description: 'Você focou em aprender a se virar em luta corpo a corpo, caso seja alvo de um ataque a distancia você recebe metade do dano.'),
-    Advantage(name: 'Estilo de 1 arma', description: 'Caso voce esteja usando apenas uma arma e nenhuma armadura, voce recebe +2 em acerto com essa arma, seu passo de dano aumenta em 1 e sua margem de critico e seu multiplicador aumentam em 1. '),
-    Advantage(name: 'Eu Vim Barganhar', description: '1 vez por sessão pode fazer um teste de carisma, se passar pode comprar itens pela metade do preço. (mas somente para voce).'),
-    Advantage(name: 'Eu faço meu destino', description: 'Permite somar 1/5+2 do seu nivel em qualquer clash.'),
-    Advantage(name: 'Fator de Cura Aprimorado', description: 'Sempre que você é curado ou cura alguem você cura completamente. '),
-    Advantage(name: 'Flash', description: 'Recebe 1/2 do nivel em iniciativa e tem vantagem no teste de iniciativa.'),
-    Advantage(name: 'Frieza', description: 'O movimento do personagem não provoca ataques de oportunidade.'),
-    Advantage(name: 'Fúria', description: 'Permite ao personagem entrar em fúria no combate, durante a fúria não pode tomar nenhuma ação que não seja atacar, porém recebe 1/4 nível em acerto e bloqueio/esquiva e imunidade a todos os danos fisicos. Se não atacar a furia se encerra e não pode ser acessada novamente pela cena.'),
-    Advantage(name: 'Inabalável', description: 'Diminui pela metade o cd para se manter concentrado.'),
-    Advantage(name: 'Instinto Assassino', description: 'Sempre que você mata um alvo você recebe 1/4 do seu nível no seu poder principal (pode ser dano, manipulação, gravidade etc.)'),
-    Advantage(name: 'Investigador Nato', description: 'Recebe 1/2 do nivel em rastrear e investigação, o bonus maximo passa a ser igual ao nivel.'),
-    Advantage(name: 'Jogador Caro', description: 'O personagem tem um dom nato para um tipo de jogo, escolha um modo\ncomo: jogos esportivos, jogos de carta/tabuleiro, eletrônicos, etc.'),
-    Advantage(name: 'Ler Movimentos', description: 'Recebe 1/4+1 nivel em bloqueio, também pode usar sua reação para receber seu nivel no bloqueio no ataque. 1 por rodada.'),
-    Advantage(name: 'Linguista Nato', description: 'ganha fluência em metade do seu nivel de línguas conhecidas.'),
-    Advantage(name: 'Louco por Conhecimento', description: 'Recebe 1/3 do nivel em conhecimentos.'),
-    Advantage(name: 'Lutador Inteligente', description: 'Permite ao personagem fazer um teste de percepção/procurar/investigação/intuição, para descobrir algo sobre o oponente de passivas a pontos de vida, acerto etc.'),
-    Advantage(name: 'Lutar as cegas', description: 'Permite ao personagem  lutar contra alvos que ele não esteja vendo.'),
-    Advantage(name: 'Mais Alvos', description: 'Permite atingir mais de um alvo por ataque mental.(esta vantagem pode ser pega mais de uma vez)'),
-    Advantage(name: 'Mãos Rápidas', description: 'Recebe vantagem em um teste para roubar algo.'),
-    Advantage(name: 'Mascarar Poder', description: 'Com esta vantagem inimigos não podem saber suas passivas/habilidades até que você as use.'),
-    Advantage(name: 'Manobra', description: 'Pode givar o dano de um ataque para derrubar o alvo, enquanto derrubado voce tem vantagem nos ataques contra ele.'),
-    Advantage(name: 'Master Chef', description: 'O personagem aprende a cozinhar, fazendo com que quem coma sua comida receba seu nivel +2 em graus de vida temporarios.'),
-    Advantage(name: 'Megamente', description: 'Recebe 1/3+2 do nível em acerto em combate mental.'),
-    Advantage(name: 'Mente Calma', description: 'Permite rolar o save para sair de algum efeito no inicio do seu turno e no final.'),
-    Advantage(name: 'Mestre do Combate', description: 'Ganha a habilidade de escolher entre dano letal ou não letal sem a redução de dano.'),
-    Advantage(name: 'Mestre em Pericias', description: 'A cada 2 pericias que voce tiver que seus bonus forem maiores que seu nivel voce recebe +1 ataque.'),
-    Advantage(name: 'Mutação', description: 'O personagem não possui o poder de nenhum dos pais tendo recebido ele por experimentos ou outras formas. Assim recebendo 30 de xp extra por nivel.'),
-    Advantage(name: 'Na Mira', description: 'O personagem pode gastar todo seu movimento no turno junto com uma ação bônus para mirar no alvo, enquanto na mira sua margem de critico diminui em 2.'),
-    Advantage(name: "Nah I'D Win", description: 'Seu personagem pode continuar vivo por 5 minutos após sua morte, usar essa vantagem faz com que sua ressureição seja impossível por quaisquer métodos.'),
-    Advantage(name: 'Nascido Para Matar', description: 'Caso o seu alvo tenha menos de 1/4 da vida, o seu dano nele é maximizado.'),
-    Advantage(name: 'Oportunista', description: 'Recebe 1/5 do nivel em reações.'),
-    Advantage(name: 'Sherlock Holmes', description: 'Você pode somar sua inteligência em Procurar, Prontidão e Rastrear.'),
-    Advantage(name: 'Paranoico', description: 'Recebe seu nivel em prontidão e vantagem nos testes.'),
-    Advantage(name: 'Penetrante', description: 'A cada 4 graus de dano voce ignora 1 grau de defender.'),
-    Advantage(name: 'Pericia Inata', description: 'Recebe 1/3+2 do nivel em uma pericia a sua escolha. Maximo 2.'),
-    Advantage(name: 'Preparo', description: 'O personagem sempre tem um as na manga, fazendo com que possa rolar um d100 para ter um item util para a situação.'),
-    Advantage(name: 'Prontidão Aprimorada', description: 'Recebe +10 de iniciativa e não pode mais ser surpreendido.'),
-    Advantage(name: 'Robusto', description: 'Dobra sua vida Máxima.'),
-    Advantage(name: 'Sacrifício', description: 'Pode abrir mão de 1/8 da sua vida máxima (contando com a vida resistível) para receber metade do valor que abriu mão em acerto pelo resto do turno, a vida que você perdeu dessa forma não pode ser curada de nenhuma forma.'),
-    Advantage(name: 'Sagramento', description: 'Cada ataque acumula 1 stack, com 100 stacks voce causa 20% da vida maxima do alvo como dano.'),
-    Advantage(name: 'Sorte', description: 'Tem metade do nivel em dados de sorte que podem ser gastos a qualquer momento para rerolar um teste.'),
-    Advantage(name: 'Surto Heroico', description: 'Voce recebe um turno adicional, porém fica exausto perdendo seus proximos 2 turnos.'),
-    Advantage(name: 'Trespassar', description: 'Sempre que derrota um alvo pode fazer 1/3 do nivel de ataques adicionais em outro alvo.'),
-    Advantage(name: 'Voadora', description: 'Recebe dano fixo igual ao seu grau de mover-se'),
-    Advantage(name: 'Vontade de Ferro', description: 'Recebe seu nivel em força de vontade e pode usar sua reação para dobrar esse bonus por um ataque.'),
-    Advantage(name: 'X1 Lixo', description: 'Enquanto em uma luta 1v1 seu passo de dano aumenta em 1 e seu rd aumenta em 2. ( Caso voce só ataque 1 inimigo e não cause dano em área voce tambem recebe os bonus dessa vantagem ).'),
-  ];
   @override
   Widget build(BuildContext context){
     final selected = allAdvantages.where((a) => a.selected).toList();
     final general = allAdvantages.where((a) => !a.selected).toList();
 
     return Scaffold(
+      drawer: MyDrawer(),
       appBar: AppBar(title: Text('Vantagens', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold,),),backgroundColor: Colors.deepPurple[900],),
       backgroundColor: Colors.grey[900],
       body: SingleChildScrollView(
         child: Column(
           children: [
+            Consumer<CharacterProvider>(
+              builder: (context, provider, consumerChild){
+              return SizedBox(
+                width: 350,
+                child: Consumer<CharacterProvider>(
+                  builder: (context, provider, consumerChild) {
+                    return Card(
+                      shape: RoundedRectangleBorder(
+                          side: const BorderSide(
+                            color: Colors.purpleAccent,
+                            width: 2,
+                          ),
+                          borderRadius: BorderRadius.circular(8)),
+                      color: Colors.black,
+                      elevation: 4,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                        child: Text(
+                          'Quantidade disponivel = ${((provider.level / 2) - (selected.length)).round()}',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 22,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    );
+                  }),
+              );
+              }
+            ),
             Text('Selecionadas', style: TextStyle( color: Colors.white, fontSize: 22),),
             Wrap(
               spacing: 4,
