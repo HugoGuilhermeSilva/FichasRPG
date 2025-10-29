@@ -54,6 +54,12 @@ class AttributeFields extends StatelessWidget {
                 ),
                 borderRadius: BorderRadius.circular(8),
               ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                    color: Colors.purpleAccent,
+                    width: 3
+                )
+              ),
             ),
           ),
         ),
@@ -75,6 +81,12 @@ class AttributeFields extends StatelessWidget {
                 borderSide: const BorderSide(
                   color: Colors.deepPurple, width: 2),
                 borderRadius: BorderRadius.circular(8),
+              ),
+              focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                      color: Colors.purpleAccent,
+                      width: 3
+                  )
               ),
             ),
           ),

@@ -51,6 +51,12 @@ class ExpertiseFields extends StatelessWidget{
                   color: Colors.deepPurple, width: 2),
               borderRadius: BorderRadius.circular(8),
             ),
+            focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                    color: Colors.purpleAccent,
+                    width: 3
+                )
+            ),
           ),
         ),
       ),
