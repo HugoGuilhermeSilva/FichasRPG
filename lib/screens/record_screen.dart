@@ -211,33 +211,39 @@ class RecordScreen extends StatelessWidget {
                         ),
                         SizedBox(width: 2,),
                         Expanded(
-                          child: TextField(
-                            readOnly: true,
-                            controller: context.read<AttributesProvider>().totalLifeController,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            decoration: InputDecoration(
-                              labelText: 'Vida Total',
-                              labelStyle: TextStyle(
-                                color: Colors.deepPurple,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.deepPurple,
-                                  width: 2
-                                )
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.purpleAccent,
-                                  width: 3
-                                )
-                              ),
-                            ),
+                          child: Consumer<AttributesProvider>(
+                            builder: (context, provider, _) {
+                              return TextField(
+                                readOnly: true,
+                                controller: TextEditingController(
+                                  text: provider.currentLife.toString(),
+                                ),
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                decoration: const InputDecoration(
+                                  labelText: 'Vida Atual',
+                                  labelStyle: TextStyle(
+                                    color: Colors.deepPurple,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Colors.deepPurple,
+                                      width: 2,
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Colors.purpleAccent,
+                                      width: 3,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
                           ),
                         ),
                       ],
@@ -276,7 +282,35 @@ class RecordScreen extends StatelessWidget {
                           ),
                         ),
                         SizedBox(width: 2,),
-
+                        Expanded(
+                          child: TextField(
+                            controller: context.read<AttributesProvider>().lostLifeController,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            decoration: InputDecoration(
+                              labelText: 'Dano Recebido',
+                              labelStyle: TextStyle(
+                                color: Colors.deepPurple,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Colors.deepPurple,
+                                      width: 2
+                                  )
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Colors.purpleAccent,
+                                      width: 3
+                                  )
+                              ),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ],

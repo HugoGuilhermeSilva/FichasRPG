@@ -12,6 +12,9 @@ class AttributesProvider with ChangeNotifier {
   final TextEditingController remainingAttributesController = TextEditingController();
   final TextEditingController remainingExpertisePointsController = TextEditingController();
   final TextEditingController totalLifeController = TextEditingController();
+  final TextEditingController lostLifeController = TextEditingController();
+  int _accumulatedDamage = 0;
+  int _lastInputValue = 0;
 
   final Map<String, int> _attributesTotals = {};
   final Map<String, int> _expertiseTotals = {};
@@ -41,6 +44,7 @@ class AttributesProvider with ChangeNotifier {
     for (final name in attributeNames) {
       _updateTotalsFor(attributeName: name);
     }
+    lostLifeController.addListener(_updateDamage);
     _recalculateAndNotify();
   }
 
@@ -58,7 +62,20 @@ class AttributesProvider with ChangeNotifier {
     initiativeController.text = totalInitiative.toString();
     notifyListeners();
   }
-
+  void _updateDamage(){
+   final currentInput = int.tryParse(lostLifeController.text) ?? 0;
+   final delta = currentInput - _lastInputValue;
+   if (delta != 0) {
+     _accumulatedDamage += delta;
+     _lastInputValue = currentInput;
+     notifyListeners();
+   }
+  }
+  int get currentLife {
+    final total = totalLife;
+    final remaining = total - _accumulatedDamage;
+    return remaining.clamp(0, total);
+  }
   int get spentAttributePoints {
     int totalSpent = 0;
     for (var controller in baseControllers.values) {
@@ -188,6 +205,7 @@ class AttributesProvider with ChangeNotifier {
   @override
   void dispose() {
     _characterProvider?.removeListener(_recalculateAndNotify);
+    lostLifeController.dispose();
     totalLifeController.dispose();
     initiativeController.dispose();
     remainingAttributesController.dispose();
