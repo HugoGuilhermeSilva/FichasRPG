@@ -1,102 +1,161 @@
 import 'package:fichas/data/power_model.dart';
 import 'package:fichas/state_management/power_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-class PowerCard extends StatelessWidget {
+class PowerCard extends StatefulWidget {
   final Power power;
+  final PowerProvider powerProvider;
 
   const PowerCard({
     super.key,
     required this.power,
+    required this.powerProvider,
   });
 
   @override
+  State<PowerCard> createState() => _PowerCardState();
+}
+
+class _PowerCardState extends State<PowerCard> {
+  bool _isSelected = false;
+  int _level = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _syncStateFromProvider();
+  }
+
+  @override
+  void didUpdateWidget(covariant PowerCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _syncStateFromProvider();
+  }
+  void _syncStateFromProvider() {
+    final newIsSelected = widget.powerProvider.isPowerSelected(widget.power.name);
+    final newLevel = widget.powerProvider.getPowerLevel(widget.power.name);
+    if (_isSelected != newIsSelected || _level != newLevel) {
+      setState(() {
+        _isSelected = newIsSelected;
+        _level = newLevel;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final powerProvider = context.watch<PowerProvider>();
-    final isSelected = powerProvider.isPowerSelected(power.name);
-    final powerLevel = powerProvider.getPowerLevel(power.name);
+    final powerProvider = widget.powerProvider;
 
     return Card(
-      shape:  RoundedRectangleBorder(
+      color: Colors.black,
+      shape: RoundedRectangleBorder(
         side: BorderSide(
-          color: isSelected ? Colors.purpleAccent : Colors.deepPurple,
+          color: _isSelected ? Colors.yellowAccent : Colors.deepPurple,
           width: 2,
         ),
-        borderRadius: BorderRadius.circular(8)
+        borderRadius: BorderRadius.circular(8),
       ),
-      color: Colors.black,
-      elevation: 4,
-      child: Container(
-        width: 380,
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              children: [
-                Checkbox(
-                  value: isSelected,
-                  onChanged: (bool? value) {
-                    powerProvider.togglePowerSelection(
-                        power.name, value ?? false);
-                  },
-                  activeColor: Colors.deepPurple,
-                ),
-                Expanded(
-                  child: Text(
-                    power.name,
-                    style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(
+          maxWidth: 300,
+          maxHeight: 250,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              // --- SEÇÃO SUPERIOR: NOME, CUSTO E CHECKBOX ---
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.power.name,
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16),
+                        ),
+                        Text(
+                          'Custo: ${widget.power.cost} XP',
+                          style: const TextStyle(color: Colors.yellowAccent, fontSize: 14),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Checkbox(
+                    value: _isSelected,
+                    onChanged: (value) {
+                      final bool newSelectedState = value ?? false;
+                      setState(() {
+                        _isSelected = newSelectedState;
+                        if (newSelectedState && _level == 0) {
+                          _level = 1;
+                        }
+                      });
+                      // Notifica o provider da mudança
+                      powerProvider.togglePowerSelection(
+                          widget.power.name, newSelectedState);
+                      // Se o nível mudou, notifica o provider também
+                      if (newSelectedState &&
+                          powerProvider.getPowerLevel(widget.power.name) == 0) {
+                        powerProvider.setPowerLevel(widget.power.name, 1);
+                      }
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Expanded(
+                child: Scrollbar(
+                  thumbVisibility: true,
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: Text(
+                        widget.power.description,
+                        // Alinhamento do texto ao centro
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(color: Colors.white, fontSize: 16),
+                      ),
+                    ),
                   ),
                 ),
-                Text(
-                  'Custo: ${power.cost} XP',
-                  style: const TextStyle(color: Colors.amber, fontSize: 14),
-                ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 16.0, top: 4),
-              child: Text(
-                power.description,
-                style: TextStyle(color: Colors.grey[400], fontSize: 14),
               ),
-            ),
-            if (isSelected && power.stackable)
-              Padding(
-                padding: const EdgeInsets.only(top: 10.0, left: 16.0),
-                child: Row(
-                  children: [
-                    const Text('Graus:',
-                        style: TextStyle(color: Colors.white, fontSize: 16)),
-                    const Spacer(),
-                    IconButton(
-                      icon: const Icon(
-                          Icons.remove_circle, color: Colors.redAccent),
-                      onPressed: () =>
-                          powerProvider.decrementPowerLevel(power.name),
-                    ),
-                    Text(
-                      '$powerLevel',
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.remove, color: Colors.white),
+                    onPressed: () {
+                      if (_level > 0) {
+                        powerProvider.decrementPowerLevel(widget.power.name);
+                        // O didUpdateWidget vai cuidar de atualizar a UI
+                      }
+                    },
+                  ),
+                  Text('Graus comprados: $_level',
                       style: const TextStyle(
                           color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    IconButton(
-                      icon: const Icon(
-                          Icons.add_circle, color: Colors.greenAccent),
-                      onPressed: () =>
-                          powerProvider.incrementPowerLevel(power.name),
-                    ),
-                  ],
-                ),
-              ),
-          ],
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold)),
+                  IconButton(
+                    icon: const Icon(Icons.add, color: Colors.white),
+                    onPressed: () {
+                      if (_isSelected) {
+                        powerProvider.incrementPowerLevel(widget.power.name);
+                      }
+                    },
+                  ),
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );

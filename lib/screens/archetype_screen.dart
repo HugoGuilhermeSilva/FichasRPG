@@ -1,4 +1,5 @@
 import 'package:fichas/common/drawer.dart';
+import 'package:fichas/state_management/record_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:fichas/models/archetype_widget.dart';
@@ -10,7 +11,8 @@ class ArchetypeScreen extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    final characterProvider = context.watch<CharacterProvider>();
+    final recordProvider = Provider.of<RecordProvider>(context);
+    final characterProvider = recordProvider.characterProvider;
     return Scaffold(
       drawer: MyDrawer(),
       appBar: AppBar(

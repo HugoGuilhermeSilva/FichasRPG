@@ -1,9 +1,8 @@
 import 'package:fichas/common/drawer.dart';
+import 'package:fichas/state_management/record_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:fichas/models/advantages_widget.dart';
 import 'package:fichas/data/advantages_data.dart';
-import 'package:fichas/state_management/character_provider.dart';
-import 'package:fichas/state_management/advantages_provider.dart'; // << 1. IMPORTE O NOVO PROVIDER
 import 'package:provider/provider.dart';
 
 class AdvantagesScreen extends StatelessWidget {
@@ -11,10 +10,12 @@ class AdvantagesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final characterProvider = Provider.of<CharacterProvider>(context);
-    final advantagesProvider = Provider.of<AdvantagesProvider>(context);
-    final List<Advantage> selected = allAdvantages.where((a) => advantagesProvider.isSelected(a.name)).toList();
-    final List<Advantage> general = allAdvantages.where((a) => !advantagesProvider.isSelected(a.name)).toList();
+    final recordProvider = Provider.of<RecordProvider>(context);
+    final advantagesProvider = recordProvider.advantagesProvider;
+    final characterProvider = recordProvider.characterProvider;
+
+    final List<Advantage> selected = allAdvantages.where((a) => advantagesProvider.isAdvantageSelected(a.name)).toList();
+    final List<Advantage> general = allAdvantages.where((a) => !advantagesProvider.isAdvantageSelected(a.name)).toList();
     return Scaffold(
       drawer: const MyDrawer(),
       appBar: AppBar(
@@ -39,7 +40,7 @@ class AdvantagesScreen extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(
                     horizontal: 16.0, vertical: 8.0),
                   child: Text(
-                    'Disponível = ${((characterProvider.level / 2).floor() - advantagesProvider.selectedCount)}',
+                    'Disponível = ${((characterProvider.level / 2).round() - advantagesProvider.selectedAdvantages.length)}',
                     style: const TextStyle(color: Colors.white, fontSize: 22),
                     textAlign: TextAlign.center,
                   ),
@@ -57,7 +58,7 @@ class AdvantagesScreen extends StatelessWidget {
                   description: advantage.description,
                   selected: true,
                   onChanged: (val) {
-                    advantagesProvider.toggleAdvantage(advantage.name);
+                    advantagesProvider.toggleAdvantageSelection(advantage.name, false);
                   },
                 )).toList()),
             const Divider(color: Colors.white),
@@ -71,7 +72,7 @@ class AdvantagesScreen extends StatelessWidget {
                   description: advantage.description,
                   selected: false,
                   onChanged: (val) {
-                    advantagesProvider.toggleAdvantage(advantage.name);
+                    advantagesProvider.toggleAdvantageSelection(advantage.name, true);
                   },
                 )
               ).toList()),

@@ -1,31 +1,27 @@
 import 'package:fichas/data/power_model.dart';
-import 'package:fichas/services/sotrage_Service.dart';
 import 'package:flutter/material.dart';
 import 'package:fichas/data/power_list.dart';
+import 'package:fichas/models/record_model.dart';
 
 class PowerProvider with ChangeNotifier{
-  final StorageService _storageService = StorageService();
   Map<String, int> _selectedPowers = {};
   Map<String, int> get selectedPowers => _selectedPowers;
   final TextEditingController displacementController = TextEditingController();
   final TextEditingController totalDamageController = TextEditingController();
   final TextEditingController baseDamageController = TextEditingController();
+  final Function(Map<String, int>)? onDataChanged;
 
-  PowerProvider() {
-    _loadPowers();
+  PowerProvider({this.onDataChanged}) {
     _updateCalculatedValues();
   }
-  Future<void> _loadPowers() async {
-    final loadedData = await _storageService.loadMap('selected_powers');
-    if (loadedData != null) {
-      _selectedPowers = loadedData.map((key, value) => MapEntry(key, value as int));
-      notifyListeners();
-    }
+  void updateFromRecord(Record? record){
+    _selectedPowers = Map<String, int>.from(record?.powersData ?? {});
+    _updateCalculatedValues();
   }
-  Future<void> _savePowers() async {
-    await _storageService.saveMap('selected_powers', _selectedPowers);
+  void _notifyAndSaveChanges(){
+    onDataChanged?.call(_selectedPowers);
+    _updateCalculatedValues();
   }
-
   bool isPowerSelected(String powerName){
     return _selectedPowers.containsKey(powerName);
   }
@@ -40,14 +36,12 @@ class PowerProvider with ChangeNotifier{
     } else {
       _selectedPowers.remove(powerName);
     }
-    _updateCalculatedValues();
-    _savePowers();
+    _notifyAndSaveChanges();
   }
   void incrementPowerLevel(String powerName){
     if(_selectedPowers.containsKey(powerName)){
       _selectedPowers[powerName] = _selectedPowers[powerName]! + 1;
-      _updateCalculatedValues();
-      _savePowers();
+      _notifyAndSaveChanges();
     }
   }
   void decrementPowerLevel(String powerName){
@@ -58,8 +52,7 @@ class PowerProvider with ChangeNotifier{
       } else{
         _selectedPowers.remove(powerName);
       }
-      _updateCalculatedValues();
-      _savePowers();
+      _notifyAndSaveChanges();
     }
   }
   void setPowerLevel(String powerName, int level) {

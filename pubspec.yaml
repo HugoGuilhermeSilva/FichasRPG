@@ -36,6 +36,7 @@ dependencies:
   flutter_spinbox: ^0.13.1
   provider: ^6.0.5
   shared_preferences: ^2.2.3
+  uuid: ^4.3.3
 
 dev_dependencies:
   flutter_test:

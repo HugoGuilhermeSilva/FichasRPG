@@ -1,36 +1,31 @@
-import 'package:fichas/services/sotrage_Service.dart';
+import 'package:fichas/models/record_model.dart';
 import 'package:flutter/material.dart';
-import 'package:fichas/data/advantages_data.dart';
 
 class AdvantagesProvider with ChangeNotifier {
-  final StorageService _storageService = StorageService();
-  List<String> _selectedAdvantageNames = [];
-  AdvantagesProvider() {
-    _loadAdvantages();
-  }
-  int get selectedCount => _selectedAdvantageNames.length;
-  bool isSelected(String advantageName) {
-    return _selectedAdvantageNames.contains(advantageName);
-  }
-  void toggleAdvantage(String advantageName) {
-    if (isSelected(advantageName)) {
-      _selectedAdvantageNames.remove(advantageName);
-    } else {
-      _selectedAdvantageNames.add(advantageName);
-    }
-    _saveAdvantages();
+  List<String> _selectedAdvantages = [];
+  List<String> get selectedAdvantages => _selectedAdvantages;
+  final Function(List<String>)? onDataChanged;
+
+  AdvantagesProvider({this.onDataChanged});
+  void updateFromRecord(Record? record) {
+    _selectedAdvantages = record?.advantagesData ?? [];
     notifyListeners();
   }
-  Future<void> _loadAdvantages() async {
-    final loadedNames = await _storageService.loadStringList(
-        'selected_advantages');
-    if (loadedNames != null) {
-      _selectedAdvantageNames = loadedNames;
-      notifyListeners();
-    }
+  void _notifyAndSaveChanges() {
+    onDataChanged?.call(_selectedAdvantages);
+    notifyListeners();
   }
-  Future<void> _saveAdvantages() async {
-    await _storageService.saveStringList(
-        'selected_advantages', _selectedAdvantageNames);
+  void toggleAdvantageSelection(String advantageName, bool isSelected) {
+    if (isSelected) {
+      if (!_selectedAdvantages.contains(advantageName)) {
+        _selectedAdvantages.add(advantageName);
+      }
+    } else {
+      _selectedAdvantages.remove(advantageName);
+    }
+    _notifyAndSaveChanges();
+  }
+  bool isAdvantageSelected(String advantageName) {
+    return _selectedAdvantages.contains(advantageName);
   }
 }

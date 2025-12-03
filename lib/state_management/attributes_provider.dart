@@ -1,12 +1,11 @@
-import 'package:fichas/services/sotrage_Service.dart';
 import 'package:flutter/material.dart';
 import 'package:fichas/data/attribute_and_expertise_data.dart';
 import 'package:fichas/state_management/character_provider.dart';
+import 'package:fichas/models/record_model.dart';
 
 class AttributesProvider with ChangeNotifier {
-  final StorageService _storageService = StorageService();
-
-  CharacterProvider? _characterProvider;
+  final CharacterProvider characterProvider;
+  final Function(Map<String, dynamic>)? onDataChanged;
   final Map<String, TextEditingController> baseControllers = {};
   final Map<String, TextEditingController> bonusControllers = {};
   final Map<String, TextEditingController> expertiseBonusControllers = {};
@@ -24,56 +23,19 @@ class AttributesProvider with ChangeNotifier {
   final Map<String, int> _expertiseTotals = {};
   final Map<String, int> _combatTotals = {};
 
-  AttributesProvider() {
+  AttributesProvider({required this.characterProvider, this.onDataChanged}) {
     _initializeControllers();
-    _loadAllAttributesData();
+    characterProvider.addListener(_recalculateAndNotify);
   }
-
-  void _initializeControllers() {
-    for (final name in attributeNames) {
-      baseControllers[name] = TextEditingController();
-      bonusControllers[name] = TextEditingController();
-      _attributesTotals[name] = 0;
-      baseControllers[name]!.addListener(() {
-        _updateTotalsFor(attributeName: name);
-        _saveAllAttributesData();
-      });
-      bonusControllers[name]!.addListener(() {
-        _updateTotalsFor(attributeName: name);
-        _saveAllAttributesData();
-      });
-    }
-    for (final name in expertiseNames) {
-      expertiseBonusControllers[name] = TextEditingController();
-      _expertiseTotals[name] = 0;
-      expertiseBonusControllers[name]!.addListener(() {
-        _updateTotalsFor(expertiseName: name);
-        _saveAllAttributesData();
-      });
-    }
-    for (final name in combatValue) {
-      combatBonusControllers[name] = TextEditingController();
-      _combatTotals[name] = 0;
-      combatBonusControllers[name]!.addListener(() {
-        _updateTotalsFor(combatName: name);
-        _saveAllAttributesData();
-      });
-    }
-    lostLifeController.addListener(_updateDamage);
-  }
-  Future<void> _loadAllAttributesData() async {
-    final data = await _storageService.loadMap('all_attributes_data');
-    if (data == null) {
-      _recalculateAndNotify();
-      return;
-    }
+  void updateFromRecord(Record? record) {
+    final data = record?.attributesData ?? {};
     for (final name in attributeNames) {
       baseControllers[name]?.text = data['base_$name'] ?? '';
       bonusControllers[name]?.text = data['bonus_$name'] ?? '';
     }
     for (final name in expertiseNames) {
       expertiseBonusControllers[name]?.text = data['exp_bonus_$name'] ?? '';
-    }
+  }
     for (final name in combatValue) {
       combatBonusControllers[name]?.text = data['combat_bonus_$name'] ?? '';
     }
@@ -82,45 +44,58 @@ class AttributesProvider with ChangeNotifier {
     _lastInputValue = int.tryParse(lostLifeController.text) ?? 0;
     _recalculateAndNotify();
   }
-  Future<void> _saveAllAttributesData() async {
+  void _notifyAndSaveChanges(){
     final Map<String, dynamic> dataToSave = {};
-    for (final name in attributeNames) {
+    for(final name in attributeNames){
       dataToSave['base_$name'] = baseControllers[name]?.text ?? '';
       dataToSave['bonus_$name'] = bonusControllers[name]?.text ?? '';
     }
-    for (final name in expertiseNames) {
-      dataToSave['exp_bonus_$name'] =
-          expertiseBonusControllers[name]?.text ?? '';
+    for (final name in expertiseNames){
+      dataToSave['exp_bonus_$name'] = expertiseBonusControllers[name]?.text ?? '';
     }
-    for (final name in combatValue) {
-      dataToSave['combat_bonus_$name'] =
-          combatBonusControllers[name]?.text ?? '';
+    for (final name in combatValue){
+      dataToSave['combat_bonus_$name'] = combatBonusControllers[name]?.text ?? '';
     }
     dataToSave['accumulated_damage'] = _accumulatedDamage;
     dataToSave['lost_life_input'] = _lastInputValue;
-    await _storageService.saveMap('all_attributes_data', dataToSave);
+    onDataChanged?.call(dataToSave);
   }
-  void update(CharacterProvider characterProvider) {
-    if (_characterProvider != characterProvider) {
-      _characterProvider = characterProvider;
-      _characterProvider!.addListener(_recalculateAndNotify);
+  void _initializeControllers() {
+    void listener() {
       _recalculateAndNotify();
+      _notifyAndSaveChanges();
     }
+    for (final name in attributeNames) {
+      baseControllers[name] = TextEditingController();
+      bonusControllers[name] = TextEditingController();
+      _attributesTotals[name] = 0;
+      baseControllers[name]!.addListener(listener);
+      bonusControllers[name]!.addListener(listener);
+    }
+    for (final name in expertiseNames) {
+      expertiseBonusControllers[name] = TextEditingController();
+      _expertiseTotals[name] = 0;
+      expertiseBonusControllers[name]!.addListener(listener);
+    }
+    for (final name in combatValue) {
+      combatBonusControllers[name] = TextEditingController();
+      _combatTotals[name] = 0;
+      combatBonusControllers[name]!.addListener(listener);
+    }
+    lostLifeController.addListener(_updateDamage);
   }
-
-  void _recalculateAndNotify() {
+  void _recalculateAndNotify(){
     for (final name in attributeNames) {
       _updateTotalsFor(attributeName: name);
     }
-    for (final name in expertiseNames) {
+    for (final name in expertiseNames){
       _updateTotalsFor(expertiseName: name);
     }
     for (final name in combatValue) {
       _updateTotalsFor(combatName: name);
     }
     remainingAttributesController.text = remainingAttributePoints.toString();
-    remainingExpertisePointsController.text =
-        remainingExpertisePoints.toString();
+    remainingExpertisePointsController.text = remainingExpertisePoints.toString();
     totalLifeController.text = totalLife.toString();
     initiativeController.text = totalInitiative.toString();
     notifyListeners();
@@ -131,8 +106,8 @@ class AttributesProvider with ChangeNotifier {
     if (delta != 0) {
       _accumulatedDamage += delta;
       _lastInputValue = currentInput;
+      _notifyAndSaveChanges();
       notifyListeners();
-      _saveAllAttributesData();
     }
   }
   int get currentLife {
@@ -161,20 +136,20 @@ class AttributesProvider with ChangeNotifier {
     return totalInitiative;
   }
   int get remainingAttributePoints {
-    final currentLevel = _characterProvider?.level ?? 1;
+    final currentLevel = characterProvider.level;
     final totalAvailable = 2 + (currentLevel * 6);
     final remaining = totalAvailable - spentAttributePoints;
     return remaining;
   }
   int get totalLife {
-    final currentLevel = _characterProvider?.level ?? 1;
+    final currentLevel = characterProvider.level;
     final currentForce = _attributesTotals['Vigor'] ?? 0;
-    final currentLife = _characterProvider?.lifeBase ?? 0;
+    final currentLife = characterProvider.lifeBase;
     final totalLife = currentLife + (currentForce * currentLevel);
     return totalLife;
   }
   int get remainingExpertisePoints {
-    final pointsPerLevel = _characterProvider?.skillPointPerLevel ?? 0;
+    final pointsPerLevel = characterProvider.skillPointPerLevel;
     final totalAvailable = pointsPerLevel;
     final remaining = totalAvailable - spentExpertisePoints;
     return remaining;
@@ -259,7 +234,7 @@ class AttributesProvider with ChangeNotifier {
   }
   @override
   void dispose() {
-    _characterProvider?.removeListener(_recalculateAndNotify);
+    characterProvider.removeListener(_recalculateAndNotify);
     lostLifeController.dispose();
     totalLifeController.dispose();
     initiativeController.dispose();

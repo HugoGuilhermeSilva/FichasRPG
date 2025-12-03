@@ -1,37 +1,12 @@
 import 'package:fichas/screens/record_screen.dart';
-import 'package:fichas/state_management/advantages_provider.dart';
-import 'package:fichas/state_management/power_provider.dart';
+import 'package:fichas/state_management/record_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:fichas/state_management/character_provider.dart';
-import 'package:fichas/state_management/attributes_provider.dart';
 
 void main() {
   runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (context) => AdvantagesProvider()),
-        ChangeNotifierProvider(create: (context) => PowerProvider()),
-        ChangeNotifierProxyProvider<PowerProvider, CharacterProvider>(
-          create: (context) => CharacterProvider(),
-          update: (context, powerProvider, characterProvider) {
-            if (characterProvider == null) return CharacterProvider();
-            characterProvider.setPowerProvider(powerProvider);
-            powerProvider.addListener(characterProvider.recalculateAllStats);
-            return characterProvider;
-          },
-        ),
-        ChangeNotifierProxyProvider<CharacterProvider, AttributesProvider>(
-          create: (context) => AttributesProvider(),
-          update: (context, characterProvider, previousAttributesProvider) {
-            if (previousAttributesProvider == null) {
-            return AttributesProvider();
-            }
-            previousAttributesProvider.update(characterProvider);
-            return previousAttributesProvider;
-          },
-        ),
-      ],
+    ChangeNotifierProvider(
+      create: (context) => RecordProvider(),
       child: const MyApp(),
     ),
   );

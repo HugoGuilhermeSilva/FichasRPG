@@ -1,11 +1,9 @@
 import 'package:fichas/common/drawer.dart';
 import 'package:fichas/models/expertise_fields.dart';
-import 'package:fichas/state_management/character_provider.dart';
-import 'package:fichas/state_management/power_provider.dart';
+import 'package:fichas/state_management/record_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:fichas/models/attribute_fields.dart';
-import 'package:fichas/state_management/attributes_provider.dart';
 import 'package:fichas/data/attribute_and_expertise_data.dart';
 
 class RecordScreen extends StatelessWidget {
@@ -13,12 +11,57 @@ class RecordScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final recordProvider = context.watch<RecordProvider>();
+    final attributesProvider = recordProvider.attributesProvider;
+    final characterProvider = recordProvider.characterProvider;
+    final powerProvider = recordProvider.powerProvider;
+
     return Scaffold(
       drawer: const MyDrawer(),
       backgroundColor: Colors.grey[900],
       appBar: AppBar(
-        title: const Text("Ficha"),
         backgroundColor: Colors.deepPurple,
+        title: DropdownButton<String>(
+          value: recordProvider.activeRecord?.id,
+          hint: Text(
+            recordProvider.activeRecord?.nameRecord ?? 'Crie uma ficha',
+            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
+          ),
+          isExpanded: true,
+          underline: Container(),
+          dropdownColor: Colors.deepPurple[800],
+          style: const TextStyle(color: Colors.white, fontSize: 18),
+          icon: const Icon(Icons.arrow_drop_down, color: Colors.white),
+          items: recordProvider.records.map((record) {
+            return DropdownMenuItem<String>(
+              value: record.id,
+              child: Text(record.nameRecord),
+            );
+          }).toList(),
+          onChanged: (recordId) {
+            if (recordId != null) {
+              recordProvider.selectedRecord(recordId);
+            }
+          },
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add_circle_outline),
+            tooltip: 'Criar Nova Ficha',
+            onPressed: () {
+              _showCreateRecordDialog(context, recordProvider);
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
+            tooltip: 'Deletar Ficha Ativa',
+            onPressed: () {
+              if (recordProvider.activeRecord != null) {
+                _showDeleteRecordDialog(context, recordProvider);
+              }
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
@@ -26,199 +69,189 @@ class RecordScreen extends StatelessWidget {
           children: [
             SingleChildScrollView(
               child: Column(
-              children: [
-                const SizedBox(height: 8),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                  decoration: BoxDecoration(
-                      color: Colors.black,
-                      border: Border.all(
-                        color: Colors.deepPurple,
+                children: [
+                  const SizedBox(height: 8),
+                  Container(
+                    padding:
+                    const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                    decoration: BoxDecoration(
+                        color: Colors.black,
+                        border: Border.all(
+                          color: Colors.deepPurple,
+                        ),
+                        borderRadius: BorderRadius.circular(16)),
+                    width: 410,
+                    height: 600,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Column(
+                        children: attributeNames.map((name) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: AttributeFields(
+                              name: name,
+                              base: attributesProvider.baseControllers[name] ?? TextEditingController(),
+                              bonus: attributesProvider.bonusControllers[name] ?? TextEditingController(),
+                              total: attributesProvider.getAttributeTotalFor(name),
+                            ),
+                          );
+                        }).toList(),
                       ),
-                      borderRadius: BorderRadius.circular(16)),
-                  width: 410,
-                  height: 600,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: Consumer<AttributesProvider>(
-                      builder: (context, provider, child) {
-                        return Column(
-                          children: attributeNames.map((name) {
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 8.0),
-                              child: AttributeFields(
-                                name: name,
-                                base: provider.baseControllers[name] ??
-                                    TextEditingController(),
-                                bonus: provider.bonusControllers[name] ??
-                                    TextEditingController(),
-                                total: provider.getAttributeTotalFor(name),
-                              ),
-                            );
-                          }).toList(),
-                        );
-                      },
                     ),
                   ),
-                ),
-                const SizedBox(height: 8),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: Colors.black,
-                    border: Border.all(
-                      color: Colors.deepPurple,
-                    ),
-                    borderRadius: BorderRadius.circular(16)),
-                  width: 410,
-                  height: 1400,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: Consumer<AttributesProvider>(
-                      builder: (context, provider, child) {
-                        return Column(
-                          children: expertiseNames.map((name) {
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 8.0),
-                              child: ExpertiseFields(
-                                name: name,
-                                bonus: provider.expertiseBonusControllers[name] ??
-                                    TextEditingController(),
-                                total: provider.getExpertiseTotalFor(name),
-                              ),
-                            );
-                          }).toList(),
-                        );
-                      },
+                  const SizedBox(height: 8),
+                  Container(
+                    padding:
+                    const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                    decoration: BoxDecoration(
+                        color: Colors.black,
+                        border: Border.all(
+                          color: Colors.deepPurple,
+                        ),
+                        borderRadius: BorderRadius.circular(16)),
+                    width: 410,
+                    height: 1400,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Column(
+                        children: expertiseNames.map((name) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: ExpertiseFields(
+                              name: name,
+                              bonus: attributesProvider.expertiseBonusControllers[name] ?? TextEditingController(),
+                              total:
+                              attributesProvider.getExpertiseTotalFor(name),
+                            ),
+                          );
+                        }).toList(),
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
               ),
             ),
-          SizedBox(width: 8,),
-          SingleChildScrollView(
-            child: Column(
-              children: [
-                SizedBox(height: 8,),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: Colors.black,
-                    border: Border.all(
-                      color: Colors.deepPurple,
-                    ),
-                    borderRadius: BorderRadius.circular(16)),
-                  width: 410,
-                  height: 800,
-                  child: Padding(padding: const EdgeInsets.all(8),
-                  child: Column(
-                    children: [
-                      Row(
+            const SizedBox(
+              width: 8,
+            ),
+            SingleChildScrollView(
+              child: Column(
+                children: [
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  Container(
+                    padding:
+                    const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                    decoration: BoxDecoration(
+                        color: Colors.black,
+                        border: Border.all(
+                          color: Colors.deepPurple,
+                        ),
+                        borderRadius: BorderRadius.circular(16)),
+                    width: 410,
+                    height: 800,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Column(
                         children: [
-                          Expanded(
-                            child: TextField(
-                              controller: context.read<CharacterProvider>().levelController,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
+                          Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  controller: characterProvider.levelController,
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  decoration: const InputDecoration(
+                                    labelText: 'Nivel Atual',
+                                    labelStyle: TextStyle(
+                                      color: Colors.deepPurple,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.deepPurple,
+                                            width: 2)),
+                                    focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.purpleAccent,
+                                            width: 3)),
+                                  ),
+                                ),
                               ),
-                              decoration: InputDecoration(
-                                labelText: 'Nivel Atual',
-                                labelStyle: TextStyle(
-                                  color: Colors.deepPurple,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Colors.deepPurple,
-                                    width: 2
-                                  )
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Colors.purpleAccent,
-                                    width: 3
-                                  )
+                              const SizedBox(
+                                width: 2,
+                              ),
+                              Expanded(
+                                child: TextField(
+                                  readOnly: true,
+                                  controller: attributesProvider.remainingAttributesController,
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  decoration: const InputDecoration(
+                                    labelText: 'Pontos de Atributo',
+                                    labelStyle: TextStyle(
+                                      color: Colors.deepPurple,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.deepPurple,
+                                            width: 2)),
+                                    focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.purpleAccent,
+                                            width: 3)),
+                                  ),
                                 ),
                               ),
-                            ),
+                            ],
                           ),
-                          SizedBox(width: 2,),
-                          Expanded(
-                            child: TextField(
-                              readOnly: true,
-                              controller: context.read<AttributesProvider>().remainingAttributesController,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              decoration: InputDecoration(
-                                labelText: 'Pontos de Atributo',
-                                labelStyle: TextStyle(
-                                  color: Colors.deepPurple,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Colors.deepPurple,
-                                    width: 2
-                                  )
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Colors.purpleAccent,
-                                    width: 3
-                                  )
-                                ),
-                              ),
-                            ),
+                          const SizedBox(
+                            height: 8,
                           ),
-                        ],
-                      ),
-                      SizedBox(height: 8,),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                              readOnly: true,
-                              controller: context.read<AttributesProvider>().remainingExpertisePointsController,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              decoration: InputDecoration(
-                                labelText: 'Pontos de Pericia',
-                                labelStyle: TextStyle(
-                                  color: Colors.deepPurple,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Colors.deepPurple,
-                                    width: 2
-                                  )
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Colors.purpleAccent,
-                                    width: 3
-                                  )
+                          Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  readOnly: true,
+                                  controller: attributesProvider.remainingExpertisePointsController,
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  decoration: const InputDecoration(
+                                    labelText: 'Pontos de Pericia',
+                                    labelStyle: TextStyle(
+                                      color: Colors.deepPurple,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.deepPurple,
+                                            width: 2)),
+                                    focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.purpleAccent,
+                                            width: 3)),
+                                  ),
                                 ),
                               ),
-                            ),
-                          ),
-                          SizedBox(width: 2,),
-                          Expanded(
-                            child: Consumer<AttributesProvider>(
-                              builder: (context, provider, _) {
-                                return TextField(
+                              const SizedBox(
+                                width: 2,
+                              ),
+                              Expanded(
+                                child: TextField(
                                   readOnly: true,
                                   controller: TextEditingController(
-                                    text: provider.currentLife.toString(),
+                                    text: attributesProvider.currentLife.toString(),
                                   ),
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(
@@ -232,244 +265,185 @@ class RecordScreen extends StatelessWidget {
                                       fontWeight: FontWeight.bold,
                                     ),
                                     enabledBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.deepPurple,
+                                            width: 2)),
+                                    focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.purpleAccent,
+                                            width: 3)),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8,),
+                          Row(
+                            children: [
+                              Expanded(child: TextField(readOnly: true,
+                                  controller: attributesProvider
+                                      .initiativeController,
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(color: Colors.white,
+                                      fontWeight: FontWeight.bold),
+                                  decoration: const InputDecoration(
+                                      labelText: 'Iniciativa',
+                                      labelStyle: TextStyle(
+                                          color: Colors.deepPurple,
+                                          fontWeight: FontWeight.bold),
+                                      enabledBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Colors.deepPurple,
+                                              width: 2)),
+                                      focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Colors.purpleAccent,
+                                              width: 3))))),
+                              const SizedBox(width: 2,),
+                              Expanded(child: TextField(
+                                controller: attributesProvider.lostLifeController,
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(color: Colors.white,
+                                  fontWeight: FontWeight.bold),
+                                  decoration: const InputDecoration(
+                                  labelText: 'Dano Recebido',
+                                  labelStyle: TextStyle(
+                                    color: Colors.deepPurple,
+                                    fontWeight: FontWeight.bold),
+                                    enabledBorder: OutlineInputBorder(
                                       borderSide: BorderSide(
                                         color: Colors.deepPurple,
-                                        width: 2,
-                                      ),
-                                    ),
+                                        width: 2)),
                                     focusedBorder: OutlineInputBorder(
                                       borderSide: BorderSide(
                                         color: Colors.purpleAccent,
-                                        width: 3,
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
+                                        width: 3
+                                      )
+                                    )
+                                )
+                              )),
+                            ],
+                          ),
+                          const SizedBox(height: 8,),
+                          Row(
+                            children: [
+                              Expanded(child: TextField(
+                                  controller: characterProvider.manaController,
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(color: Colors.white,
+                                      fontWeight: FontWeight.bold),
+                                  decoration: const InputDecoration(
+                                      labelText: 'Mana total',
+                                      labelStyle: TextStyle(
+                                          color: Colors.deepPurple,
+                                          fontWeight: FontWeight.bold),
+                                      enabledBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Colors.deepPurple,
+                                              width: 2)),
+                                      focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Colors.purpleAccent,
+                                              width: 3))))),
+                              const SizedBox(width: 2,),
+                              Expanded(child: TextField(
+                                controller: powerProvider.displacementController,
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                                    decoration: const InputDecoration(
+                                    labelText: 'Deslocamento',
+                                    labelStyle: TextStyle(
+                                        color: Colors.deepPurple,
+                                        fontWeight: FontWeight.bold),
+                                    enabledBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.deepPurple,
+                                            width: 2)),
+                                    focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.purpleAccent,
+                                            width: 3
+                                        )
+                                    ))
+                              )),
+                            ],
                           ),
                         ],
                       ),
-                      SizedBox(height: 8,),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                              readOnly: true,
-                              controller: context.read<AttributesProvider>().initiativeController,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              decoration: InputDecoration(
-                                labelText: 'Iniciativa',
-                                labelStyle: TextStyle(
-                                  color: Colors.deepPurple,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Colors.deepPurple,
-                                        width: 2
-                                    )
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Colors.purpleAccent,
-                                        width: 3
-                                    )
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: 2,),
-                          Expanded(
-                            child: TextField(
-                              controller: context.read<AttributesProvider>().lostLifeController,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              decoration: InputDecoration(
-                                labelText: 'Dano Recebido',
-                                labelStyle: TextStyle(
-                                  color: Colors.deepPurple,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Colors.deepPurple,
-                                        width: 2
-                                    )
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Colors.purpleAccent,
-                                        width: 3
-                                    )
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 8,),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                              controller: context.read<CharacterProvider>().manaController,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              decoration: InputDecoration(
-                                labelText: 'Mana total',
-                                labelStyle: TextStyle(
-                                  color: Colors.deepPurple,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Colors.deepPurple,
-                                    width: 2
-                                  )
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Colors.purpleAccent,
-                                    width: 3
-                                  )
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: 2,),
-                          Expanded(
-                            child: TextField(
-                              controller: context.read<PowerProvider>().displacementController,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              decoration: InputDecoration(
-                                labelText: 'Deslocamento',
-                                labelStyle: TextStyle(
-                                  color: Colors.deepPurple,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Colors.deepPurple,
-                                        width: 2
-                                    )
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Colors.purpleAccent,
-                                        width: 3
-                                    )
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 8,),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                              controller: context.read<PowerProvider>().totalDamageController,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              decoration: InputDecoration(
-                                labelText: 'Graus de dano',
-                                labelStyle: TextStyle(
-                                  color: Colors.deepPurple,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Colors.deepPurple,
-                                        width: 2
-                                    )
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Colors.purpleAccent,
-                                        width: 3
-                                    )
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: 2,),
-                          Expanded(
-                            child: TextField(
-                              controller: context.read<PowerProvider>().baseDamageController,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              decoration: InputDecoration(
-                                labelText: 'Dano Fixo',
-                                labelStyle: TextStyle(
-                                  color: Colors.deepPurple,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Colors.deepPurple,
-                                        width: 2
-                                    )
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Colors.purpleAccent,
-                                        width: 3
-                                    )
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Consumer<AttributesProvider>(
-                        builder: (context, provider, child) {
-                          return Column(
-                            children: combatValue.map((name) {
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                child: ExpertiseFields(
-                                  name: name,
-                                  bonus: provider.combatBonusControllers[name] ??
-                                      TextEditingController(),
-                                  total: provider.getCombatTotalFor(name),
-                                ),
-                              );
-                            }).toList(),
-                          );
-                        },
-                      ),
-                    ],
-                  )
+                    ),
                   ),
-                )
-              ],
+                ],
+              ),
             ),
-          )
-        ]
+          ],
         ),
       ),
+    );
+  }
+  void _showCreateRecordDialog(BuildContext context, RecordProvider provider) {
+    final TextEditingController nameController = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Colors.grey[850],
+          title: const Text('Criar Nova Ficha'),
+          content: TextField(
+            controller: nameController,
+            autofocus: true,
+            decoration: const InputDecoration(hintText: 'Nome da Ficha'),
+            onSubmitted: (value) {
+              if (nameController.text.isNotEmpty) {
+                provider.createNewRecord(name: nameController.text);
+                Navigator.of(context).pop();
+              }
+            },
+          ),
+          actions: [
+            TextButton(
+              child: const Text('Cancelar'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            TextButton(
+              child: const Text('Criar'),
+              onPressed: () {
+                if (nameController.text.isNotEmpty) {
+                  provider.createNewRecord(name: nameController.text);
+                  Navigator.of(context).pop();
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+  void _showDeleteRecordDialog(BuildContext context, RecordProvider provider) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Colors.grey[850],
+          title: const Text('Deletar Ficha?'),
+          content: Text(
+              'Quer deletar a ficha: "${provider.activeRecord!.nameRecord}"? Esta ação não pode ser desfeita.\nPow cara, me deleta n. '),
+          actions: [
+            TextButton(
+              child: const Text('Cancelar <3'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            TextButton(
+              style: TextButton.styleFrom(foregroundColor: Colors.red),
+              child: const Text('Deletar T-T'),
+              onPressed: () {
+                provider.deleteRecord(provider.activeRecord!.id);
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
