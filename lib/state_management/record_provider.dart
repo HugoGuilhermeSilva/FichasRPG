@@ -50,6 +50,7 @@ class RecordProvider with ChangeNotifier {
         updateActiveRecordData(attributesData: newData);
       }
     );
+    characterProvider.setAttributesProvider(attributesProvider);
     powerProvider.setCharacterProvider(characterProvider);
     loadAllRecords();
   }

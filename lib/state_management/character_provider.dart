@@ -1,3 +1,4 @@
+import 'package:fichas/state_management/attributes_provider.dart';
 import 'package:fichas/state_management/power_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:fichas/data/archetype_data.dart';
@@ -5,6 +6,8 @@ import 'package:fichas/models/record_model.dart';
 
 class CharacterProvider with ChangeNotifier {
   final PowerProvider powerProvider;
+  late final AttributesProvider attributesProvider;
+  bool _isRecalculatingFromAttributes = false;
   final Function({
   int? characterLevel,
   String? archetypeName,
@@ -18,10 +21,16 @@ class CharacterProvider with ChangeNotifier {
   int finalLife = 0;
   int baseAttributePoints = 0;
   int baseXp = 0;
+  int bonusXp1 = 0;
+  int bonusXp2 = 0;
   int lifeBase = 0;
   int skillPointPerLevel = 0;
   int modifierDisplacementLevel = 5;
   int advantagesAvailable = 0;
+  int maxAttacks = 1;
+  int bonusWillForce = 0;
+  int bonusDodge = 0;
+  int bonusBlock = 0;
   String? activeArchetype;
   List<String> _selectedSkillNames = [];
   List<String> get selectedSkillNames => _selectedSkillNames;
@@ -29,6 +38,15 @@ class CharacterProvider with ChangeNotifier {
   CharacterProvider({required this.powerProvider, this.onDataChanged}) {
     levelController.addListener(_handleDataChangeAndSave);
     powerProvider.addListener(recalculateAllStats);
+  }
+  void setAttributesProvider(AttributesProvider aProvider) {
+    attributesProvider = aProvider;
+    attributesProvider.addListener(() {
+      if (_isRecalculatingFromAttributes) return;
+      _isRecalculatingFromAttributes = true;
+      recalculateAllStats();
+      _isRecalculatingFromAttributes = false;
+    });
   }
   void updateFromRecord(Record? record) {
     levelController.removeListener(_handleDataChangeAndSave);
@@ -69,8 +87,13 @@ class CharacterProvider with ChangeNotifier {
     lifeBase = 0;
     skillPointPerLevel = 0;
     baseXp = 0;
+    bonusXp1 = 0;
+    bonusXp2 = 0;
     baseAttributePoints = 2;
     baseMana = 0;
+    bonusWillForce = 0;
+    bonusDodge = 0;
+    bonusBlock = 0;
 
     if (_selectedSkillNames.isNotEmpty) {
       for (String skillName in _selectedSkillNames) {
@@ -88,30 +111,51 @@ class CharacterProvider with ChangeNotifier {
     }
     if (activeArchetype != null) {
       final archetypeData = allArchetypes.firstWhere((arch) => arch.name == activeArchetype);
-      lifeBase = archetypeData.baseHp * level;
       skillPointPerLevel = archetypeData.skillPointsPerLevel * level;
-      baseXp = archetypeData.baseXp * level;
       baseAttributePoints = archetypeData.attributePoints * level + 2;
       baseMana = archetypeData.mana * level;
     }
     advantagesAvailable = (level / 2).round();
     modifierDisplacementLevel = 5;
+    maxAttacks = 1;
     for (String skillName in _selectedSkillNames) {
       if (skillName == 'Prodígio') {
-        baseXp = 125 * level;
+        bonusXp1 = 25;
       }
       if(skillName == 'Estudante'){
         int extraAdvantages = 1 + (level / 5).round();
         advantagesAvailable = (level / 2).round() + extraAdvantages;
       }
+      if(skillName == 'Força do Conhecimento'){
+        int bonusIntAttacks = int.tryParse(attributesProvider.getAttributeTotalFor('Inteligencia')) ?? 0;
+        maxAttacks = 1 + (bonusIntAttacks / 5).round();
+      }
+      if(skillName == 'Busca por Conhecimento'){
+        int intelligenceLifeBonus = int.tryParse(attributesProvider.getAttributeTotalFor('Inteligencia')) ?? 0;
+        lifeBase = intelligenceLifeBonus;
+      }
+      if (skillName == 'Aprendiz'){
+        bonusXp2 = 50;
+      }
+      if (skillName == 'Mente Brilhante'){
+        int charismaBonus = int.tryParse(attributesProvider.getAttributeTotalFor('Carisma')) ?? 0;
+        bonusWillForce = charismaBonus;
+      }
       if(skillName == 'Velocista'){
         modifierDisplacementLevel = 15;
       }
     }
+    if (activeArchetype != null) {
+      final archetypeData = allArchetypes.firstWhere((arch) => arch.name == activeArchetype);
+      finalLife = (archetypeData.baseHp + lifeBase) * level;
+      baseXp = (archetypeData.baseXp + bonusXp1 + bonusXp2) * level;
+    }
     manaController.text = baseMana.toString();
     int currentXp = baseXp - powerProvider.totalPowersCost;
     xpController.text = currentXp.toString();
-    notifyListeners();
+    if (!_isRecalculatingFromAttributes) {
+      notifyListeners();
+    }
   }
 
   @override
