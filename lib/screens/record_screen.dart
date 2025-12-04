@@ -291,15 +291,15 @@ class RecordScreen extends StatelessWidget {
                                   decoration: const InputDecoration(
                                       labelText: 'Iniciativa',
                                       labelStyle: TextStyle(
-                                          color: Colors.deepPurple,
+                                          color: Colors.yellow,
                                           fontWeight: FontWeight.bold),
                                       enabledBorder: OutlineInputBorder(
                                           borderSide: BorderSide(
-                                              color: Colors.deepPurple,
+                                              color: Colors.yellow,
                                               width: 2)),
                                       focusedBorder: OutlineInputBorder(
                                           borderSide: BorderSide(
-                                              color: Colors.purpleAccent,
+                                              color: Colors.yellow,
                                               width: 3))))),
                               const SizedBox(width: 2,),
                               Expanded(child: TextField(
@@ -338,66 +338,156 @@ class RecordScreen extends StatelessWidget {
                                   decoration: const InputDecoration(
                                       labelText: 'Mana total',
                                       labelStyle: TextStyle(
-                                          color: Colors.deepPurple,
+                                          color: Colors.blueAccent,
                                           fontWeight: FontWeight.bold),
                                       enabledBorder: OutlineInputBorder(
                                           borderSide: BorderSide(
-                                              color: Colors.deepPurple,
+                                              color: Colors.blueAccent,
                                               width: 2)),
                                       focusedBorder: OutlineInputBorder(
                                           borderSide: BorderSide(
-                                              color: Colors.purpleAccent,
+                                              color: Colors.blueAccent,
                                               width: 3))))),
                               const SizedBox(width: 2,),
-                              Expanded(child: TextField(
-                                readOnly: true,
-                                controller: powerProvider.displacementController,
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(color: Colors.white,
-                                    fontWeight: FontWeight.bold),
-                                    decoration: const InputDecoration(
+                              Expanded(
+                                child: TextField(
+                                  readOnly: true,
+                                  key: ValueKey(powerProvider.totalDisplacement),
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  decoration: InputDecoration(
                                     labelText: 'Deslocamento',
-                                    labelStyle: TextStyle(
-                                        color: Colors.deepPurple,
-                                        fontWeight: FontWeight.bold),
-                                    enabledBorder: OutlineInputBorder(
+                                    hintText: '${powerProvider.totalDisplacement}m',
+                                    hintStyle: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                                    labelStyle: const TextStyle(
+                                      color: Colors.yellowAccent,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    enabledBorder: const OutlineInputBorder(
                                         borderSide: BorderSide(
-                                            color: Colors.deepPurple,
+                                            color: Colors.yellowAccent,
                                             width: 2)),
-                                    focusedBorder: OutlineInputBorder(
+                                    focusedBorder: const OutlineInputBorder(
                                         borderSide: BorderSide(
-                                            color: Colors.purpleAccent,
-                                            width: 3
-                                        )
-                                    ))
-                              )),
+                                            color: Colors.yellowAccent,
+                                            width: 3)),
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
                           SizedBox(height: 8,),
                           Row(
                             children: [
-                              Expanded(child: TextField(
+                              Expanded(
+                                child: TextField(
                                   readOnly: true,
-                                  controller: powerProvider.totalDamageController,
+                                  key: ValueKey(powerProvider.turnDamage),
                                   textAlign: TextAlign.center,
-                                  style: const TextStyle(color: Colors.white,
-                                      fontWeight: FontWeight.bold),
-                                  decoration: const InputDecoration(
-                                      labelText: 'Graus de Dano',
-                                      labelStyle: TextStyle(
-                                          color: Colors.deepPurple,
-                                          fontWeight: FontWeight.bold),
-                                      enabledBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: Colors.deepPurple,
-                                              width: 2)),
-                                      focusedBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: Colors.purpleAccent,
-                                              width: 3
-                                          )
-                                      ))
-                              )),
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  decoration: InputDecoration(
+                                    labelText: 'Dano por turno',
+                                    hintText: '${powerProvider.turnDamage}D${powerProvider.turnDamageDegree}',
+                                    hintStyle: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                                    labelStyle: const TextStyle(
+                                      color: Colors.deepPurpleAccent,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    enabledBorder: const OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.deepPurpleAccent,
+                                            width: 2)),
+                                    focusedBorder: const OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.deepPurpleAccent,
+                                            width: 3)),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 2,),
+                              Expanded(
+                                child: TextField(
+                                  readOnly: true,
+                                  key: ValueKey(powerProvider.defendLevel),
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  decoration: InputDecoration(
+                                    labelText: 'Defender',
+                                    hintText: '${powerProvider.defendLevel} RD${powerProvider.rdLevel}',
+                                    hintStyle: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                                    labelStyle: const TextStyle(
+                                      color: Colors.brown,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    enabledBorder: const OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.brown,
+                                            width: 2)),
+                                    focusedBorder: const OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.brown,
+                                            width: 3)),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 8,),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  readOnly: true,
+                                  key: ValueKey(powerProvider.totalDagame),
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  decoration: InputDecoration(
+                                    labelText: 'Dano',
+                                    hintText: '${powerProvider.totalDagame.toString()}D${powerProvider.stepDamage.toString()}',
+                                    hintStyle: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                                    labelStyle: const TextStyle(
+                                      color: Colors.purpleAccent,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    enabledBorder: const OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.purpleAccent,
+                                            width: 2)),
+                                    focusedBorder: const OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.purpleAccent,
+                                            width: 3)),
+                                  ),
+                                ),
+                              ),
                               SizedBox(width: 2,),
                               Expanded(child: TextField(
                                   readOnly: true,
@@ -406,13 +496,13 @@ class RecordScreen extends StatelessWidget {
                                   style: const TextStyle(color: Colors.white,
                                       fontWeight: FontWeight.bold),
                                   decoration: const InputDecoration(
-                                      labelText: 'Dano Base',
+                                      labelText: 'Dano Fixo',
                                       labelStyle: TextStyle(
-                                          color: Colors.deepPurple,
+                                          color: Colors.purpleAccent,
                                           fontWeight: FontWeight.bold),
                                       enabledBorder: OutlineInputBorder(
                                           borderSide: BorderSide(
-                                              color: Colors.deepPurple,
+                                              color: Colors.purpleAccent,
                                               width: 2)),
                                       focusedBorder: OutlineInputBorder(
                                           borderSide: BorderSide(
@@ -421,6 +511,76 @@ class RecordScreen extends StatelessWidget {
                                           )
                                       ))
                               )),
+                            ],
+                          ),
+                          SizedBox(height: 8,),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  readOnly: true,
+                                  key: ValueKey(powerProvider.totalHeal),
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  decoration: InputDecoration(
+                                    labelText: 'Graus de cura',
+                                    hintText: '${powerProvider.totalHeal.toString()}D${powerProvider.stepHeal.toString()}',
+                                    hintStyle: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                                    labelStyle: const TextStyle(
+                                      color: Colors.greenAccent,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    enabledBorder: const OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.greenAccent,
+                                            width: 2)),
+                                    focusedBorder: const OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.greenAccent,
+                                            width: 3)),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 2,),
+                              Expanded(
+                                child: TextField(
+                                  readOnly: true,
+                                  key: ValueKey(powerProvider.baseHeal),
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  decoration: InputDecoration(
+                                    labelText: 'Cura fixa',
+                                    hintText: powerProvider.baseHeal.toString(),
+                                    hintStyle: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                                    labelStyle: const TextStyle(
+                                      color: Colors.greenAccent,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    enabledBorder: const OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.greenAccent,
+                                            width: 2)),
+                                    focusedBorder: const OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.greenAccent,
+                                            width: 3)),
+                                  ),
+                                ),
+                              ),
                             ],
                           )
                         ],

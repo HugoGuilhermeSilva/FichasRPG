@@ -8,8 +8,6 @@ class PowerProvider with ChangeNotifier{
   CharacterProvider? characterProvider;
   Map<String, int> _selectedPowers = {};
   Map<String, int> get selectedPowers => _selectedPowers;
-  final TextEditingController displacementController = TextEditingController();
-  final TextEditingController totalDamageController = TextEditingController();
   final TextEditingController baseDamageController = TextEditingController();
   final Function(Map<String, int>)? onDataChanged;
   bool _isRecalculatingFromCharacter = false;
@@ -70,11 +68,51 @@ class PowerProvider with ChangeNotifier{
       _selectedPowers.remove(powerName);
     }
   }
+  int get totalHeal{
+    final int heal = getPowerLevel('Cura');
+    final int totalHeal = heal;
+    return totalHeal;
+  }
+  int get baseHeal{
+    final int baseHealFromArchetype = characterProvider?.healBonus ?? 0;
+    final baseHeal = baseHealFromArchetype;
+    return baseHeal;
+  }
+  int get stepHeal{
+    final int bonusStepHealFromArchetype = characterProvider?.stepHeal ?? 0;
+    final stepHeal = bonusStepHealFromArchetype + 6;
+    return stepHeal;
+  }
+  int get stepDamage{
+    final int stepDamage = 6;
+    return stepDamage;
+  }
   int get totalDisplacement {
     const int baseDisplacement = 10;
     final moveLevel = getPowerLevel('Mover-se');
     final int modifierDisplacementLevel = characterProvider?.modifierDisplacementLevel ?? 5;
-    return baseDisplacement + (modifierDisplacementLevel * moveLevel);
+    final totalDisplacement = baseDisplacement + (modifierDisplacementLevel * moveLevel);
+    return totalDisplacement;
+  }
+  int get turnDamage{
+    final initialTurnDamage = getPowerLevel('Dano por Turno');
+    final turnDamage = initialTurnDamage;
+    return turnDamage;
+  }
+  int get turnDamageDegree{
+    final turnDamageDC = 4;
+    final turnDamageDegree = turnDamageDC;
+    return turnDamageDegree;
+  }
+  int get defendLevel{
+    final defend = getPowerLevel('Defender');
+    final defendLevel = defend;
+    return defendLevel;
+  }
+  int get rdLevel{
+    final rd = 2;
+    final rdLevel = rd;
+    return rdLevel;
   }
   int get totalDagame{
     final damage = getPowerLevel('Dano');
@@ -105,8 +143,6 @@ class PowerProvider with ChangeNotifier{
   }
 
   void _updateCalculatedValues() {
-    displacementController.text = totalDisplacement.toString();
-    totalDamageController.text = totalDagame.toString();
     baseDamageController.text = baseDamage.toString();
     if (!_isRecalculatingFromCharacter) {
       notifyListeners();
@@ -124,8 +160,6 @@ class PowerProvider with ChangeNotifier{
   @override
   void dispose() {
     characterProvider?.removeListener(_onCharacterProviderChanged);
-    displacementController.dispose();
-    totalDamageController.dispose();
     baseDamageController.dispose();
     super.dispose();
   }

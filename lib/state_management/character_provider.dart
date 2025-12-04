@@ -31,6 +31,8 @@ class CharacterProvider with ChangeNotifier {
   int bonusWillForce = 0;
   int bonusDodge = 0;
   int bonusBlock = 0;
+  int healBonus = 0;
+  int stepHeal = 0;
   String? activeArchetype;
   List<String> _selectedSkillNames = [];
   List<String> get selectedSkillNames => _selectedSkillNames;
@@ -94,6 +96,8 @@ class CharacterProvider with ChangeNotifier {
     bonusWillForce = 0;
     bonusDodge = 0;
     bonusBlock = 0;
+    healBonus = 0;
+    stepHeal = 0;
 
     if (_selectedSkillNames.isNotEmpty) {
       for (String skillName in _selectedSkillNames) {
@@ -140,6 +144,10 @@ class CharacterProvider with ChangeNotifier {
       if (skillName == 'Mente Brilhante'){
         int charismaBonus = int.tryParse(attributesProvider.getAttributeTotalFor('Carisma')) ?? 0;
         bonusWillForce = charismaBonus;
+      }
+      if(skillName == 'Curandeiros'){
+        healBonus = powerProvider.getPowerLevel('Cura');
+        stepHeal = 2;
       }
       if(skillName == 'Velocista'){
         modifierDisplacementLevel = 15;
