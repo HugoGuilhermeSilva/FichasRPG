@@ -17,15 +17,21 @@ class PowerCard extends StatefulWidget {
 }
 
 class _PowerCardState extends State<PowerCard> {
+  late final ScrollController _scrollController;
   bool _isSelected = false;
   int _level = 0;
 
   @override
   void initState() {
+    _scrollController = ScrollController();
     super.initState();
     _syncStateFromProvider();
   }
-
+  @override
+  void dispose(){
+    _scrollController.dispose();
+    super.dispose();
+  }
   @override
   void didUpdateWidget(covariant PowerCard oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -64,7 +70,6 @@ class _PowerCardState extends State<PowerCard> {
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
-              // --- SEÇÃO SUPERIOR: NOME, CUSTO E CHECKBOX ---
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -112,8 +117,10 @@ class _PowerCardState extends State<PowerCard> {
               const SizedBox(height: 8),
               Expanded(
                 child: Scrollbar(
+                  controller: _scrollController,
                   thumbVisibility: true,
                   child: SingleChildScrollView(
+                    controller: _scrollController,
                     child: Padding(
                       padding: const EdgeInsets.only(right: 8.0),
                       child: Text(

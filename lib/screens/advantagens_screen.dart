@@ -40,7 +40,7 @@ class AdvantagesScreen extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(
                     horizontal: 16.0, vertical: 8.0),
                   child: Text(
-                    'Disponível = ${((characterProvider.level / 2).round() - advantagesProvider.selectedAdvantages.length)}',
+                    'Disponível = ${(characterProvider.advantagesAvailable - advantagesProvider.selectedAdvantages.length)}',
                     style: const TextStyle(color: Colors.white, fontSize: 22),
                     textAlign: TextAlign.center,
                   ),

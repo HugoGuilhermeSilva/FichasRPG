@@ -72,8 +72,7 @@ class RecordScreen extends StatelessWidget {
                 children: [
                   const SizedBox(height: 8),
                   Container(
-                    padding:
-                    const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
                     decoration: BoxDecoration(
                         color: Colors.black,
                         border: Border.all(
@@ -250,27 +249,31 @@ class RecordScreen extends StatelessWidget {
                               Expanded(
                                 child: TextField(
                                   readOnly: true,
-                                  controller: TextEditingController(
-                                    text: attributesProvider.currentLife.toString(),
-                                  ),
+                                  key: ValueKey(attributesProvider.currentLife),
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,
                                   ),
-                                  decoration: const InputDecoration(
+                                  decoration: InputDecoration(
                                     labelText: 'Vida Atual',
-                                    labelStyle: TextStyle(
-                                      color: Colors.deepPurple,
+                                    hintText: attributesProvider.currentLife.toString(),
+                                    hintStyle: const TextStyle(
+                                      color: Colors.white,
                                       fontWeight: FontWeight.bold,
                                     ),
-                                    enabledBorder: OutlineInputBorder(
+                                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                                    labelStyle: const TextStyle(
+                                      color: Colors.greenAccent,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    enabledBorder: const OutlineInputBorder(
                                         borderSide: BorderSide(
-                                            color: Colors.deepPurple,
+                                            color: Colors.greenAccent,
                                             width: 2)),
-                                    focusedBorder: OutlineInputBorder(
+                                    focusedBorder: const OutlineInputBorder(
                                         borderSide: BorderSide(
-                                            color: Colors.purpleAccent,
+                                            color: Colors.greenAccent,
                                             width: 3)),
                                   ),
                                 ),
@@ -281,8 +284,7 @@ class RecordScreen extends StatelessWidget {
                           Row(
                             children: [
                               Expanded(child: TextField(readOnly: true,
-                                  controller: attributesProvider
-                                      .initiativeController,
+                                  controller: attributesProvider.initiativeController,
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(color: Colors.white,
                                       fontWeight: FontWeight.bold),
@@ -308,15 +310,15 @@ class RecordScreen extends StatelessWidget {
                                   decoration: const InputDecoration(
                                   labelText: 'Dano Recebido',
                                   labelStyle: TextStyle(
-                                    color: Colors.deepPurple,
+                                    color: Colors.redAccent,
                                     fontWeight: FontWeight.bold),
                                     enabledBorder: OutlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: Colors.deepPurple,
+                                        color: Colors.redAccent,
                                         width: 2)),
                                     focusedBorder: OutlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: Colors.purpleAccent,
+                                        color: Colors.red,
                                         width: 3
                                       )
                                     )
@@ -328,6 +330,7 @@ class RecordScreen extends StatelessWidget {
                           Row(
                             children: [
                               Expanded(child: TextField(
+                                readOnly: true,
                                   controller: characterProvider.manaController,
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(color: Colors.white,
@@ -347,6 +350,7 @@ class RecordScreen extends StatelessWidget {
                                               width: 3))))),
                               const SizedBox(width: 2,),
                               Expanded(child: TextField(
+                                readOnly: true,
                                 controller: powerProvider.displacementController,
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(color: Colors.white,
@@ -369,7 +373,84 @@ class RecordScreen extends StatelessWidget {
                               )),
                             ],
                           ),
+                          SizedBox(height: 8,),
+                          Row(
+                            children: [
+                              Expanded(child: TextField(
+                                  readOnly: true,
+                                  controller: powerProvider.totalDamageController,
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(color: Colors.white,
+                                      fontWeight: FontWeight.bold),
+                                  decoration: const InputDecoration(
+                                      labelText: 'Graus de Dano',
+                                      labelStyle: TextStyle(
+                                          color: Colors.deepPurple,
+                                          fontWeight: FontWeight.bold),
+                                      enabledBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Colors.deepPurple,
+                                              width: 2)),
+                                      focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Colors.purpleAccent,
+                                              width: 3
+                                          )
+                                      ))
+                              )),
+                              SizedBox(width: 2,),
+                              Expanded(child: TextField(
+                                  readOnly: true,
+                                  controller: powerProvider.baseDamageController,
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(color: Colors.white,
+                                      fontWeight: FontWeight.bold),
+                                  decoration: const InputDecoration(
+                                      labelText: 'Dano Base',
+                                      labelStyle: TextStyle(
+                                          color: Colors.deepPurple,
+                                          fontWeight: FontWeight.bold),
+                                      enabledBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Colors.deepPurple,
+                                              width: 2)),
+                                      focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Colors.purpleAccent,
+                                              width: 3
+                                          )
+                                      ))
+                              )),
+                            ],
+                          )
                         ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 8,),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                    decoration: BoxDecoration(
+                        color: Colors.black,
+                        border: Border.all(
+                          color: Colors.deepPurple,
+                        ),
+                        borderRadius: BorderRadius.circular(16)),
+                    width: 410,
+                    height: 600,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Column(
+                        children: combatValue.map((name) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: ExpertiseFields(
+                              name: name,
+                              bonus: attributesProvider.combatBonusControllers[name] ?? TextEditingController(),
+                              total: attributesProvider.getCombatTotalFor(name),
+                            ),
+                          );
+                        }).toList(),
                       ),
                     ),
                   ),

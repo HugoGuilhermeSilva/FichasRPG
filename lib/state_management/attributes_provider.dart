@@ -15,10 +15,6 @@ class AttributesProvider with ChangeNotifier {
   final TextEditingController remainingExpertisePointsController = TextEditingController();
   final TextEditingController totalLifeController = TextEditingController();
   final TextEditingController lostLifeController = TextEditingController();
-
-  int _accumulatedDamage = 0;
-  int _lastInputValue = 0;
-
   final Map<String, int> _attributesTotals = {};
   final Map<String, int> _expertiseTotals = {};
   final Map<String, int> _combatTotals = {};
@@ -39,9 +35,7 @@ class AttributesProvider with ChangeNotifier {
     for (final name in combatValue) {
       combatBonusControllers[name]?.text = data['combat_bonus_$name'] ?? '';
     }
-    _accumulatedDamage = data['accumulated_damage'] ?? 0;
-    lostLifeController.text = (data['lost_life_input'] ?? 0).toString();
-    _lastInputValue = int.tryParse(lostLifeController.text) ?? 0;
+    lostLifeController.text = (data['lost_life_input'] ?? '').toString();
     _recalculateAndNotify();
   }
   void _notifyAndSaveChanges(){
@@ -56,8 +50,7 @@ class AttributesProvider with ChangeNotifier {
     for (final name in combatValue){
       dataToSave['combat_bonus_$name'] = combatBonusControllers[name]?.text ?? '';
     }
-    dataToSave['accumulated_damage'] = _accumulatedDamage;
-    dataToSave['lost_life_input'] = _lastInputValue;
+    dataToSave['lost_life_input'] = lostLifeController.text;
     onDataChanged?.call(dataToSave);
   }
   void _initializeControllers() {
@@ -82,7 +75,7 @@ class AttributesProvider with ChangeNotifier {
       _combatTotals[name] = 0;
       combatBonusControllers[name]!.addListener(listener);
     }
-    lostLifeController.addListener(_updateDamage);
+    lostLifeController.addListener(listener);
   }
   void _recalculateAndNotify(){
     for (final name in attributeNames) {
@@ -100,19 +93,10 @@ class AttributesProvider with ChangeNotifier {
     initiativeController.text = totalInitiative.toString();
     notifyListeners();
   }
-  void _updateDamage() {
-    final currentInput = int.tryParse(lostLifeController.text) ?? 0;
-    final delta = currentInput - _lastInputValue;
-    if (delta != 0) {
-      _accumulatedDamage += delta;
-      _lastInputValue = currentInput;
-      _notifyAndSaveChanges();
-      notifyListeners();
-    }
-  }
   int get currentLife {
     final total = totalLife;
-    final remaining = total - _accumulatedDamage;
+    final damageTaken = int.tryParse(lostLifeController.text) ?? 0;
+    final remaining = total - damageTaken;
     return remaining.clamp(0, total);
   }
   int get spentAttributePoints {

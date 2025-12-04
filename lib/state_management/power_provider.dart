@@ -1,18 +1,26 @@
 import 'package:fichas/data/power_model.dart';
+import 'package:fichas/state_management/character_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:fichas/data/power_list.dart';
 import 'package:fichas/models/record_model.dart';
 
 class PowerProvider with ChangeNotifier{
+  CharacterProvider? characterProvider;
   Map<String, int> _selectedPowers = {};
   Map<String, int> get selectedPowers => _selectedPowers;
   final TextEditingController displacementController = TextEditingController();
   final TextEditingController totalDamageController = TextEditingController();
   final TextEditingController baseDamageController = TextEditingController();
   final Function(Map<String, int>)? onDataChanged;
+  bool _isRecalculatingFromCharacter = false;
 
-  PowerProvider({this.onDataChanged}) {
+  PowerProvider({this.onDataChanged,this.characterProvider}) {
     _updateCalculatedValues();
+  }
+  void setCharacterProvider(CharacterProvider provider) {
+    characterProvider?.removeListener(_onCharacterProviderChanged);
+    characterProvider = provider;
+    characterProvider?.addListener(_onCharacterProviderChanged);
   }
   void updateFromRecord(Record? record){
     _selectedPowers = Map<String, int>.from(record?.powersData ?? {});
@@ -65,7 +73,8 @@ class PowerProvider with ChangeNotifier{
   int get totalDisplacement {
     const int baseDisplacement = 10;
     final moveLevel = getPowerLevel('Mover-se');
-    return baseDisplacement + (5 * moveLevel);
+    final int modifierDisplacementLevel = characterProvider?.modifierDisplacementLevel ?? 5;
+    return baseDisplacement + (modifierDisplacementLevel * moveLevel);
   }
   int get totalDagame{
     final damage = getPowerLevel('Dano');
@@ -99,13 +108,22 @@ class PowerProvider with ChangeNotifier{
     displacementController.text = totalDisplacement.toString();
     totalDamageController.text = totalDagame.toString();
     baseDamageController.text = baseDamage.toString();
-    notifyListeners();
+    if (!_isRecalculatingFromCharacter) {
+      notifyListeners();
+    }
   }
   void notifyExternalChange() {
     _updateCalculatedValues();
   }
+  void _onCharacterProviderChanged() {
+    if (_isRecalculatingFromCharacter) return;
+    _isRecalculatingFromCharacter = true;
+    _updateCalculatedValues();
+    _isRecalculatingFromCharacter = false;
+  }
   @override
   void dispose() {
+    characterProvider?.removeListener(_onCharacterProviderChanged);
     displacementController.dispose();
     totalDamageController.dispose();
     baseDamageController.dispose();

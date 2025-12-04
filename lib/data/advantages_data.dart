@@ -4,7 +4,7 @@ List<Advantage> allAdvantages = [
   Advantage(name: 'Abusador do Medo', description: 'O personagem causa 1/2 do dano a mais quando ataca um alvo que esteja intimidado ou amedrontado por ele.'),
   Advantage(name: 'Agil', description: 'Permite substituir o atributo força por agilidade em todas as pericias que usem força. Tambem permite somar 1/2 nivel em iniciativa. '),
   Advantage(name: 'Alquimista', description: 'Permine que o personagem possa criar itens dentro do combate, os itens são definidos pela criatividade do player e tem o balanceamento do mestre.'),
-  Advantage(name: 'Alquimista', description: 'Sempre que o usuário cria algo ele recebe um dado de sorte pelo resto da sessão. Quem usar o item também pode usar o dado, porém cada criação só tem 1 dado.'),
+  Advantage(name: 'Artesão', description: 'Sempre que o usuário cria algo ele recebe um dado de sorte pelo resto da sessão. Quem usar o item também pode usar o dado, porém cada criação só tem 1 dado.'),
   Advantage(name: 'Alvo Marcado', description: 'Caso voce consiga rastrear um alvo voce causa 1/2 do dano a mais durante a cena.'),
   Advantage(name: 'Ambidestria', description: 'Permite atacar 3x ao inves de uma com seu ataque padrão. Tamebm permite utilizar 2 armas no lugar de um acessório ao invés de 1. '),
   Advantage(name: 'Anjo da Morte', description: 'Todo o dano do personagem passa a ser letal e caso o personagem cause dano letal o alvo não fica em death save, ele morre instantaneamente.'),

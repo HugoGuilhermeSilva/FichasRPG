@@ -28,7 +28,7 @@ class RecordProvider with ChangeNotifier {
     powerProvider = PowerProvider(
       onDataChanged: (newData) {
         updateActiveRecordData(powersData: newData);
-      }
+      },
     );
     characterProvider = CharacterProvider(
       powerProvider: powerProvider,
@@ -50,6 +50,7 @@ class RecordProvider with ChangeNotifier {
         updateActiveRecordData(attributesData: newData);
       }
     );
+    powerProvider.setCharacterProvider(characterProvider);
     loadAllRecords();
   }
   Future<void> loadAllRecords() async {
