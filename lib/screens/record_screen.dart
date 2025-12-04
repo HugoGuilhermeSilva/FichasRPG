@@ -1,4 +1,5 @@
 import 'package:fichas/common/drawer.dart';
+import 'package:fichas/models/card_list_widget.dart';
 import 'package:fichas/models/expertise_fields.dart';
 import 'package:fichas/state_management/record_provider.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,7 @@ class RecordScreen extends StatelessWidget {
     final attributesProvider = recordProvider.attributesProvider;
     final characterProvider = recordProvider.characterProvider;
     final powerProvider = recordProvider.powerProvider;
+    final advantagesProvider = recordProvider.advantagesProvider;
 
     return Scaffold(
       drawer: const MyDrawer(),
@@ -490,26 +492,26 @@ class RecordScreen extends StatelessWidget {
                               ),
                               SizedBox(width: 2,),
                               Expanded(child: TextField(
-                                  readOnly: true,
-                                  controller: powerProvider.baseDamageController,
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(color: Colors.white,
-                                      fontWeight: FontWeight.bold),
-                                  decoration: const InputDecoration(
-                                      labelText: 'Dano Fixo',
-                                      labelStyle: TextStyle(
-                                          color: Colors.purpleAccent,
-                                          fontWeight: FontWeight.bold),
-                                      enabledBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: Colors.purpleAccent,
-                                              width: 2)),
-                                      focusedBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: Colors.purpleAccent,
-                                              width: 3
-                                          )
-                                      ))
+                                readOnly: true,
+                                controller: powerProvider.baseDamageController,
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(color: Colors.white,
+                                fontWeight: FontWeight.bold),
+                                decoration: const InputDecoration(
+                                    labelText: 'Dano Fixo',
+                                    labelStyle: TextStyle(
+                                        color: Colors.purpleAccent,
+                                        fontWeight: FontWeight.bold),
+                                    enabledBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.purpleAccent,
+                                            width: 2)),
+                                    focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.purpleAccent,
+                                            width: 3
+                                        )
+                                    ))
                               )),
                             ],
                           ),
@@ -579,6 +581,50 @@ class RecordScreen extends StatelessWidget {
                                             color: Colors.greenAccent,
                                             width: 3)),
                                   ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 8,),
+                          Row(
+                            children: [
+                              SizedBox(
+                                width: 192,
+                                height: 80,
+                                child: CardListWidget(nameCard: 'Vantagens Selecionadas', isTile: true,),
+                              ),
+                              Spacer(),
+                              SizedBox(
+                                width: 192,
+                                height: 80,
+                                child: CardListWidget(nameCard: 'Poderes Comprados', isTile: true,),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 8,),
+                          Row(
+                            children: [
+                              SizedBox(
+                                width: 192,
+                                height: 280,
+                                child: ListView(
+                                  children: advantagesProvider.selectedAdvantages.map((nameAdvantage){
+                                    return CardListWidget(nameCard: nameAdvantage,
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
+                              Spacer(),
+                              SizedBox(
+                                width: 192,
+                                height: 280,
+                                child: ListView(
+                                  children: powerProvider.selectedPowers.keys.map((powerName){
+                                    final powerLevel = powerProvider.selectedPowers[powerName];
+                                    return CardListWidget(
+                                      nameCard: '$powerName (Graus : $powerLevel)',
+                                    );
+                                  }).toList(),
                                 ),
                               ),
                             ],

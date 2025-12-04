@@ -34,9 +34,11 @@ class CharacterProvider with ChangeNotifier {
   int healBonus = 0;
   int stepHeal = 0;
   String? activeArchetype;
+  final List<String> _selectedAdvantagesNames = [];
   List<String> _selectedSkillNames = [];
   List<String> get selectedSkillNames => _selectedSkillNames;
   int get level => int.tryParse(levelController.text) ?? 1;
+  List<String> get selectedAdvantagesNames => _selectedAdvantagesNames;
   CharacterProvider({required this.powerProvider, this.onDataChanged}) {
     levelController.addListener(_handleDataChangeAndSave);
     powerProvider.addListener(recalculateAllStats);
