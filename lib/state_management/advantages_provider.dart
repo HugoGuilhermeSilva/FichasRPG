@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 
 class AdvantagesProvider with ChangeNotifier {
   List<String> _selectedAdvantages = [];
+  List<String> _bonusAdvantages = [];
   List<String> get selectedAdvantages => _selectedAdvantages;
+  List<String> get allSelectedAdvantages => [..._selectedAdvantages, ..._bonusAdvantages];
   final Function(List<String>)? onDataChanged;
 
   AdvantagesProvider({this.onDataChanged});
@@ -14,6 +16,18 @@ class AdvantagesProvider with ChangeNotifier {
       return advantage.description;
     } catch (e) {
       return 'Descrição não encontrada.';
+    }
+  }
+  void addBonusAdvantage(String advantageName) {
+    if (!_bonusAdvantages.contains(advantageName)) {
+      _bonusAdvantages.add(advantageName);
+      _notifyAndSaveChanges();
+    }
+  }
+  void clearBonusAdvantages() {
+    if (_bonusAdvantages.isNotEmpty) {
+      _bonusAdvantages.clear();
+      _notifyAndSaveChanges();
     }
   }
   void updateFromRecord(Record? record) {
@@ -35,6 +49,6 @@ class AdvantagesProvider with ChangeNotifier {
     _notifyAndSaveChanges();
   }
   bool isAdvantageSelected(String advantageName) {
-    return _selectedAdvantages.contains(advantageName);
+    return allSelectedAdvantages.contains(advantageName);
   }
 }

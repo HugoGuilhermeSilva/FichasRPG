@@ -4,7 +4,7 @@ import 'package:fichas/state_management/character_provider.dart';
 import 'package:fichas/models/record_model.dart';
 
 class AttributesProvider with ChangeNotifier {
-  final CharacterProvider characterProvider;
+  CharacterProvider? characterProvider;
   bool _isRecalculatingFromCharacter = false;
   final Function(Map<String, dynamic>)? onDataChanged;
   final Map<String, TextEditingController> baseControllers = {};
@@ -20,9 +20,12 @@ class AttributesProvider with ChangeNotifier {
   final Map<String, int> _expertiseTotals = {};
   final Map<String, int> _combatTotals = {};
 
-  AttributesProvider({required this.characterProvider, this.onDataChanged}) {
+  AttributesProvider({this.onDataChanged}) {
     _initializeControllers();
-    characterProvider.addListener(() {
+  }
+  void setCharacterProvider(CharacterProvider cProvider) {
+    characterProvider = cProvider;
+    characterProvider?.addListener(() {
       if (_isRecalculatingFromCharacter) return;
       _isRecalculatingFromCharacter = true;
       _recalculateAndNotify();
@@ -102,9 +105,9 @@ class AttributesProvider with ChangeNotifier {
     }
   }
   int get totalLife {
-    final currentLevel = characterProvider.level;
+    final currentLevel = characterProvider?.level ?? 0;
     final currentForce = _attributesTotals['Vigor'] ?? 0;
-    final currentLife = characterProvider.finalLife;
+    final currentLife = characterProvider?.finalLife ?? 0;
     final totalLife = currentLife + (currentForce * currentLevel);
     return totalLife;
   }
@@ -135,13 +138,13 @@ class AttributesProvider with ChangeNotifier {
     return totalInitiative;
   }
   int get remainingAttributePoints {
-    final currentLevel = characterProvider.level;
+    final currentLevel = characterProvider?.level ?? 0;
     final totalAvailable = 2 + (currentLevel * 6);
     final remaining = totalAvailable - spentAttributePoints;
     return remaining;
   }
   int get remainingExpertisePoints {
-    final pointsPerLevel = characterProvider.skillPointPerLevel;
+    final pointsPerLevel = characterProvider?.skillPointPerLevel ?? 0;
     final totalAvailable = pointsPerLevel;
     final remaining = totalAvailable - spentExpertisePoints;
     return remaining;
@@ -217,7 +220,7 @@ class AttributesProvider with ChangeNotifier {
     final bonusValue = int.tryParse(combatBonusControllers[combatName]?.text ?? '') ?? 0;
     int skillBonus = 0;
     if (combatName == 'Força de Vontade'){
-      skillBonus = characterProvider.bonusWillForce;
+      skillBonus = characterProvider?.bonusWillForce ?? 0;
     }
     final newTotal = specificValue + attributeValue + bonusValue + skillBonus;
     if (_combatTotals[combatName] != newTotal) {
@@ -228,7 +231,7 @@ class AttributesProvider with ChangeNotifier {
   }
   @override
   void dispose() {
-    characterProvider.removeListener(_recalculateAndNotify);
+    characterProvider?.removeListener(_recalculateAndNotify);
     lostLifeController.dispose();
     totalLifeController.dispose();
     initiativeController.dispose();

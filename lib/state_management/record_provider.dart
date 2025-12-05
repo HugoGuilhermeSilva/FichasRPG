@@ -45,13 +45,14 @@ class RecordProvider with ChangeNotifier {
       },
     );
     attributesProvider = AttributesProvider(
-      characterProvider: characterProvider,
       onDataChanged: (newData) {
         updateActiveRecordData(attributesData: newData);
       }
     );
     characterProvider.setAttributesProvider(attributesProvider);
+    characterProvider.setAdvantagesProvider(advantagesProvider);
     powerProvider.setCharacterProvider(characterProvider);
+    attributesProvider.setCharacterProvider(characterProvider);
     loadAllRecords();
   }
   Future<void> loadAllRecords() async {

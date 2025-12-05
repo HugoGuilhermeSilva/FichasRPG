@@ -128,7 +128,8 @@ class PowerProvider with ChangeNotifier{
   int get baseDamage{
     final elementalDamage = getPowerLevel('Manipulação Elemental');
     final gravDamage = getPowerLevel('Gravidade');
-    final totalBaseDamage = (elementalDamage * 2) + (gravDamage * 2);
+    final archetypeSMI = characterProvider?.flatDamageByMov ?? 0;
+    final totalBaseDamage = (elementalDamage * 2) + (gravDamage * 2) + archetypeSMI;
     return totalBaseDamage;
   }
   int get totalPowersCost {

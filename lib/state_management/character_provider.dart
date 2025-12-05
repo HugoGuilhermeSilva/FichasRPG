@@ -1,3 +1,4 @@
+import 'package:fichas/state_management/advantages_provider.dart';
 import 'package:fichas/state_management/attributes_provider.dart';
 import 'package:fichas/state_management/power_provider.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:fichas/models/record_model.dart';
 class CharacterProvider with ChangeNotifier {
   final PowerProvider powerProvider;
   late final AttributesProvider attributesProvider;
+  late final AdvantagesProvider advantagesProvider;
   bool _isRecalculatingFromAttributes = false;
   final Function({
   int? characterLevel,
@@ -35,6 +37,7 @@ class CharacterProvider with ChangeNotifier {
   int stepHeal = 0;
   int defendBonus = 1;
   int regenBonus = 1;
+  int flatDamageByMov = 0;
   String? activeArchetype;
   final List<String> _selectedAdvantagesNames = [];
   List<String> _selectedSkillNames = [];
@@ -44,6 +47,9 @@ class CharacterProvider with ChangeNotifier {
   CharacterProvider({required this.powerProvider, this.onDataChanged}) {
     levelController.addListener(_handleDataChangeAndSave);
     powerProvider.addListener(recalculateAllStats);
+  }
+  void setAdvantagesProvider(AdvantagesProvider aProvider) {
+    advantagesProvider = aProvider;
   }
   void setAttributesProvider(AttributesProvider aProvider) {
     attributesProvider = aProvider;
@@ -89,6 +95,7 @@ class CharacterProvider with ChangeNotifier {
     return _selectedSkillNames.contains(skillName);
   }
   void recalculateAllStats() {
+    advantagesProvider.clearBonusAdvantages();
     activeArchetype = null;
     lifeBase = 0;
     skillPointPerLevel = 0;
@@ -104,6 +111,7 @@ class CharacterProvider with ChangeNotifier {
     stepHeal = 0;
     defendBonus = 1;
     regenBonus = 1;
+    flatDamageByMov = 0;
 
     if (_selectedSkillNames.isNotEmpty) {
       for (String skillName in _selectedSkillNames) {
@@ -163,6 +171,13 @@ class CharacterProvider with ChangeNotifier {
       }
       if(skillName == 'Velocista'){
         modifierDisplacementLevel = 15;
+      }
+      if(skillName == 'Agil'){
+        advantagesProvider.addBonusAdvantage('Agil');
+      }
+      if(skillName == 'Soco de Massa Infinita'){
+        int bonusC = powerProvider.getPowerLevel('Mover-se');
+        flatDamageByMov = bonusC;
       }
     }
     if (activeArchetype != null) {
