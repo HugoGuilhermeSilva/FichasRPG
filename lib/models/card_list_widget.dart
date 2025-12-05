@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 
 class CardListWidget extends StatelessWidget{
   final bool? isTile;
+  final bool? isNormal;
   final String nameCard;
-  const CardListWidget({required this.nameCard, super.key, this. isTile = false});
+  final String? description;
+  const CardListWidget({required this.nameCard, super.key, this. isTile = false, this.description, this.isNormal = false});
 
   @override
   Widget build(BuildContext context){
@@ -18,14 +20,30 @@ class CardListWidget extends StatelessWidget{
       ),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Center(
-          child: Text(nameCard,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-            fontSize: 16
-          ),),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Center(
+              child: Text(nameCard,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+                fontSize: 12
+              ),),
+            ),
+            Spacer(),
+            isNormal == true
+                ? Tooltip(
+              message: description ?? '',
+              child: Icon(
+                Icons.info_outline,
+                color: Colors.purpleAccent,
+                size: 16,
+              ),
+            )
+                : const SizedBox(),
+          ],
         ),
       ),
     );

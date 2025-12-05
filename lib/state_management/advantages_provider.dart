@@ -1,3 +1,4 @@
+import 'package:fichas/data/advantages_data.dart';
 import 'package:fichas/models/record_model.dart';
 import 'package:flutter/material.dart';
 
@@ -7,6 +8,14 @@ class AdvantagesProvider with ChangeNotifier {
   final Function(List<String>)? onDataChanged;
 
   AdvantagesProvider({this.onDataChanged});
+  String getAdvantageDescription(String advantageName) {
+    try {
+      final advantage = allAdvantages.firstWhere((adv) => adv.name == advantageName,);
+      return advantage.description;
+    } catch (e) {
+      return 'Descrição não encontrada.';
+    }
+  }
   void updateFromRecord(Record? record) {
     _selectedAdvantages = record?.advantagesData ?? [];
     notifyListeners();

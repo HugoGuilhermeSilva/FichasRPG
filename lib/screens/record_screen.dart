@@ -609,7 +609,11 @@ class RecordScreen extends StatelessWidget {
                                 height: 280,
                                 child: ListView(
                                   children: advantagesProvider.selectedAdvantages.map((nameAdvantage){
-                                    return CardListWidget(nameCard: nameAdvantage,
+                                    final advantageDescription = advantagesProvider.getAdvantageDescription(nameAdvantage);
+                                    return CardListWidget(
+                                      nameCard: nameAdvantage,
+                                      isNormal: true,
+                                      description: advantageDescription,
                                     );
                                   }).toList(),
                                 ),

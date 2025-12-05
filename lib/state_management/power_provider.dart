@@ -106,7 +106,8 @@ class PowerProvider with ChangeNotifier{
   }
   int get defendLevel{
     final defend = getPowerLevel('Defender');
-    final defendLevel = defend;
+    final bonus1C = characterProvider?.defendBonus ?? 1;
+    final defendLevel = defend * bonus1C;
     return defendLevel;
   }
   int get rdLevel{

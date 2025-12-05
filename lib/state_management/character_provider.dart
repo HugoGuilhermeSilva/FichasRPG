@@ -33,6 +33,8 @@ class CharacterProvider with ChangeNotifier {
   int bonusBlock = 0;
   int healBonus = 0;
   int stepHeal = 0;
+  int defendBonus = 1;
+  int regenBonus = 1;
   String? activeArchetype;
   final List<String> _selectedAdvantagesNames = [];
   List<String> _selectedSkillNames = [];
@@ -100,6 +102,8 @@ class CharacterProvider with ChangeNotifier {
     bonusBlock = 0;
     healBonus = 0;
     stepHeal = 0;
+    defendBonus = 1;
+    regenBonus = 1;
 
     if (_selectedSkillNames.isNotEmpty) {
       for (String skillName in _selectedSkillNames) {
@@ -150,6 +154,12 @@ class CharacterProvider with ChangeNotifier {
       if(skillName == 'Curandeiros'){
         healBonus = powerProvider.getPowerLevel('Cura');
         stepHeal = 2;
+      }
+      if(skillName == 'Tanque'){
+        int regenBonusC = 2;
+        int defendBonusC = 2;
+        regenBonus = regenBonusC;
+        defendBonus = defendBonusC;
       }
       if(skillName == 'Velocista'){
         modifierDisplacementLevel = 15;
