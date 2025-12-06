@@ -151,7 +151,7 @@ class RecordScreen extends StatelessWidget {
                         ),
                         borderRadius: BorderRadius.circular(16)),
                     width: 410,
-                    height: 800,
+                    height: 850,
                     child: Padding(
                       padding: const EdgeInsets.all(8),
                       child: Column(
@@ -361,8 +361,8 @@ class RecordScreen extends StatelessWidget {
                                     fontWeight: FontWeight.bold,
                                   ),
                                   decoration: InputDecoration(
-                                    labelText: 'Deslocamento',
-                                    hintText: '${powerProvider.totalDisplacement}m',
+                                    labelText: 'Deslocamento | Alcance',
+                                    hintText: '${powerProvider.totalDisplacement}m     |     ${powerProvider.rangeTotal}m',
                                     hintStyle: const TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
@@ -521,6 +521,76 @@ class RecordScreen extends StatelessWidget {
                               Expanded(
                                 child: TextField(
                                   readOnly: true,
+                                  key: ValueKey(powerProvider.criticalMerge),
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  decoration: InputDecoration(
+                                    labelText: 'Critico',
+                                    hintText: '${powerProvider.criticalMerge} X${powerProvider.criticalMultiplier}',
+                                    hintStyle: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                                    labelStyle: const TextStyle(
+                                      color: Color(0xFFff6600),
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    enabledBorder: const OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Color(0xFFff6600),
+                                            width: 2)),
+                                    focusedBorder: const OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Color(0xFFff6600),
+                                            width: 3)),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 2,),
+                              Expanded(
+                                child: TextField(
+                                  readOnly: true,
+                                  key: ValueKey(powerProvider.totalStrikes),
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  decoration: InputDecoration(
+                                    labelText: 'Ataques por turno',
+                                    hintText: '${powerProvider.totalStrikes}',
+                                    hintStyle: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                                    labelStyle: const TextStyle(
+                                      color: Colors.pink,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    enabledBorder: const OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.pink,
+                                            width: 2)),
+                                    focusedBorder: const OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.pink,
+                                            width: 3)),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 8,),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  readOnly: true,
                                   key: ValueKey(powerProvider.totalHeal),
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(
@@ -561,8 +631,8 @@ class RecordScreen extends StatelessWidget {
                                     fontWeight: FontWeight.bold,
                                   ),
                                   decoration: InputDecoration(
-                                    labelText: 'Cura fixa',
-                                    hintText: powerProvider.baseHeal.toString(),
+                                    labelText: 'Cura fixa | Regeneração',
+                                    hintText: '${powerProvider.baseHeal.toString()}        |        ${powerProvider.regenTotal}',
                                     hintStyle: const TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,

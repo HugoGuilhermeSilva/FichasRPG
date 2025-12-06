@@ -222,6 +222,9 @@ class AttributesProvider with ChangeNotifier {
     if (combatName == 'Força de Vontade'){
       skillBonus = characterProvider?.bonusWillForce ?? 0;
     }
+    if (combatName == 'Bloqueio'){
+      skillBonus = characterProvider?.blockTankBonus ?? 0;
+    }
     final newTotal = specificValue + attributeValue + bonusValue + skillBonus;
     if (_combatTotals[combatName] != newTotal) {
       _combatTotals[combatName] = newTotal;

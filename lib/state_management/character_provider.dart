@@ -2,6 +2,7 @@ import 'package:fichas/state_management/advantages_provider.dart';
 import 'package:fichas/state_management/attributes_provider.dart';
 import 'package:fichas/state_management/power_provider.dart';
 import 'package:flutter/material.dart';
+import 'dart:math';
 import 'package:fichas/data/archetype_data.dart';
 import 'package:fichas/models/record_model.dart';
 
@@ -38,6 +39,20 @@ class CharacterProvider with ChangeNotifier {
   int defendBonus = 1;
   int regenBonus = 1;
   int flatDamageByMov = 0;
+  int criticalReductionWeakPoint = 0;
+  int criticalMultiplierPowerfulStrike = 0;
+  int boltMultiplier = 1;
+  int sliceBonus = 0;
+  int zevyrBonus = 0;
+  int blockTankBonus = 0;
+  int postureRdBonus = 0;
+  int breakReadBonus = 0;
+  int bonusLifeByWall = 0;
+  int bonusByFirePower = 0;
+  int immutableBonus = 0;
+  int warBonus = 0;
+  int wallBonus = 1;
+  int destroyerBonus = 0;
   String? activeArchetype;
   final List<String> _selectedAdvantagesNames = [];
   List<String> _selectedSkillNames = [];
@@ -113,6 +128,20 @@ class CharacterProvider with ChangeNotifier {
     defendBonus = 1;
     regenBonus = 1;
     flatDamageByMov = 0;
+    criticalReductionWeakPoint = 0;
+    criticalMultiplierPowerfulStrike = 0;
+    boltMultiplier = 1;
+    sliceBonus = 0;
+    zevyrBonus = 0;
+    blockTankBonus = 0;
+    postureRdBonus = 0;
+    breakReadBonus = 0;
+    bonusLifeByWall = 0;
+    bonusByFirePower = 0;
+    immutableBonus = 0;
+    warBonus = 0;
+    wallBonus = 1;
+    destroyerBonus = 0;
 
     if (_selectedSkillNames.isNotEmpty) {
       for (String skillName in _selectedSkillNames) {
@@ -185,10 +214,88 @@ class CharacterProvider with ChangeNotifier {
         powerProvider.ensurePowerExists('Acelerar');
         powerProvider.addBonusPowerLevels('Acelerar', accelerateBonus);
       }
+      if(skillName == 'Ponto Fraco'){
+        criticalReductionWeakPoint = 2;
+      }
+      if(skillName == 'Golpe Potente'){
+        criticalMultiplierPowerfulStrike = 2;
+      }
+      if(skillName == 'Bolt'){
+        boltMultiplier = 2;
+      }
+      if(skillName == 'Fatiar'){
+        sliceBonus = 4;
+      }
+      if(skillName == 'Franchiesco Virgulino'){
+        int bonusFrantiescoC = powerProvider.getPowerLevel('Mover-se');
+        powerProvider.ensurePowerExists('Dano');
+        powerProvider.addBonusPowerLevels('Dano', bonusFrantiescoC);
+      }
+      if(skillName == 'Zevyr'){
+        zevyrBonus = 2;
+      }
+      if(skillName == 'Atacante'){
+        advantagesProvider.addBonusAdvantage('Aperfeiçoamento');
+        int bonusDamage = level;
+        powerProvider.ensurePowerExists('Dano');
+        powerProvider.addBonusPowerLevels('Dano', bonusDamage);
+      }
+      if(skillName == 'Tank'){
+        advantagesProvider.addBonusAdvantage('Ler Movimentos');
+        int bonusBlock = level;
+        blockTankBonus = bonusBlock;
+      }
+      if(skillName == 'Hibrido'){
+        advantagesProvider.addBonusAdvantage('Agil');
+        advantagesProvider.addBonusAdvantage('Ambidestria');
+      }
+      if(skillName == 'Postura Defensiva'){
+        int bonusDefend = level;
+        powerProvider.ensurePowerExists('Defender');
+        powerProvider.addBonusPowerLevels('Defender', bonusDefend);
+        postureRdBonus = 2;
+      }
+      if(skillName == 'Mestre do Combate'){
+        int bonus = 2;
+        powerProvider.ensurePowerExists('Acelerar');
+        powerProvider.addBonusPowerLevels('Acelerar', bonus);
+      }
+      if(skillName == 'Amassar Seu Crânio'){
+        int damage = powerProvider.getPowerLevel('Dano');
+        breakReadBonus = damage * 2;
+      }
+      if(skillName == 'Parede de Carne'){
+        int bonusByDefend = powerProvider.getPowerLevel('Defender');
+        int bonusByRegen = powerProvider.getPowerLevel('Regeneração');
+        bonusLifeByWall = (bonusByDefend * 5) + (bonusByRegen * 2);
+      }
+      if(skillName == 'Poder de fogo'){
+        bonusByFirePower = 5;
+      }
+      if(skillName == 'Imutavel'){
+        int bonus = 2;
+        powerProvider.ensurePowerExists('Acelerar');
+        powerProvider.addBonusPowerLevels('Acelerar', bonus);
+        int totalAccelerate = powerProvider.getPowerLevel('Acelerar');
+        immutableBonus = (totalAccelerate / 4).round();
+      }
+      if(skillName == 'Guerreiro'){
+        int meleeC = int.tryParse(attributesProvider.getCombatTotalFor('Combate Corporal')) ?? 0;
+        int rangedC = int.tryParse(attributesProvider.getCombatTotalFor('Combate a Distancia')) ?? 0;
+        int mentalC = int.tryParse(attributesProvider.getCombatTotalFor('Combate Mental')) ?? 0;
+        int biggerCombat = max(mentalC, max(meleeC, rangedC));
+        warBonus = biggerCombat * 10;
+      }
+      if(skillName == 'Muralha'){
+        wallBonus = 10;
+      }
+      if(skillName == 'Destruidor'){
+        destroyerBonus = 2;
+      }
     }
     if (activeArchetype != null) {
       final archetypeData = allArchetypes.firstWhere((arch) => arch.name == activeArchetype);
-      finalLife = (archetypeData.baseHp + lifeBase) * level;
+      finalLife = ((archetypeData.baseHp + lifeBase) * level + bonusLifeByWall) * wallBonus;
       baseXp = (archetypeData.baseXp + bonusXp1 + bonusXp2) * level;
     }
     manaController.text = baseMana.toString();

@@ -62,7 +62,7 @@ const List<Archetype> allArchetypes = [
     skills: [
       Skill(levelRequirement: 1, name: 'Atacante', description: 'Recebe Aperfeiçoamento e graus de dano iguais a seu nivel.'),
       Skill(levelRequirement: 1, name: 'Tank', description: 'Recebe Ler Movimentos e bloqueio igual seu nivel.'),
-      Skill(levelRequirement: 1, name: 'Hibrido', description: 'Recebe Ataques Rapidos e Ambidestria.'),
+      Skill(levelRequirement: 1, name: 'Hibrido', description: 'Recebe Agil e Ambidestria.'),
       Skill(levelRequirement: 8, name: 'Mestre das Armas', description: 'Aumenta seu limite de armas simultâneas em 1'),
       Skill(levelRequirement: 8, name: 'Postura Defensiva', description: 'Recebe seu nivel em defender e o rd aumenta em 2.'),
       Skill(levelRequirement: 8, name: 'Mestre do Combate', description: 'Recebe 2 de acelerar.'),
@@ -97,7 +97,7 @@ const List<Archetype> allArchetypes = [
       Skill(levelRequirement: 24, name: 'Golpe Potente', description: 'O multiplicador de critico aumenta em 2.'),
       Skill(levelRequirement: 24, name: 'Bolt', description: 'Seu deslocamento é dobrado e caso você escolha usar sua ação completa para correr, nada pode impedir seu movimento e você também encerra quaisquer condições que estiverem impedindo seu movimento. Tambem permite que voce use sua reação para transformar suas esquivas em bloqueios. (seu bloqueio se torna 5+ bonus de esquiva).'),
       Skill(levelRequirement: 32, name: 'Fatiar', description: 'A cada 4 ataques pode fazer um adicional.'),
-      Skill(levelRequirement: 32, name: 'Franchiesco Virgulino', description: 'Pode givar completamente seu movimento no turno para receber graus de dano iguais ao seu mover-se.(no inicio do seu proximo turno voce pode se mover novamente.)'),
+      Skill(levelRequirement: 32, name: 'Franchiesco Virgulino', description: 'Recebe Graus de dano iguais aos graus de mover-se'),
       Skill(levelRequirement: 32, name: 'Zevyr', description: 'Passa a poder se esconder com ação livre e enquanto escondido nada pode te revelar, tambem aumenta em 2 o multiplicador do critico.'),
     ],
   ),
