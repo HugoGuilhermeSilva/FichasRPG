@@ -172,7 +172,8 @@ class PowerProvider with ChangeNotifier{
     final archetypeSMI = characterProvider?.flatDamageByMov ?? 0;
     final archetypeBH = characterProvider?.breakReadBonus ?? 0;
     final archetypeWar = characterProvider?.warBonus ?? 0;
-    final totalBaseDamage = (elementalDamage * 2) + (gravDamage * 2) + archetypeSMI + archetypeBH + archetypeWar;
+    final archetypeSniper = characterProvider?.sniperBonus ?? 0;
+    final totalBaseDamage = (elementalDamage * 2) + (gravDamage * 2) + archetypeSMI + archetypeBH + archetypeWar + archetypeSniper;
     return totalBaseDamage;
   }
   int get criticalMerge{
@@ -211,7 +212,10 @@ class PowerProvider with ChangeNotifier{
   int get rangeTotal{
     final rangeBase = getPowerLevel('Alcance');
     final areaBase = getPowerLevel('Área');
-    final rangeTotal = rangeBase * 5 + areaBase * 3;
+    final archetypeBaseRangeMultiplier = characterProvider?.rangeMultiplier ?? 5;
+    final archetypeAreaMultiplier = characterProvider?.areaMultiplier ?? 3;
+    final archetypeSniperBonus = characterProvider?.rangeBonusMultiplier ?? 0;
+    final rangeTotal = rangeBase * (archetypeBaseRangeMultiplier + archetypeSniperBonus) + areaBase * archetypeAreaMultiplier;
     return rangeTotal;
   }
   int get totalPowersCost {

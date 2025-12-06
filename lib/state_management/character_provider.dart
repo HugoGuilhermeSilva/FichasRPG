@@ -53,6 +53,11 @@ class CharacterProvider with ChangeNotifier {
   int warBonus = 0;
   int wallBonus = 1;
   int destroyerBonus = 0;
+  int rangeMultiplier = 5;
+  int areaMultiplier = 3;
+  int rangeBonusMultiplier = 0;
+  int sniperBonus = 0;
+  int slenderBonus = 0;
   String? activeArchetype;
   final List<String> _selectedAdvantagesNames = [];
   List<String> _selectedSkillNames = [];
@@ -142,6 +147,11 @@ class CharacterProvider with ChangeNotifier {
     warBonus = 0;
     wallBonus = 1;
     destroyerBonus = 0;
+    rangeMultiplier = 5;
+    areaMultiplier = 3;
+    rangeBonusMultiplier = 0;
+    sniperBonus = 0;
+    slenderBonus = 0;
 
     if (_selectedSkillNames.isNotEmpty) {
       for (String skillName in _selectedSkillNames) {
@@ -176,7 +186,10 @@ class CharacterProvider with ChangeNotifier {
       }
       if(skillName == 'Força do Conhecimento'){
         int bonusIntAttacks = int.tryParse(attributesProvider.getAttributeTotalFor('Inteligencia')) ?? 0;
-        maxAttacks = 1 + (bonusIntAttacks / 5).round();
+        int bonusCharAttacks = int.tryParse(attributesProvider.getAttributeTotalFor('Carisma')) ?? 0;
+        int bonusWillAttacks = int.tryParse(attributesProvider.getAttributeTotalFor('Vontade')) ?? 0;
+        int biggerAttacks = max(bonusWillAttacks, max(bonusIntAttacks,bonusCharAttacks));
+        maxAttacks = 1 + (biggerAttacks / 5).round();
       }
       if(skillName == 'Busca por Conhecimento'){
         int intelligenceLifeBonus = int.tryParse(attributesProvider.getAttributeTotalFor('Inteligencia')) ?? 0;
@@ -291,6 +304,30 @@ class CharacterProvider with ChangeNotifier {
       }
       if(skillName == 'Destruidor'){
         destroyerBonus = 2;
+      }
+      if(skillName == 'Demolidor'){
+        rangeMultiplier = 10;
+      }
+      if(skillName == 'Atirador de Elite'){
+        rangeMultiplier = 15;
+        advantagesProvider.addBonusAdvantage('Atirador');
+      }
+      if(skillName == 'Disparador'){
+        advantagesProvider.addBonusAdvantage('Na Mira');
+      }
+      if(skillName == 'Sniper'){
+        rangeBonusMultiplier = 5;
+        int bonusDamage = powerProvider.getPowerLevel('Alcance');
+        sniperBonus = bonusDamage;
+      }
+      if(skillName == 'Sempre Mais'){
+        areaMultiplier = 5;
+        powerProvider.ensurePowerExists('Área');
+        powerProvider.addBonusPowerLevels('Área', level);
+      }
+      if(skillName == 'Esguio'){
+        int bonusRange = powerProvider.getPowerLevel('Alcance');
+        slenderBonus = level + (bonusRange / 8).round();
       }
     }
     if (activeArchetype != null) {

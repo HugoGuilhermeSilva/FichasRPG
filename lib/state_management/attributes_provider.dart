@@ -223,7 +223,12 @@ class AttributesProvider with ChangeNotifier {
       skillBonus = characterProvider?.bonusWillForce ?? 0;
     }
     if (combatName == 'Bloqueio'){
-      skillBonus = characterProvider?.blockTankBonus ?? 0;
+      int slenderBonus = characterProvider?.slenderBonus ?? 0;
+      int fighterTankBonus = characterProvider?.blockTankBonus ?? 0;
+      skillBonus = fighterTankBonus + slenderBonus;
+    }
+    if(combatName == 'Esquiva'){
+      skillBonus = characterProvider?.slenderBonus ?? 0;
     }
     final newTotal = specificValue + attributeValue + bonusValue + skillBonus;
     if (_combatTotals[combatName] != newTotal) {
