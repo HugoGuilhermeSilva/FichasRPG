@@ -14,13 +14,16 @@ class PowerScreen extends StatelessWidget {
     final recordProvider = context.watch<RecordProvider>();
     final powerProvider = recordProvider.powerProvider;
     final characterProvider = recordProvider.characterProvider;
-    final List<Power> selected = [];
-    final List<Power> general = [];
+    final List<Power> selectedPowersUI = [];
+    final List<Power> generalPowersUI = [];
     for (var power in allPowers) {
-      if (powerProvider.isPowerSelected(power.name)) {
-        selected.add(power);
+      final playerLevel = powerProvider.selectedPowers[power.name] ?? 0;
+      final bonusLevel = powerProvider.bonusPowers[power.name] ?? 0;
+
+      if (playerLevel > 0 || bonusLevel > 0) {
+        selectedPowersUI.add(power);
       } else {
-        general.add(power);
+        generalPowersUI.add(power);
       }
     }
     return Scaffold(
@@ -77,7 +80,7 @@ class PowerScreen extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            if (selected.isEmpty)
+            if (selectedPowersUI.isEmpty)
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 20),
                 child: Center(
@@ -91,7 +94,7 @@ class PowerScreen extends StatelessWidget {
                 alignment: WrapAlignment.center,
                 spacing: 4,
                 runSpacing: 4,
-                children: selected.map((power) => PowerCard(power: power, powerProvider: powerProvider,)).toList(),
+                children: selectedPowersUI.map((power) => PowerCard(power: power, powerProvider: powerProvider,)).toList(),
               ),
             const Divider(color: Colors.white, height: 40),
             const Text(
@@ -106,7 +109,7 @@ class PowerScreen extends StatelessWidget {
               alignment: WrapAlignment.center,
               spacing: 4,
               runSpacing: 4,
-              children: general.map((power) => PowerCard(power: power, powerProvider: powerProvider,)).toList(),
+              children: generalPowersUI.map((power) => PowerCard(power: power, powerProvider: powerProvider,)).toList(),
             ),
           ],
         ),

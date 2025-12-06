@@ -608,7 +608,7 @@ class RecordScreen extends StatelessWidget {
                                 width: 192,
                                 height: 280,
                                 child: ListView(
-                                  children: advantagesProvider.selectedAdvantages.map((nameAdvantage){
+                                  children: advantagesProvider.allSelectedAdvantages.map((nameAdvantage){
                                     final advantageDescription = advantagesProvider.getAdvantageDescription(nameAdvantage);
                                     return CardListWidget(
                                       nameCard: nameAdvantage,
@@ -623,8 +623,8 @@ class RecordScreen extends StatelessWidget {
                                 width: 192,
                                 height: 280,
                                 child: ListView(
-                                  children: powerProvider.selectedPowers.keys.map((powerName){
-                                    final powerLevel = powerProvider.selectedPowers[powerName];
+                                  children: powerProvider.allActivePowerNames.map((powerName){
+                                    final powerLevel = powerProvider.getPowerLevel(powerName);
                                     return CardListWidget(
                                       nameCard: '$powerName (Graus : $powerLevel)',
                                     );

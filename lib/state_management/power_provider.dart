@@ -8,6 +8,8 @@ class PowerProvider with ChangeNotifier{
   CharacterProvider? characterProvider;
   Map<String, int> _selectedPowers = {};
   Map<String, int> get selectedPowers => _selectedPowers;
+  Map<String, int> _bonusPowers = {};
+  Map<String, int> get bonusPowers => _bonusPowers;
   final TextEditingController baseDamageController = TextEditingController();
   final Function(Map<String, int>)? onDataChanged;
   bool _isRecalculatingFromCharacter = false;
@@ -20,6 +22,19 @@ class PowerProvider with ChangeNotifier{
     characterProvider = provider;
     characterProvider?.addListener(_onCharacterProviderChanged);
   }
+  void ensurePowerExists(String powerName) {
+    if (!_selectedPowers.containsKey(powerName)) {
+      _selectedPowers[powerName] = 0;
+    }
+  }
+  void addBonusPowerLevels(String powerName, int levelsToAdd) {
+    _bonusPowers[powerName] = (_bonusPowers[powerName] ?? 0) + levelsToAdd;
+  }
+  void clearBonusPowers() {
+    if (_bonusPowers.isNotEmpty) {
+      _bonusPowers.clear();
+    }
+  }
   void updateFromRecord(Record? record){
     _selectedPowers = Map<String, int>.from(record?.powersData ?? {});
     _updateCalculatedValues();
@@ -29,44 +44,65 @@ class PowerProvider with ChangeNotifier{
     _updateCalculatedValues();
   }
   bool isPowerSelected(String powerName){
-    return _selectedPowers.containsKey(powerName);
+    return (_selectedPowers[powerName] ?? 0) > 0;
   }
   int getPowerLevel(String powerName){
-    return _selectedPowers[powerName] ?? 0;
-  }
-  void togglePowerSelection(String powerName, bool isSelected) {
-    if (isSelected) {
-      if (!_selectedPowers.containsKey(powerName)) {
-        _selectedPowers[powerName] = 1;
-      }
-    } else {
-      _selectedPowers.remove(powerName);
-    }
-    _notifyAndSaveChanges();
-  }
-  void incrementPowerLevel(String powerName){
-    if(_selectedPowers.containsKey(powerName)){
-      _selectedPowers[powerName] = _selectedPowers[powerName]! + 1;
-      _notifyAndSaveChanges();
-    }
+    final playerLevel = _selectedPowers[powerName] ?? 0;
+    final bonusLevel = _bonusPowers[powerName] ?? 0;
+    return playerLevel + bonusLevel;
   }
   void decrementPowerLevel(String powerName){
     if(_selectedPowers.containsKey(powerName)){
       int currentLevel = _selectedPowers[powerName]!;
-      if(currentLevel > 1 ){
+
+      if(currentLevel > 1){
         _selectedPowers[powerName] = currentLevel - 1;
-      } else{
-        _selectedPowers.remove(powerName);
+      } else {
+        if ((_bonusPowers[powerName] ?? 0) == 0) {
+          _selectedPowers.remove(powerName);
+        } else {
+          _selectedPowers[powerName] = 0;
+        }
       }
       _notifyAndSaveChanges();
     }
+  }
+  void incrementPowerLevel(String powerName){
+    if(!_selectedPowers.containsKey(powerName)){
+      _selectedPowers[powerName] = 0;
+    }
+    _selectedPowers[powerName] = _selectedPowers[powerName]! + 1;
+    _notifyAndSaveChanges();
+  }
+  void togglePowerSelection(String powerName, bool isSelected) {
+    if (isSelected) {
+      _selectedPowers[powerName] = 1;
+    } else {
+      if ((_bonusPowers[powerName] ?? 0) > 0) {
+        _selectedPowers[powerName] = 0;
+      } else {
+        _selectedPowers.remove(powerName);
+      }
+    }
+    _notifyAndSaveChanges();
   }
   void setPowerLevel(String powerName, int level) {
     if (level > 0) {
       _selectedPowers[powerName] = level;
     } else {
-      _selectedPowers.remove(powerName);
+      if ((_bonusPowers[powerName] ?? 0) == 0) {
+        _selectedPowers.remove(powerName);
+      } else {
+        _selectedPowers[powerName] = 0;
+      }
     }
+    _notifyAndSaveChanges();
+  }
+  List<String> get allActivePowerNames {
+    final powerSet = <String>{};
+    powerSet.addAll(_selectedPowers.keys);
+    powerSet.addAll(_bonusPowers.keys);
+    return powerSet.toList();
   }
   int get totalHeal{
     final int heal = getPowerLevel('Cura');
@@ -139,11 +175,10 @@ class PowerProvider with ChangeNotifier{
             (p) => p.name == powerName,
         orElse: () => Power(name: 'not_found', description: '', cost: 0),
       );
-        totalCost += (powerData.cost * powerLevel);
+      totalCost += (powerData.cost * powerLevel);
     });
     return totalCost;
   }
-
   void _updateCalculatedValues() {
     baseDamageController.text = baseDamage.toString();
     if (!_isRecalculatingFromCharacter) {

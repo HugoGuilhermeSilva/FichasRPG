@@ -28,6 +28,7 @@ class RecordProvider with ChangeNotifier {
     powerProvider = PowerProvider(
       onDataChanged: (newData) {
         updateActiveRecordData(powersData: newData);
+        this.characterProvider.recalculateAllStats();
       },
     );
     characterProvider = CharacterProvider(

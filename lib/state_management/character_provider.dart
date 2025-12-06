@@ -46,7 +46,7 @@ class CharacterProvider with ChangeNotifier {
   List<String> get selectedAdvantagesNames => _selectedAdvantagesNames;
   CharacterProvider({required this.powerProvider, this.onDataChanged}) {
     levelController.addListener(_handleDataChangeAndSave);
-    powerProvider.addListener(recalculateAllStats);
+    //powerProvider.addListener(recalculateAllStats);
   }
   void setAdvantagesProvider(AdvantagesProvider aProvider) {
     advantagesProvider = aProvider;
@@ -96,6 +96,7 @@ class CharacterProvider with ChangeNotifier {
   }
   void recalculateAllStats() {
     advantagesProvider.clearBonusAdvantages();
+    powerProvider.clearBonusPowers();
     activeArchetype = null;
     lifeBase = 0;
     skillPointPerLevel = 0;
@@ -179,6 +180,11 @@ class CharacterProvider with ChangeNotifier {
         int bonusC = powerProvider.getPowerLevel('Mover-se');
         flatDamageByMov = bonusC;
       }
+      if(skillName == 'Cada vez mais Rapido'){
+        int accelerateBonus = 2 + (level / 5).round();
+        powerProvider.ensurePowerExists('Acelerar');
+        powerProvider.addBonusPowerLevels('Acelerar', accelerateBonus);
+      }
     }
     if (activeArchetype != null) {
       final archetypeData = allArchetypes.firstWhere((arch) => arch.name == activeArchetype);
@@ -188,15 +194,14 @@ class CharacterProvider with ChangeNotifier {
     manaController.text = baseMana.toString();
     int currentXp = baseXp - powerProvider.totalPowersCost;
     xpController.text = currentXp.toString();
+    powerProvider.notifyExternalChange();
     if (!_isRecalculatingFromAttributes) {
       notifyListeners();
     }
   }
-
   @override
   void dispose() {
     levelController.removeListener(_handleDataChangeAndSave);
-    powerProvider.removeListener(recalculateAllStats);
     levelController.dispose();
     xpController.dispose();
     manaController.dispose();
