@@ -8,14 +8,25 @@ class AdvantagesProvider with ChangeNotifier {
   List<String> get selectedAdvantages => _selectedAdvantages;
   List<String> get allSelectedAdvantages => [..._selectedAdvantages, ..._bonusAdvantages];
   final Function(List<String>)? onDataChanged;
+  final VoidCallback? onAdvantagesChangedForRecalculation;
 
-  AdvantagesProvider({this.onDataChanged});
+  AdvantagesProvider({this.onDataChanged, this.onAdvantagesChangedForRecalculation});
   String getAdvantageDescription(String advantageName) {
     try {
       final advantage = allAdvantages.firstWhere((adv) => adv.name == advantageName,);
       return advantage.description;
     } catch (e) {
       return 'Descrição não encontrada.';
+    }
+  }
+  void clearBonusAdvantagesSilently() {
+    _bonusAdvantages.clear();
+    notifyListeners();
+  }
+  void addBonusAdvantageSilently(String advantageName) {
+    if (!_bonusAdvantages.contains(advantageName)) {
+      _bonusAdvantages.add(advantageName);
+      notifyListeners();
     }
   }
   void addBonusAdvantage(String advantageName) {
@@ -36,6 +47,7 @@ class AdvantagesProvider with ChangeNotifier {
   }
   void _notifyAndSaveChanges() {
     onDataChanged?.call(_selectedAdvantages);
+    onAdvantagesChangedForRecalculation?.call();
     notifyListeners();
   }
   void toggleAdvantageSelection(String advantageName, bool isSelected) {

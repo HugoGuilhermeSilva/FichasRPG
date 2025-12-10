@@ -9,7 +9,7 @@ List<Advantage> allAdvantages = [
   Advantage(name: 'Ambidestria', description: 'Permite atacar 3x ao inves de uma com seu ataque padrão. Tamebm permite utilizar 2 armas no lugar de um acessório ao invés de 1. '),
   Advantage(name: 'Anjo da Morte', description: 'Todo o dano do personagem passa a ser letal e caso o personagem cause dano letal o alvo não fica em death save, ele morre instantaneamente.'),
   Advantage(name: 'Aperfeiçoamento', description: 'Recebe 1/3+2 do nivel em combate corporal.'),
-  Advantage(name: 'Aprendiz Rápido', description: 'Recebe +1 ponto de pericia por nivel e o limite de pontos de pericia passa a ser o nivel. '),
+  Advantage(name: 'Aprendiz Rápido', description: 'Recebe +1 ponto de pericia por nivel e o limite de pontos de pericia passa a ser o nivel.'),
   Advantage(name: 'Aproveitador', description: 'Recebe 1/4+2 do nível em ações bônus. '),
   Advantage(name: 'Ás do volante', description: 'Voce é proficiente em qualquer tipo de veiculo, e também recebe um veiculo do mestre.'),
   Advantage(name: 'Ataque Agravante', description: 'Ganha 5x o seu nivel em dano fixo no dano por turno, ou seu nivel em dano fixo no dano normal.'),

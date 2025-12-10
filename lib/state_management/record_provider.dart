@@ -19,41 +19,48 @@ class RecordProvider with ChangeNotifier {
   List<Record> get records => _records;
   Record? get activeRecord => _activeRecord;
 
-  RecordProvider(){
+  RecordProvider() {
     advantagesProvider = AdvantagesProvider(
-      onDataChanged : (newData) {
+      onDataChanged: (newData) {
         updateActiveRecordData(advantagesData: newData);
       },
-    );
-    powerProvider = PowerProvider(
-      onDataChanged: (newData) {
-        updateActiveRecordData(powersData: newData);
+      onAdvantagesChangedForRecalculation: () {
         this.characterProvider.recalculateAllStats();
       },
     );
+    late PowerProvider tempPower;
+    late AttributesProvider tempAttributes;
     characterProvider = CharacterProvider(
-      powerProvider: powerProvider,
-      onDataChanged: ({
-        int? characterLevel,
-        String? archetypeName,
-        List<String>? selectedSkills,
-      }) {
+      getPowerProvider: () => tempPower,
+      getAttributesProvider: () => tempAttributes,
+      advantagesProvider: advantagesProvider,
+      onDataChanged: ({String? archetypeName, int? characterLevel, List<String>? selectedSkills}) {
         updateActiveRecordData(
-          characterLevel: characterLevel,
-          archetypeName: archetypeName,
-          selectedSkills: selectedSkills,
+            archetypeName: archetypeName,
+            characterLevel: characterLevel,
+            selectedSkills: selectedSkills
         );
       },
     );
-    attributesProvider = AttributesProvider(
+    tempPower = PowerProvider(
+      characterProvider: characterProvider,
+      advantagesProvider: advantagesProvider,
+      onDataChanged: (newData) {
+        updateActiveRecordData(powersData: newData);
+      },
+      onPowersChangedForRecalculation: () {
+        this.characterProvider.recalculateAllStats();
+      },
+    );
+    tempAttributes = AttributesProvider(
+      characterProvider: characterProvider,
       onDataChanged: (newData) {
         updateActiveRecordData(attributesData: newData);
-      }
+      },
     );
-    characterProvider.setAttributesProvider(attributesProvider);
-    characterProvider.setAdvantagesProvider(advantagesProvider);
-    powerProvider.setCharacterProvider(characterProvider);
-    attributesProvider.setCharacterProvider(characterProvider);
+    powerProvider = tempPower;
+    attributesProvider = tempAttributes;
+
     loadAllRecords();
   }
   Future<void> loadAllRecords() async {

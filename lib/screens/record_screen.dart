@@ -696,7 +696,7 @@ class RecordScreen extends StatelessWidget {
                                   children: powerProvider.allActivePowerNames.map((powerName){
                                     final powerLevel = powerProvider.getPowerLevel(powerName);
                                     return CardListWidget(
-                                      nameCard: '$powerName (Graus : $powerLevel)',
+                                      nameCard: '$powerName\n(Graus: $powerLevel)',
                                     );
                                   }).toList(),
                                 ),

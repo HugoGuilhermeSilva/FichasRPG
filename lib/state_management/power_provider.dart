@@ -1,11 +1,13 @@
 import 'package:fichas/data/power_model.dart';
+import 'package:fichas/state_management/advantages_provider.dart';
 import 'package:fichas/state_management/character_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:fichas/data/power_list.dart';
 import 'package:fichas/models/record_model.dart';
 
 class PowerProvider with ChangeNotifier{
-  CharacterProvider? characterProvider;
+  final CharacterProvider characterProvider;
+  final AdvantagesProvider advantagesProvider;
   Map<String, int> _selectedPowers = {};
   Map<String, int> get selectedPowers => _selectedPowers;
   Map<String, int> _bonusPowers = {};
@@ -13,14 +15,10 @@ class PowerProvider with ChangeNotifier{
   final TextEditingController baseDamageController = TextEditingController();
   final Function(Map<String, int>)? onDataChanged;
   bool _isRecalculatingFromCharacter = false;
+  final VoidCallback? onPowersChangedForRecalculation;
 
-  PowerProvider({this.onDataChanged,this.characterProvider}) {
+  PowerProvider({this.onDataChanged,required this.characterProvider, required this.advantagesProvider,this.onPowersChangedForRecalculation,}) {
     _updateCalculatedValues();
-  }
-  void setCharacterProvider(CharacterProvider provider) {
-    characterProvider?.removeListener(_onCharacterProviderChanged);
-    characterProvider = provider;
-    characterProvider?.addListener(_onCharacterProviderChanged);
   }
   void ensurePowerExists(String powerName) {
     if (!_selectedPowers.containsKey(powerName)) {
@@ -41,6 +39,7 @@ class PowerProvider with ChangeNotifier{
   }
   void _notifyAndSaveChanges(){
     onDataChanged?.call(_selectedPowers);
+    onPowersChangedForRecalculation?.call();
     _updateCalculatedValues();
   }
   bool isPowerSelected(String powerName){
@@ -110,26 +109,26 @@ class PowerProvider with ChangeNotifier{
     return totalHeal;
   }
   int get baseHeal{
-    final int baseHealFromArchetype = characterProvider?.healBonus ?? 0;
+    final int baseHealFromArchetype = characterProvider.healBonus;
     final baseHeal = baseHealFromArchetype;
     return baseHeal;
   }
   int get stepHeal{
-    final int bonusStepHealFromArchetype = characterProvider?.stepHeal ?? 0;
+    final int bonusStepHealFromArchetype = characterProvider.stepHeal;
     final stepHeal = bonusStepHealFromArchetype + 6;
     return stepHeal;
   }
   int get stepDamage{
-    final bonusByFirePower = characterProvider?.bonusByFirePower ?? 0;
-    final bonusByDestroyer = characterProvider?.destroyerBonus ?? 0;
+    final bonusByFirePower = characterProvider.bonusByFirePower;
+    final bonusByDestroyer = characterProvider.destroyerBonus;
     final stepDamage = 6 + bonusByFirePower * 2 + bonusByDestroyer * 2;
     return stepDamage;
   }
   int get totalDisplacement {
     const baseDisplacement = 10;
     final moveLevel = getPowerLevel('Mover-se');
-    final modifierDisplacementLevel = characterProvider?.modifierDisplacementLevel ?? 5;
-    final boltMultiplier = characterProvider?.boltMultiplier ?? 1;
+    final modifierDisplacementLevel = characterProvider.modifierDisplacementLevel;
+    final boltMultiplier = characterProvider.boltMultiplier;
     final totalDisplacement = (baseDisplacement + (modifierDisplacementLevel * moveLevel)) * boltMultiplier;
     return totalDisplacement;
   }
@@ -145,14 +144,14 @@ class PowerProvider with ChangeNotifier{
   }
   int get defendLevel{
     final defend = getPowerLevel('Defender');
-    final bonus1C = characterProvider?.defendBonus ?? 1;
+    final bonus1C = characterProvider.defendBonus;
     final defendLevel = defend * bonus1C;
     return defendLevel;
   }
   int get rdLevel{
     final rd = 2;
-    final rdByPosture = characterProvider?.postureRdBonus ?? 0;
-    final rdByImmutable = characterProvider?.immutableBonus ?? 0;
+    final rdByPosture = characterProvider.postureRdBonus;
+    final rdByImmutable = characterProvider.immutableBonus;
     final rdLevel = rd + rdByPosture + rdByImmutable;
     return rdLevel;
   }
@@ -169,30 +168,31 @@ class PowerProvider with ChangeNotifier{
   int get baseDamage{
     final elementalDamage = getPowerLevel('Manipulação Elemental');
     final gravDamage = getPowerLevel('Gravidade');
-    final archetypeSMI = characterProvider?.flatDamageByMov ?? 0;
-    final archetypeBH = characterProvider?.breakReadBonus ?? 0;
-    final archetypeWar = characterProvider?.warBonus ?? 0;
-    final archetypeSniper = characterProvider?.sniperBonus ?? 0;
+    final archetypeSMI = characterProvider.flatDamageByMov;
+    final archetypeBH = characterProvider.breakReadBonus;
+    final archetypeWar = characterProvider.warBonus;
+    final archetypeSniper = characterProvider.sniperBonus;
     final totalBaseDamage = (elementalDamage * 2) + (gravDamage * 2) + archetypeSMI + archetypeBH + archetypeWar + archetypeSniper;
     return totalBaseDamage;
   }
   int get criticalMerge{
     final baseCriticalMerge = 20;
-    final archetypeWP = characterProvider?.criticalReductionWeakPoint ?? 0;
+    final archetypeWP = characterProvider.criticalReductionWeakPoint;
     final finalCriticalMerge = baseCriticalMerge - archetypeWP;
     return finalCriticalMerge;
   }
   int get criticalMultiplier{
     final baseCriticalMultiplier = 2;
-    final criticalMultiplierByPowerfulStrike = characterProvider?.criticalMultiplierPowerfulStrike ?? 0;
-    final zevyrBonus = characterProvider?.zevyrBonus ?? 0;
+    final criticalMultiplierByPowerfulStrike = characterProvider.criticalMultiplierPowerfulStrike;
+    final zevyrBonus = characterProvider.zevyrBonus;
     final finalCriticalMultiplier = baseCriticalMultiplier + criticalMultiplierByPowerfulStrike + zevyrBonus;
     return finalCriticalMultiplier;
   }
   int get totalStrikes{
-    final strikesBase = 1;
+    final bool hasAmbidextery = advantagesProvider.allSelectedAdvantages.contains('Ambidestria');
+    final strikesBase = hasAmbidextery ? 3 : 1;
     final bonusStrikesByAcc = getPowerLevel('Acelerar');
-    final baseStrikesBySlice = characterProvider?.sliceBonus ?? 0;
+    final baseStrikesBySlice = characterProvider.sliceBonus;
     int bonusStrikesBySlice;
     if (baseStrikesBySlice == 0) {
       bonusStrikesBySlice = 0;
@@ -200,21 +200,20 @@ class PowerProvider with ChangeNotifier{
       bonusStrikesBySlice = ((strikesBase + bonusStrikesByAcc) / baseStrikesBySlice).round();
     }
     final totalStrikes = strikesBase + bonusStrikesByAcc + bonusStrikesBySlice;
-
     return totalStrikes;
   }
   int get regenTotal{
     final regenBase = getPowerLevel('Regeneração');
-    final regenByTank = characterProvider?.regenBonus ?? 1;
+    final regenByTank = characterProvider.regenBonus;
     final regenTotal = regenBase * regenByTank;
     return regenTotal;
   }
   int get rangeTotal{
     final rangeBase = getPowerLevel('Alcance');
     final areaBase = getPowerLevel('Área');
-    final archetypeBaseRangeMultiplier = characterProvider?.rangeMultiplier ?? 5;
-    final archetypeAreaMultiplier = characterProvider?.areaMultiplier ?? 3;
-    final archetypeSniperBonus = characterProvider?.rangeBonusMultiplier ?? 0;
+    final archetypeBaseRangeMultiplier = characterProvider.rangeMultiplier;
+    final archetypeAreaMultiplier = characterProvider.areaMultiplier;
+    final archetypeSniperBonus = characterProvider.rangeBonusMultiplier;
     final rangeTotal = rangeBase * (archetypeBaseRangeMultiplier + archetypeSniperBonus) + areaBase * archetypeAreaMultiplier;
     return rangeTotal;
   }
@@ -235,18 +234,8 @@ class PowerProvider with ChangeNotifier{
       notifyListeners();
     }
   }
-  void notifyExternalChange() {
-    _updateCalculatedValues();
-  }
-  void _onCharacterProviderChanged() {
-    if (_isRecalculatingFromCharacter) return;
-    _isRecalculatingFromCharacter = true;
-    _updateCalculatedValues();
-    _isRecalculatingFromCharacter = false;
-  }
   @override
   void dispose() {
-    characterProvider?.removeListener(_onCharacterProviderChanged);
     baseDamageController.dispose();
     super.dispose();
   }

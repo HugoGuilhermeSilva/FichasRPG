@@ -21,28 +21,27 @@ class CardListWidget extends StatelessWidget{
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Row(
+          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Center(
-              child: Text(nameCard,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-                fontSize: 12
-              ),),
-            ),
-            Spacer(),
-            isNormal == true
-                ? Tooltip(
-              message: description ?? '',
-              child: Icon(
-                Icons.info_outline,
-                color: Colors.purpleAccent,
-                size: 16,
+            Text(nameCard,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              fontSize: 12
+            ),),
+            if (isNormal == true)
+              const SizedBox(width: 8),
+            if (isNormal == true)
+              Tooltip(
+                message: description ?? '',
+                child: Icon(
+                  Icons.info_outline,
+                  color: Colors.purpleAccent,
+                  size: 16,
+                ),
               ),
-            )
-                : const SizedBox(),
           ],
         ),
       ),

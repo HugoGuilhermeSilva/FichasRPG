@@ -7,9 +7,9 @@ import 'package:fichas/data/archetype_data.dart';
 import 'package:fichas/models/record_model.dart';
 
 class CharacterProvider with ChangeNotifier {
-  final PowerProvider powerProvider;
-  late final AttributesProvider attributesProvider;
-  late final AdvantagesProvider advantagesProvider;
+  final PowerProvider Function() getPowerProvider;
+  final AttributesProvider Function() getAttributesProvider;
+  final AdvantagesProvider advantagesProvider;
   bool _isRecalculatingFromAttributes = false;
   final Function({
   int? characterLevel,
@@ -59,26 +59,20 @@ class CharacterProvider with ChangeNotifier {
   int sniperBonus = 0;
   int slenderBonus = 0;
   String? activeArchetype;
+  PowerProvider get powerProvider => getPowerProvider();
+  AttributesProvider get attributesProvider => getAttributesProvider();
   final List<String> _selectedAdvantagesNames = [];
   List<String> _selectedSkillNames = [];
   List<String> get selectedSkillNames => _selectedSkillNames;
   int get level => int.tryParse(levelController.text) ?? 1;
   List<String> get selectedAdvantagesNames => _selectedAdvantagesNames;
-  CharacterProvider({required this.powerProvider, this.onDataChanged}) {
+  CharacterProvider({
+    required this.getPowerProvider,
+    required this.getAttributesProvider,
+    required this.advantagesProvider,
+    this.onDataChanged}) {
     levelController.addListener(_handleDataChangeAndSave);
     //powerProvider.addListener(recalculateAllStats);
-  }
-  void setAdvantagesProvider(AdvantagesProvider aProvider) {
-    advantagesProvider = aProvider;
-  }
-  void setAttributesProvider(AttributesProvider aProvider) {
-    attributesProvider = aProvider;
-    attributesProvider.addListener(() {
-      if (_isRecalculatingFromAttributes) return;
-      _isRecalculatingFromAttributes = true;
-      recalculateAllStats();
-      _isRecalculatingFromAttributes = false;
-    });
   }
   void updateFromRecord(Record? record) {
     levelController.removeListener(_handleDataChangeAndSave);
@@ -114,8 +108,11 @@ class CharacterProvider with ChangeNotifier {
   bool isSkillSelected(String skillName) {
     return _selectedSkillNames.contains(skillName);
   }
+  bool isArchetypeSelected(String archetypeName){
+    return advantagesProvider.allSelectedAdvantages.contains(archetypeName);
+  }
   void recalculateAllStats() {
-    advantagesProvider.clearBonusAdvantages();
+    advantagesProvider.clearBonusAdvantagesSilently();
     powerProvider.clearBonusPowers();
     activeArchetype = null;
     lifeBase = 0;
@@ -169,7 +166,9 @@ class CharacterProvider with ChangeNotifier {
     }
     if (activeArchetype != null) {
       final archetypeData = allArchetypes.firstWhere((arch) => arch.name == activeArchetype);
-      skillPointPerLevel = archetypeData.skillPointsPerLevel * level;
+      final bool hasQuickLearner = advantagesProvider.selectedAdvantages.contains('Aprendiz Rápido');
+      final int quickLearnerBonus = hasQuickLearner ? 1 : 0;
+      skillPointPerLevel = (archetypeData.skillPointsPerLevel + quickLearnerBonus) * level;
       baseAttributePoints = archetypeData.attributePoints * level + 2;
       baseMana = archetypeData.mana * level;
     }
@@ -216,7 +215,7 @@ class CharacterProvider with ChangeNotifier {
         modifierDisplacementLevel = 15;
       }
       if(skillName == 'Agil'){
-        advantagesProvider.addBonusAdvantage('Agil');
+        advantagesProvider.addBonusAdvantageSilently('Agil');
       }
       if(skillName == 'Soco de Massa Infinita'){
         int bonusC = powerProvider.getPowerLevel('Mover-se');
@@ -248,19 +247,19 @@ class CharacterProvider with ChangeNotifier {
         zevyrBonus = 2;
       }
       if(skillName == 'Atacante'){
-        advantagesProvider.addBonusAdvantage('Aperfeiçoamento');
+        advantagesProvider.addBonusAdvantageSilently('Aperfeiçoamento');
         int bonusDamage = level;
         powerProvider.ensurePowerExists('Dano');
         powerProvider.addBonusPowerLevels('Dano', bonusDamage);
       }
       if(skillName == 'Tank'){
-        advantagesProvider.addBonusAdvantage('Ler Movimentos');
+        advantagesProvider.addBonusAdvantageSilently('Ler Movimentos');
         int bonusBlock = level;
         blockTankBonus = bonusBlock;
       }
       if(skillName == 'Hibrido'){
-        advantagesProvider.addBonusAdvantage('Agil');
-        advantagesProvider.addBonusAdvantage('Ambidestria');
+        advantagesProvider.addBonusAdvantageSilently('Agil');
+        advantagesProvider.addBonusAdvantageSilently('Ambidestria');
       }
       if(skillName == 'Postura Defensiva'){
         int bonusDefend = level;
@@ -310,10 +309,10 @@ class CharacterProvider with ChangeNotifier {
       }
       if(skillName == 'Atirador de Elite'){
         rangeMultiplier = 15;
-        advantagesProvider.addBonusAdvantage('Atirador');
+        advantagesProvider.addBonusAdvantageSilently('Atirador');
       }
       if(skillName == 'Disparador'){
-        advantagesProvider.addBonusAdvantage('Na Mira');
+        advantagesProvider.addBonusAdvantageSilently('Na Mira');
       }
       if(skillName == 'Sniper'){
         rangeBonusMultiplier = 5;
@@ -338,7 +337,6 @@ class CharacterProvider with ChangeNotifier {
     manaController.text = baseMana.toString();
     int currentXp = baseXp - powerProvider.totalPowersCost;
     xpController.text = currentXp.toString();
-    powerProvider.notifyExternalChange();
     if (!_isRecalculatingFromAttributes) {
       notifyListeners();
     }

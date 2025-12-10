@@ -4,7 +4,7 @@ import 'package:fichas/state_management/character_provider.dart';
 import 'package:fichas/models/record_model.dart';
 
 class AttributesProvider with ChangeNotifier {
-  CharacterProvider? characterProvider;
+  final CharacterProvider characterProvider;
   bool _isRecalculatingFromCharacter = false;
   final Function(Map<String, dynamic>)? onDataChanged;
   final Map<String, TextEditingController> baseControllers = {};
@@ -20,17 +20,9 @@ class AttributesProvider with ChangeNotifier {
   final Map<String, int> _expertiseTotals = {};
   final Map<String, int> _combatTotals = {};
 
-  AttributesProvider({this.onDataChanged}) {
+  AttributesProvider({this.onDataChanged, required this.characterProvider}) {
     _initializeControllers();
-  }
-  void setCharacterProvider(CharacterProvider cProvider) {
-    characterProvider = cProvider;
-    characterProvider?.addListener(() {
-      if (_isRecalculatingFromCharacter) return;
-      _isRecalculatingFromCharacter = true;
-      _recalculateAndNotify();
-      _isRecalculatingFromCharacter = false;
-    });
+    characterProvider.addListener(_recalculateAndNotify);
   }
   void updateFromRecord(Record? record) {
     final data = record?.attributesData ?? {};
@@ -105,9 +97,9 @@ class AttributesProvider with ChangeNotifier {
     }
   }
   int get totalLife {
-    final currentLevel = characterProvider?.level ?? 0;
+    final currentLevel = characterProvider.level;
     final currentForce = _attributesTotals['Vigor'] ?? 0;
-    final currentLife = characterProvider?.finalLife ?? 0;
+    final currentLife = characterProvider.finalLife;
     final totalLife = currentLife + (currentForce * currentLevel);
     return totalLife;
   }
@@ -134,17 +126,19 @@ class AttributesProvider with ChangeNotifier {
   int get totalInitiative {
     final totalAgility = _attributesTotals['Agilidade'] ?? 0;
     final totalReadness = _expertiseTotals['Prontidão'] ?? 0;
-    final totalInitiative = totalAgility + totalReadness;
+    final bool hasAgilBonus = characterProvider.advantagesProvider.allSelectedAdvantages.contains('Agil');
+    final agilBonus = hasAgilBonus ? ((characterProvider.level) / 2).round() : 0;
+    final totalInitiative = totalAgility + totalReadness + agilBonus;
     return totalInitiative;
   }
   int get remainingAttributePoints {
-    final currentLevel = characterProvider?.level ?? 0;
+    final currentLevel = characterProvider.level;
     final totalAvailable = 2 + (currentLevel * 6);
     final remaining = totalAvailable - spentAttributePoints;
     return remaining;
   }
   int get remainingExpertisePoints {
-    final pointsPerLevel = characterProvider?.skillPointPerLevel ?? 0;
+    final pointsPerLevel = characterProvider.skillPointPerLevel;
     final totalAvailable = pointsPerLevel;
     final remaining = totalAvailable - spentExpertisePoints;
     return remaining;
@@ -220,15 +214,30 @@ class AttributesProvider with ChangeNotifier {
     final bonusValue = int.tryParse(combatBonusControllers[combatName]?.text ?? '') ?? 0;
     int skillBonus = 0;
     if (combatName == 'Força de Vontade'){
-      skillBonus = characterProvider?.bonusWillForce ?? 0;
+      skillBonus = characterProvider.bonusWillForce;
     }
     if (combatName == 'Bloqueio'){
-      int slenderBonus = characterProvider?.slenderBonus ?? 0;
-      int fighterTankBonus = characterProvider?.blockTankBonus ?? 0;
+      int slenderBonus = characterProvider.slenderBonus;
+      int fighterTankBonus = characterProvider.blockTankBonus;
       skillBonus = fighterTankBonus + slenderBonus;
     }
     if(combatName == 'Esquiva'){
-      skillBonus = characterProvider?.slenderBonus ?? 0;
+      skillBonus = characterProvider.slenderBonus;
+    }
+    if(combatName == 'Combate Corporal'){
+      final bool hasImprovement = characterProvider.advantagesProvider.allSelectedAdvantages.contains('Aperfeiçoamento');
+      final int improvementBonus = hasImprovement ? ((characterProvider.level) / 3).round() + 2 : 0;
+      skillBonus = improvementBonus;
+    }
+    if(combatName == 'Combate a Distancia'){
+      final bool hasShooter = characterProvider.advantagesProvider.allSelectedAdvantages.contains('Atirador');
+      final int shooterBonus = hasShooter ? ((characterProvider.level) / 3).round() + 2 : 0;
+      skillBonus = shooterBonus;
+    }
+    if(combatName == 'Combate Mental'){
+      final bool hasMind = characterProvider.advantagesProvider.allSelectedAdvantages.contains('Megamente');
+      final int mindBonus = hasMind ? ((characterProvider.level) / 3).round() + 2 : 0;
+      skillBonus = mindBonus;
     }
     final newTotal = specificValue + attributeValue + bonusValue + skillBonus;
     if (_combatTotals[combatName] != newTotal) {
@@ -239,7 +248,7 @@ class AttributesProvider with ChangeNotifier {
   }
   @override
   void dispose() {
-    characterProvider?.removeListener(_recalculateAndNotify);
+    characterProvider.removeListener(_recalculateAndNotify);
     lostLifeController.dispose();
     totalLifeController.dispose();
     initiativeController.dispose();
