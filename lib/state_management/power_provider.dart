@@ -12,7 +12,6 @@ class PowerProvider with ChangeNotifier{
   Map<String, int> get selectedPowers => _selectedPowers;
   Map<String, int> _bonusPowers = {};
   Map<String, int> get bonusPowers => _bonusPowers;
-  final TextEditingController baseDamageController = TextEditingController();
   final Function(Map<String, int>)? onDataChanged;
   bool _isRecalculatingFromCharacter = false;
   final VoidCallback? onPowersChangedForRecalculation;
@@ -168,24 +167,30 @@ class PowerProvider with ChangeNotifier{
   int get baseDamage{
     final elementalDamage = getPowerLevel('Manipulação Elemental');
     final gravDamage = getPowerLevel('Gravidade');
+    final bool hasAggravating = advantagesProvider.allSelectedAdvantages.contains('Ataque Agravante');
+    final bonusByAggravating = hasAggravating ? characterProvider.level : 0;
     final archetypeSMI = characterProvider.flatDamageByMov;
     final archetypeBH = characterProvider.breakReadBonus;
     final archetypeWar = characterProvider.warBonus;
     final archetypeSniper = characterProvider.sniperBonus;
-    final totalBaseDamage = (elementalDamage * 2) + (gravDamage * 2) + archetypeSMI + archetypeBH + archetypeWar + archetypeSniper;
+    final totalBaseDamage = (elementalDamage * 2) + (gravDamage * 2) + archetypeSMI + archetypeBH + archetypeWar + archetypeSniper + bonusByAggravating;
     return totalBaseDamage;
   }
   int get criticalMerge{
     final baseCriticalMerge = 20;
+    final bool hasPlusCritical = characterProvider.advantagesProvider.allSelectedAdvantages.contains('Critico Aprimorado');
+    final bonusByPlusCritical = hasPlusCritical ? 1 : 0;
     final archetypeWP = characterProvider.criticalReductionWeakPoint;
-    final finalCriticalMerge = baseCriticalMerge - archetypeWP;
+    final finalCriticalMerge = baseCriticalMerge - archetypeWP - bonusByPlusCritical;
     return finalCriticalMerge;
   }
   int get criticalMultiplier{
     final baseCriticalMultiplier = 2;
+    final bool hasPlusCritical = characterProvider.advantagesProvider.allSelectedAdvantages.contains('Critico Aprimorado');
+    final bonusByPlusCritical = hasPlusCritical ? 1 : 0;
     final criticalMultiplierByPowerfulStrike = characterProvider.criticalMultiplierPowerfulStrike;
     final zevyrBonus = characterProvider.zevyrBonus;
-    final finalCriticalMultiplier = baseCriticalMultiplier + criticalMultiplierByPowerfulStrike + zevyrBonus;
+    final finalCriticalMultiplier = baseCriticalMultiplier + criticalMultiplierByPowerfulStrike + zevyrBonus + bonusByPlusCritical;
     return finalCriticalMultiplier;
   }
   int get totalStrikes{
@@ -229,14 +234,8 @@ class PowerProvider with ChangeNotifier{
     return totalCost;
   }
   void _updateCalculatedValues() {
-    baseDamageController.text = baseDamage.toString();
     if (!_isRecalculatingFromCharacter) {
       notifyListeners();
     }
-  }
-  @override
-  void dispose() {
-    baseDamageController.dispose();
-    super.dispose();
   }
 }

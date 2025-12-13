@@ -12,7 +12,7 @@ List<Advantage> allAdvantages = [
   Advantage(name: 'Aprendiz Rápido', description: 'Recebe +1 ponto de pericia por nivel e o limite de pontos de pericia passa a ser o nivel.'),
   Advantage(name: 'Aproveitador', description: 'Recebe 1/4+2 do nível em ações bônus. '),
   Advantage(name: 'Ás do volante', description: 'Voce é proficiente em qualquer tipo de veiculo, e também recebe um veiculo do mestre.'),
-  Advantage(name: 'Ataque Agravante', description: 'Ganha 5x o seu nivel em dano fixo no dano por turno, ou seu nivel em dano fixo no dano normal.'),
+  Advantage(name: 'Ataque Agravante', description: 'Ganha o seu nivel em dano fixo.(Tambem se aplica em dano por turno)'),
   Advantage(name: 'Ataque Brutal', description: 'Pode givar 1 de acerto para receber 1/2 nivel em graus de dano a mais para cada 1 de acerto que perdeu. '),
   Advantage(name: 'Ataque descuidado', description: 'Voce recebe vantagem em todas as rolagens de dano, porém todos os inimigos tem vantagem para te acertar ate o inicio do seu proximo turno.'),
   Advantage(name: 'Ataques Rápidos', description: 'Pode usar agilidade para atacar corpo a corpo no lugar de força.'),

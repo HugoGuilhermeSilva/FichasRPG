@@ -491,28 +491,38 @@ class RecordScreen extends StatelessWidget {
                                 ),
                               ),
                               SizedBox(width: 2,),
-                              Expanded(child: TextField(
-                                readOnly: true,
-                                controller: powerProvider.baseDamageController,
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                                decoration: const InputDecoration(
+                              Expanded(
+                                child: TextField(
+                                  readOnly: true,
+                                  key: ValueKey(powerProvider.baseDamage),
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  decoration: InputDecoration(
                                     labelText: 'Dano Fixo',
-                                    labelStyle: TextStyle(
-                                        color: Colors.purpleAccent,
-                                        fontWeight: FontWeight.bold),
-                                    enabledBorder: OutlineInputBorder(
+                                    hintText: powerProvider.baseDamage.toString(),
+                                    hintStyle: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                                    labelStyle: const TextStyle(
+                                      color: Colors.purpleAccent,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    enabledBorder: const OutlineInputBorder(
                                         borderSide: BorderSide(
                                             color: Colors.purpleAccent,
                                             width: 2)),
-                                    focusedBorder: OutlineInputBorder(
+                                    focusedBorder: const OutlineInputBorder(
                                         borderSide: BorderSide(
                                             color: Colors.purpleAccent,
-                                            width: 3
-                                        )
-                                    ))
-                              )),
+                                            width: 3)),
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
                           SizedBox(height: 8,),

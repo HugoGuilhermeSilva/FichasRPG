@@ -195,9 +195,14 @@ class AttributesProvider with ChangeNotifier {
 
     final attributeValue = (_attributesTotals[dependentAttribute] ?? 0);
     final baseExpertiseValue = (attributeValue / 2).round();
-    final bonusValue = int.tryParse(
-        expertiseBonusControllers[expertiseName]?.text ?? '') ?? 0;
-    final newTotal = baseExpertiseValue + bonusValue;
+    final bonusValue = int.tryParse(expertiseBonusControllers[expertiseName]?.text ?? '') ?? 0;
+    int skillBonus = 0;
+    if(expertiseName == 'Furtividade'){
+      final bool hasMislead = characterProvider.advantagesProvider.allSelectedAdvantages.contains('Despistar');
+      final misleadBonus = hasMislead ? (characterProvider.level / 2).round() : 0;
+      skillBonus = misleadBonus;
+    }
+    final newTotal = baseExpertiseValue + bonusValue + skillBonus;
 
     if (_expertiseTotals[expertiseName] != newTotal) {
       _expertiseTotals[expertiseName] = newTotal;
@@ -206,9 +211,18 @@ class AttributesProvider with ChangeNotifier {
     return false;
   }
   bool _updateCombatTotal(String combatName) {
-    final dependentAttribute = combatAttributeMap[combatName];
+    String? dependentAttribute;
+    if(combatName == 'Combate Corporal'){
+      final bool hasRapidStrikes = characterProvider.advantagesProvider.allSelectedAdvantages.contains('Ataques Rápidos');
+      if(hasRapidStrikes){
+        dependentAttribute = 'Agilidade';
+      } else {
+        dependentAttribute = combatAttributeMap[combatName];
+      }
+    } else {
+      dependentAttribute = combatAttributeMap[combatName];
+    }
     if (dependentAttribute == null) return false;
-
     final specificValue = combatBaseValueMap[combatName] ?? 0;
     final attributeValue = (_attributesTotals[dependentAttribute] ?? 0);
     final bonusValue = int.tryParse(combatBonusControllers[combatName]?.text ?? '') ?? 0;
