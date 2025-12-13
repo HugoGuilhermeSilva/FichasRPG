@@ -111,6 +111,15 @@ class CharacterProvider with ChangeNotifier {
   bool isArchetypeSelected(String archetypeName){
     return advantagesProvider.allSelectedAdvantages.contains(archetypeName);
   }
+  int get hardAsStoneBonus {
+    final bool hasHardAsStone = advantagesProvider.isAdvantageSelected('Duro como pedra');
+    if (hasHardAsStone) {
+      final int defendPowerLevel = powerProvider.getPowerLevel('Defender');
+      return defendPowerLevel;
+    } else {
+      return 0;
+    }
+  }
   void recalculateAllStats() {
     advantagesProvider.clearBonusAdvantagesSilently();
     powerProvider.clearBonusPowers();
@@ -331,8 +340,16 @@ class CharacterProvider with ChangeNotifier {
     }
     if (activeArchetype != null) {
       final archetypeData = allArchetypes.firstWhere((arch) => arch.name == activeArchetype);
-      finalLife = ((archetypeData.baseHp + lifeBase) * level + bonusLifeByWall) * wallBonus;
-      baseXp = (archetypeData.baseXp + bonusXp1 + bonusXp2) * level;
+      finalLife = ((archetypeData.baseHp + lifeBase) * level + bonusLifeByWall);
+      final hasSlender = advantagesProvider.allSelectedAdvantages.contains('Esguio');
+      final bool lifeIsLow = attributesProvider.isLifeBelow100;
+      int slenderXpBonus = 1;
+      if(hasSlender && lifeIsLow){
+        slenderXpBonus = 2;
+      }
+      final bool hasMutant = advantagesProvider.allSelectedAdvantages.contains('Mutação');
+      final int mutantBonus = hasMutant ? 40 : 0;
+      baseXp = ((archetypeData.baseXp + bonusXp1 + bonusXp2 + mutantBonus) * level) * slenderXpBonus;
     }
     manaController.text = baseMana.toString();
     int currentXp = baseXp - powerProvider.totalPowersCost;

@@ -27,6 +27,7 @@ final List<Power> allPowers = _powersData.map((data) => Power.fromMap(data)).toL
     {'name': 'Turbinagem', 'description': '4 DE RAM\nUsa uma ação bonus para receber 1/4 da sua inteligencia como acerto e 3x ela em vida temporaria por 2 turnos', 'cost': 60},
     {'name': 'Corta Cura', 'description': 'Faz com que o alvo cure 1/4 a menos para cada grau comprado', 'cost': 100},
     {'name': 'Cura', 'description': 'Usa uma ação para curar em 1d6 para cada grau de cura', 'cost': 15},
+    {'name': 'Graus de Vida', 'description' : 'Cada grau aumenta sua vida maxima em 10', 'cost': 15},
     {'name': 'Dano', 'description': 'Causa 1d6 de dano para cada grau comprado em um ataque', 'cost': 15},
     {'name': 'Dano por Turno', 'description': 'Causa 1d4 de dano no alvo toda vez que um turno se passa no combrat por até 1/4 dos graus comprados de dano por turno de vezes', 'cost': 15},
     {'name': 'Defender', 'description': 'Reduz o dano recebido de um ataque em 2 para cada grau comprado', 'cost': 15},

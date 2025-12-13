@@ -100,8 +100,16 @@ class AttributesProvider with ChangeNotifier {
     final currentLevel = characterProvider.level;
     final currentForce = _attributesTotals['Vigor'] ?? 0;
     final currentLife = characterProvider.finalLife;
-    final totalLife = currentLife + (currentForce * currentLevel);
+    final hStoneBonus = characterProvider.hardAsStoneBonus * 10;
+    final bool hasRobust = characterProvider.advantagesProvider.allSelectedAdvantages.contains('Robusto');
+    final robustBonus = hasRobust ? 2 : 1;
+    final wallBonus = characterProvider.wallBonus;
+    final int lifeDegreeBonus = characterProvider.powerProvider.getPowerLevel('Graus de Vida') * 10;
+    final totalLife = ((currentLife + (currentForce * currentLevel) + hStoneBonus + lifeDegreeBonus) * robustBonus) * wallBonus;
     return totalLife;
+  }
+  bool get isLifeBelow100{
+    return totalLife < 100;
   }
   int get currentLife {
     final total = totalLife;
@@ -128,7 +136,11 @@ class AttributesProvider with ChangeNotifier {
     final totalReadness = _expertiseTotals['Prontidão'] ?? 0;
     final bool hasAgilBonus = characterProvider.advantagesProvider.allSelectedAdvantages.contains('Agil');
     final agilBonus = hasAgilBonus ? ((characterProvider.level) / 2).round() : 0;
-    final totalInitiative = totalAgility + totalReadness + agilBonus;
+    final bool hasFlash = characterProvider.advantagesProvider.allSelectedAdvantages.contains('Flash');
+    final flashBonus = hasFlash ? (characterProvider.level / 2).round() : 0;
+    final bool hasAttentive = characterProvider.advantagesProvider.allSelectedAdvantages.contains('Prontidão Aprimorada');
+    final attentiveBonus = hasAttentive ? 10 : 0;
+    final totalInitiative = totalAgility + totalReadness + agilBonus + flashBonus + attentiveBonus;
     return totalInitiative;
   }
   int get remainingAttributePoints {
@@ -190,9 +202,18 @@ class AttributesProvider with ChangeNotifier {
     }
   }
   bool _updateExpertiseTotal(String expertiseName) {
-    final dependentAttribute = expertiseAttributeMap[expertiseName];
-    if (dependentAttribute == null) return false;
-
+    String? dependentAttribute;
+    if(expertiseName == 'Atletismo'){
+      final bool hasAgil = characterProvider.advantagesProvider.allSelectedAdvantages.contains('Agil');
+      if(hasAgil){
+        dependentAttribute = 'Agilidade';
+      } else {
+        dependentAttribute = expertiseAttributeMap[expertiseName];
+      }
+    }else {
+      dependentAttribute = expertiseAttributeMap[expertiseName];
+    }
+    if(dependentAttribute == null) return false;
     final attributeValue = (_attributesTotals[dependentAttribute] ?? 0);
     final baseExpertiseValue = (attributeValue / 2).round();
     final bonusValue = int.tryParse(expertiseBonusControllers[expertiseName]?.text ?? '') ?? 0;
@@ -201,6 +222,36 @@ class AttributesProvider with ChangeNotifier {
       final bool hasMislead = characterProvider.advantagesProvider.allSelectedAdvantages.contains('Despistar');
       final misleadBonus = hasMislead ? (characterProvider.level / 2).round() : 0;
       skillBonus = misleadBonus;
+    }
+    if(expertiseName == 'Intuição'){
+      final bool basSherlock = characterProvider.advantagesProvider.allSelectedAdvantages.contains('Sherlock Holmes');
+      final int bonusByInt = int.tryParse(getAttributeTotalFor('Inteligencia')) ?? 0;
+      final int sherlockBonus = basSherlock ? bonusByInt : 0;
+      skillBonus = sherlockBonus;
+    }
+    if(expertiseName == 'Procurar'){
+      final bool basSherlock = characterProvider.advantagesProvider.allSelectedAdvantages.contains('Sherlock Holmes');
+      final int bonusByInt = int.tryParse(getAttributeTotalFor('Inteligencia')) ?? 0;
+      final int sherlockBonus = basSherlock ? bonusByInt : 0;
+      skillBonus = sherlockBonus;
+    }
+    if(expertiseName == 'Rastrear'){
+      final bool hasBatman = characterProvider.advantagesProvider.allSelectedAdvantages.contains('Investigador Nato');
+      final batmanBonus = hasBatman ? (characterProvider.level / 2).round() : 0;
+      final bool basSherlock = characterProvider.advantagesProvider.allSelectedAdvantages.contains('Sherlock Holmes');
+      final int bonusByInt = int.tryParse(getAttributeTotalFor('Inteligencia')) ?? 0;
+      final int sherlockBonus = basSherlock ? bonusByInt : 0;
+      skillBonus = batmanBonus + sherlockBonus;
+    }
+    if(expertiseName == 'Investigação'){
+      final bool hasBatman = characterProvider.advantagesProvider.allSelectedAdvantages.contains('Investigador Nato');
+      final batmanBonus = hasBatman ? (characterProvider.level / 2).round() : 0;
+      skillBonus = batmanBonus;
+    }
+    if(expertiseName == 'Prontidão'){
+      final bool hasParanoid = characterProvider.advantagesProvider.allSelectedAdvantages.contains('Paranoico');
+      final int paranoidBonus = hasParanoid ? characterProvider.level : 0;
+      skillBonus = paranoidBonus;
     }
     final newTotal = baseExpertiseValue + bonusValue + skillBonus;
 
@@ -228,7 +279,9 @@ class AttributesProvider with ChangeNotifier {
     final bonusValue = int.tryParse(combatBonusControllers[combatName]?.text ?? '') ?? 0;
     int skillBonus = 0;
     if (combatName == 'Força de Vontade'){
-      skillBonus = characterProvider.bonusWillForce;
+      final bool hasIronWill = characterProvider.advantagesProvider.allSelectedAdvantages.contains('Vontade de Ferro');
+      final int bonusByIronWill = hasIronWill ? characterProvider.level : 0;
+      skillBonus = characterProvider.bonusWillForce + bonusByIronWill;
     }
     if (combatName == 'Bloqueio'){
       int slenderBonus = characterProvider.slenderBonus;
@@ -236,7 +289,9 @@ class AttributesProvider with ChangeNotifier {
       skillBonus = fighterTankBonus + slenderBonus;
     }
     if(combatName == 'Esquiva'){
-      skillBonus = characterProvider.slenderBonus;
+      final bool hasNaturalDoge = characterProvider.advantagesProvider.allSelectedAdvantages.contains('Esquiva Natural');
+      final int naturalDogeBonus = hasNaturalDoge ? (((characterProvider.level) / 3).round()) + 2 : 0;
+      skillBonus = characterProvider.slenderBonus + naturalDogeBonus;
     }
     if(combatName == 'Combate Corporal'){
       final bool hasImprovement = characterProvider.advantagesProvider.allSelectedAdvantages.contains('Aperfeiçoamento');
