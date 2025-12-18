@@ -121,8 +121,7 @@ class RecordScreen extends StatelessWidget {
                             child: ExpertiseFields(
                               name: name,
                               bonus: attributesProvider.expertiseBonusControllers[name] ?? TextEditingController(),
-                              total:
-                              attributesProvider.getExpertiseTotalFor(name),
+                              total: attributesProvider.getExpertiseTotalFor(name),
                             ),
                           );
                         }).toList(),

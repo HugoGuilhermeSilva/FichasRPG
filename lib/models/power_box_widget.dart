@@ -102,10 +102,8 @@ class _PowerCardState extends State<PowerCard> {
                           _level = 1;
                         }
                       });
-                      // Notifica o provider da mudança
                       powerProvider.togglePowerSelection(
                           widget.power.name, newSelectedState);
-                      // Se o nível mudou, notifica o provider também
                       if (newSelectedState &&
                           powerProvider.getPowerLevel(widget.power.name) == 0) {
                         powerProvider.setPowerLevel(widget.power.name, 1);
@@ -125,7 +123,6 @@ class _PowerCardState extends State<PowerCard> {
                       padding: const EdgeInsets.only(right: 8.0),
                       child: Text(
                         widget.power.description,
-                        // Alinhamento do texto ao centro
                         textAlign: TextAlign.center,
                         style: const TextStyle(color: Colors.white, fontSize: 16),
                       ),
@@ -142,7 +139,6 @@ class _PowerCardState extends State<PowerCard> {
                     onPressed: () {
                       if (_level > 0) {
                         powerProvider.decrementPowerLevel(widget.power.name);
-                        // O didUpdateWidget vai cuidar de atualizar a UI
                       }
                     },
                   ),

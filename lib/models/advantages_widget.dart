@@ -13,61 +13,75 @@ class AdvantagesCards extends StatelessWidget {
     required this.onChanged,
     super.key
   });
+
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(4),
-      margin: EdgeInsets.all(4),
+      width: 350,
+      height: 300,
+      margin: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-          border: Border.all(color: Colors.deepPurple),
-          borderRadius: BorderRadius.circular(4),
-          color: Colors.black
+        color: Colors.black,
+        border: Border.all(
+          color: selected ? Colors.yellowAccent : Colors.purpleAccent,
+          width: 2,
+        ),
+        borderRadius: BorderRadius.circular(8),
       ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          ConstrainedBox(constraints: BoxConstraints(
-            maxWidth: 350
-          ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Expanded(child: Center(
-                  child: Text(name,
-                    style: TextStyle(
+                Expanded(
+                  child: Text(
+                    name,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                       fontSize: 20,
                     ),
+                    overflow: TextOverflow.ellipsis,
                   ),
-                )),
-                Checkbox(value: selected, onChanged: onChanged),
+                ),
+                Checkbox(
+                  value: selected,
+                  onChanged: onChanged,
+                  activeColor: Colors.yellowAccent,
+                  checkColor: Colors.black,
+                ),
               ],
             ),
-          ),
-          SizedBox(height: 8,),
-         ConstrainedBox(constraints: BoxConstraints(
-           maxWidth: 350
-         ),
-           child:  Text(description,
-             style: TextStyle(
-                 color: Colors.white,
-                 fontSize: 18
-             ),
-           ),
-         )
-        ],
+            const Divider(color: Colors.white24),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Text(
+                  description,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
-class Advantage{
+class Advantage {
   String name;
   String description;
   bool selected;
+
   Advantage({
     required this.name,
     required this.description,
     this.selected = false
-});
+  });
 }

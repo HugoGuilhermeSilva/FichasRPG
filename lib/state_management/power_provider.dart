@@ -1,6 +1,7 @@
 import 'package:fichas/data/power_model.dart';
 import 'package:fichas/state_management/advantages_provider.dart';
 import 'package:fichas/state_management/character_provider.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fichas/data/power_list.dart';
 import 'package:fichas/models/record_model.dart';
@@ -16,15 +17,17 @@ class PowerProvider with ChangeNotifier{
   bool _isRecalculatingFromCharacter = false;
   final VoidCallback? onPowersChangedForRecalculation;
 
-  PowerProvider({this.onDataChanged,required this.characterProvider, required this.advantagesProvider,this.onPowersChangedForRecalculation,}) {
-    _updateCalculatedValues();
-  }
+  PowerProvider({this.onDataChanged,required this.characterProvider, required this.advantagesProvider,this.onPowersChangedForRecalculation,});
   void ensurePowerExists(String powerName) {
     if (!_selectedPowers.containsKey(powerName)) {
       _selectedPowers[powerName] = 0;
     }
   }
   void addBonusPowerLevels(String powerName, int levelsToAdd) {
+    _bonusPowers[powerName] = (_bonusPowers[powerName] ?? 0) + levelsToAdd;
+    _notifyAndSaveChanges();
+  }
+  void addBonusPowerLevelsSilent(String powerName, int levelsToAdd) {
     _bonusPowers[powerName] = (_bonusPowers[powerName] ?? 0) + levelsToAdd;
   }
   void clearBonusPowers() {
@@ -38,7 +41,6 @@ class PowerProvider with ChangeNotifier{
   }
   void _notifyAndSaveChanges(){
     onDataChanged?.call(_selectedPowers);
-    onPowersChangedForRecalculation?.call();
     _updateCalculatedValues();
   }
   bool isPowerSelected(String powerName){
@@ -129,9 +131,12 @@ class PowerProvider with ChangeNotifier{
   }
   int get totalDisplacement {
     const baseDisplacement = 10;
-    final moveLevel = getPowerLevel('Mover-se');
+    final bool hasGrav = allActivePowerNames.contains('Ancora Gravitacional');
+    final gravBonus = (getPowerLevel('Gravidade') / 2).round();
+    final gravMoveBonus = hasGrav ? gravBonus : 0;
     final modifierDisplacementLevel = characterProvider.modifierDisplacementLevel;
     final boltMultiplier = characterProvider.boltMultiplier;
+    final moveLevel = getPowerLevel('Mover-se') + gravMoveBonus;
     final totalDisplacement = (baseDisplacement + (modifierDisplacementLevel * moveLevel)) * boltMultiplier;
     return totalDisplacement;
   }
@@ -147,8 +152,11 @@ class PowerProvider with ChangeNotifier{
   }
   int get defendLevel{
     final defend = getPowerLevel('Defender');
+    final bool hasGrav = allActivePowerNames.contains('Gravidade Pessoal');
+    final gravBonus = (getPowerLevel('Gravidade') / 2).round();
+    final gravDefendBonus = hasGrav ? gravBonus : 0;
     final bonus1C = characterProvider.defendBonus;
-    final defendLevel = defend * bonus1C;
+    final defendLevel = (defend * bonus1C) + gravDefendBonus;
     return defendLevel;
   }
   int get rdLevel{
@@ -165,7 +173,9 @@ class PowerProvider with ChangeNotifier{
     final gravDagame = getPowerLevel('Gravidade');
     final soundDamage = getPowerLevel('Som');
     final psiDamage = getPowerLevel('Telecinese');
-    final totalDamage = (damage + (elementalDamage / 2) + (ramDagame) + (gravDagame / 2) + (soundDamage) + (psiDamage / 2) ).round();
+    final bool hasBestiary = allActivePowerNames.contains('Forma da Criatura');
+    final bestiaryBonus = hasBestiary ? characterProvider.level : 0;
+    final totalDamage = (damage + (elementalDamage / 2) + (ramDagame) + (gravDagame / 2) + (soundDamage) + (psiDamage / 2) ).round() + bestiaryBonus;
     return totalDamage;
   }
   int get baseDamage{
@@ -200,7 +210,9 @@ class PowerProvider with ChangeNotifier{
     final oneGunBonus = has1Gun ? 1 : 0;
     final criticalMultiplierByPowerfulStrike = characterProvider.criticalMultiplierPowerfulStrike;
     final zevyrBonus = characterProvider.zevyrBonus;
-    final finalCriticalMultiplier = baseCriticalMultiplier + criticalMultiplierByPowerfulStrike + zevyrBonus + bonusByPlusCritical + oneGunBonus;
+    final hasElementalSphere = allActivePowerNames.contains('Esfera elemental');
+    final elementalSphereBonus = hasElementalSphere ? 1 : 0;
+    final finalCriticalMultiplier = baseCriticalMultiplier + criticalMultiplierByPowerfulStrike + zevyrBonus + bonusByPlusCritical + oneGunBonus + elementalSphereBonus;
     return finalCriticalMultiplier;
   }
   int get totalStrikes{
@@ -224,8 +236,17 @@ class PowerProvider with ChangeNotifier{
     return regenTotal;
   }
   int get rangeTotal{
-    final rangeBase = getPowerLevel('Alcance');
-    final areaBase = getPowerLevel('Área');
+    int rangeBase = getPowerLevel('Alcance');
+    int areaBase = getPowerLevel('Área');
+    final elementalBonus = getPowerLevel('Manipulação Elemental');
+    if(rangeBase > areaBase){
+      rangeBase += elementalBonus;
+    }
+    else if(areaBase > rangeBase){
+      areaBase += elementalBonus;
+    } else {
+      rangeBase += elementalBonus;
+    }
     final archetypeBaseRangeMultiplier = characterProvider.rangeMultiplier;
     final archetypeAreaMultiplier = characterProvider.areaMultiplier;
     final archetypeSniperBonus = characterProvider.rangeBonusMultiplier;
@@ -243,9 +264,40 @@ class PowerProvider with ChangeNotifier{
     });
     return totalCost;
   }
-  void _updateCalculatedValues() {
-    if (!_isRecalculatingFromCharacter) {
-      notifyListeners();
+  void _applyBonusRules() {
+    final int totalMoveLevel = getPowerLevel('Mover-se');
+    if (totalMoveLevel > 0) {
+      final int crossingBonus = (totalMoveLevel / 3).round();
+      if (crossingBonus > 0) {
+        addBonusPowerLevelsSilent('Atravessar', crossingBonus);
+      }
     }
+    final int totalElementalLevel = getPowerLevel('Manipulação Elemental');
+    if (totalElementalLevel > 0) {
+      final int damageBonus = (totalElementalLevel / 2).round();
+      if (damageBonus > 0) {
+        addBonusPowerLevelsSilent('Dano', damageBonus);
+      }
+    }
+  }
+  void _updateCalculatedValues() {
+    if (_isRecalculatingFromCharacter) return;
+    _isRecalculatingFromCharacter = true;
+    const int maxIterations = 10;
+    for (int i = 0; i < maxIterations; i++) {
+      final Map<String, int> oldBonuses = Map.from(_bonusPowers);
+      clearBonusPowers();
+      _applyBonusRules();
+      bool haveBonusesChanged = oldBonuses.length != _bonusPowers.length || oldBonuses.keys.any((key) => oldBonuses[key] != _bonusPowers[key]);
+      if (!haveBonusesChanged) {
+        break;
+      }
+      if (i == maxIterations - 1) {
+        debugPrint("Aviso: Cálculo de bônus de poder atingiu o limite de iterações.");
+      }
+    }
+    notifyListeners();
+    onPowersChangedForRecalculation?.call();
+    _isRecalculatingFromCharacter = false;
   }
 }

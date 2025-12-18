@@ -233,7 +233,10 @@ class AttributesProvider with ChangeNotifier {
       final bool basSherlock = characterProvider.advantagesProvider.allSelectedAdvantages.contains('Sherlock Holmes');
       final int bonusByInt = int.tryParse(getAttributeTotalFor('Inteligencia')) ?? 0;
       final int sherlockBonus = basSherlock ? bonusByInt : 0;
-      skillBonus = sherlockBonus;
+      final bool hasVeloC = characterProvider.powerProvider.allActivePowerNames.contains('Percepção Acelerada');
+      final int moveBonus = (characterProvider.powerProvider.getPowerLevel('Mover-se') / 5).round();
+      final int velocBonus = hasVeloC ? moveBonus : 0;
+      skillBonus = sherlockBonus + velocBonus;
     }
     if(expertiseName == 'Rastrear'){
       final bool hasBatman = characterProvider.advantagesProvider.allSelectedAdvantages.contains('Investigador Nato');
@@ -251,7 +254,10 @@ class AttributesProvider with ChangeNotifier {
     if(expertiseName == 'Prontidão'){
       final bool hasParanoid = characterProvider.advantagesProvider.allSelectedAdvantages.contains('Paranoico');
       final int paranoidBonus = hasParanoid ? characterProvider.level : 0;
-      skillBonus = paranoidBonus;
+      final bool hasVeloC = characterProvider.powerProvider.allActivePowerNames.contains('Percepção Acelerada');
+      final int moveBonus = (characterProvider.powerProvider.getPowerLevel('Mover-se') / 5).round();
+      final int velocBonus = hasVeloC ? moveBonus : 0;
+      skillBonus = paranoidBonus + velocBonus;
     }
     final newTotal = baseExpertiseValue + bonusValue + skillBonus;
 
