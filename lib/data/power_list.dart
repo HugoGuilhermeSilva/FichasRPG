@@ -43,7 +43,7 @@ final List<Power> allPowers = _powersData.map((data) => Power.fromMap(data)).toL
     {'name': 'Escalonamento', 'description': 'Permite que voce defina uma condição em conjunto com o mestre, toda vez que essa condição é cumprida voce recebe graus em até 2 poderes a sua escolha.\nMenos escalonamento, acerto, bloqueio, esquiva, combate mental, e nenhum atributo a não ser vigor', 'cost': 80},
     {'name': 'Imunidade', 'description': 'Permite que voce escolha um tipo de dano ppara cada grau desse poder comprado, voce passa a receber metade do dano deles', 'cost': 80},
     {'name': 'Teleporte', 'description': 'Permite ao usuario se teleportar usando seus graus de alcance ou mover-se como distancia maxima. Tambem permite que o usuario leve pessoas com ele com a mesma regra de mover algo.', 'cost': 80},
-    {'name': 'Manipulação Elemental', 'description': 'Representa seus graus de Manipulação Elementalç', 'cost': 50},
+    {'name': 'Manipulação Elemental', 'description': 'Representa seus graus de Manipulação Elemental', 'cost': 50},
     {'name': 'Golpe elemental', 'description': 'Permite aplicar seu poder elemental em seu ataque aplicando metade dos seus graus de manipulação elemental no dano. (Manipulação 6 adiciona 3d6 no dano)', 'cost': 80},
     {'name': 'Aprimoramento elemental', 'description': 'Permite o personagem aprimorar seus ataques mais ainda somando o dobro de seus graus em Dano fixo (Manipulação 5 soma 10 no dano fixo)', 'cost': 80},
     {'name': 'Esfera elemental', 'description': 'Aumenta o multiplicador de critico em 1', 'cost': 80},

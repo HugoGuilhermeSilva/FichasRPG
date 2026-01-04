@@ -11,8 +11,11 @@ class PowerProvider with ChangeNotifier{
   final AdvantagesProvider advantagesProvider;
   Map<String, int> _selectedPowers = {};
   Map<String, int> get selectedPowers => _selectedPowers;
-  Map<String, int> _bonusPowers = {};
-  Map<String, int> get bonusPowers => _bonusPowers;
+  Map<String, int> _skillAndArchetypeBonuses = {};
+  Map<String, int> get skillArchetypeBonuses => _skillAndArchetypeBonuses;
+  Map<String, int> _powerInteractionBonuses = {};
+  Map<String, int> get powerInteractionsBonuses => _powerInteractionBonuses;
+  Map<String, int> _passiveBonuses = {};
   final Function(Map<String, int>)? onDataChanged;
   bool _isRecalculatingFromCharacter = false;
   final VoidCallback? onPowersChangedForRecalculation;
@@ -23,16 +26,21 @@ class PowerProvider with ChangeNotifier{
       _selectedPowers[powerName] = 0;
     }
   }
-  void addBonusPowerLevels(String powerName, int levelsToAdd) {
-    _bonusPowers[powerName] = (_bonusPowers[powerName] ?? 0) + levelsToAdd;
+  void addSkillBonus(String powerName, int levelsToAdd) {
+    _skillAndArchetypeBonuses[powerName] = (_skillAndArchetypeBonuses[powerName] ?? 0) + levelsToAdd;
     _notifyAndSaveChanges();
   }
-  void addBonusPowerLevelsSilent(String powerName, int levelsToAdd) {
-    _bonusPowers[powerName] = (_bonusPowers[powerName] ?? 0) + levelsToAdd;
+  void clearSkillBonuses() {
+    if (_skillAndArchetypeBonuses.isNotEmpty) {
+      _skillAndArchetypeBonuses.clear();
+    }
   }
-  void clearBonusPowers() {
-    if (_bonusPowers.isNotEmpty) {
-      _bonusPowers.clear();
+  void _addPowerInteractionBonus(String powerName, int levelsToAdd) {
+    _powerInteractionBonuses[powerName] = (_powerInteractionBonuses[powerName] ?? 0) + levelsToAdd;
+  }
+  void _clearPowerInteractionBonuses() {
+    if (_powerInteractionBonuses.isNotEmpty) {
+      _powerInteractionBonuses.clear();
     }
   }
   void updateFromRecord(Record? record){
@@ -46,10 +54,12 @@ class PowerProvider with ChangeNotifier{
   bool isPowerSelected(String powerName){
     return (_selectedPowers[powerName] ?? 0) > 0;
   }
-  int getPowerLevel(String powerName){
+  int getPowerLevel(String powerName) {
     final playerLevel = _selectedPowers[powerName] ?? 0;
-    final bonusLevel = _bonusPowers[powerName] ?? 0;
-    return playerLevel + bonusLevel;
+    final skillBonus = _skillAndArchetypeBonuses[powerName] ?? 0;
+    final powerBonus = _powerInteractionBonuses[powerName] ?? 0;
+    final passiveBonus = _passiveBonuses[powerName] ?? 0;
+    return playerLevel + skillBonus + powerBonus + passiveBonus;
   }
   void decrementPowerLevel(String powerName){
     if(_selectedPowers.containsKey(powerName)){
@@ -58,7 +68,7 @@ class PowerProvider with ChangeNotifier{
       if(currentLevel > 1){
         _selectedPowers[powerName] = currentLevel - 1;
       } else {
-        if ((_bonusPowers[powerName] ?? 0) == 0) {
+        if ((_skillAndArchetypeBonuses[powerName] ?? 0) == 0) {
           _selectedPowers.remove(powerName);
         } else {
           _selectedPowers[powerName] = 0;
@@ -78,7 +88,7 @@ class PowerProvider with ChangeNotifier{
     if (isSelected) {
       _selectedPowers[powerName] = 1;
     } else {
-      if ((_bonusPowers[powerName] ?? 0) > 0) {
+      if ((_skillAndArchetypeBonuses[powerName] ?? 0) > 0) {
         _selectedPowers[powerName] = 0;
       } else {
         _selectedPowers.remove(powerName);
@@ -90,7 +100,7 @@ class PowerProvider with ChangeNotifier{
     if (level > 0) {
       _selectedPowers[powerName] = level;
     } else {
-      if ((_bonusPowers[powerName] ?? 0) == 0) {
+      if ((_skillAndArchetypeBonuses[powerName] ?? 0) == 0) {
         _selectedPowers.remove(powerName);
       } else {
         _selectedPowers[powerName] = 0;
@@ -101,7 +111,8 @@ class PowerProvider with ChangeNotifier{
   List<String> get allActivePowerNames {
     final powerSet = <String>{};
     powerSet.addAll(_selectedPowers.keys);
-    powerSet.addAll(_bonusPowers.keys);
+    powerSet.addAll(_skillAndArchetypeBonuses.keys);
+    powerSet.addAll(_powerInteractionBonuses.keys);
     return powerSet.toList();
   }
   int get totalHeal{
@@ -265,35 +276,27 @@ class PowerProvider with ChangeNotifier{
     return totalCost;
   }
   void _applyBonusRules() {
-    final int totalMoveLevel = getPowerLevel('Mover-se');
-    if (totalMoveLevel > 0) {
-      final int crossingBonus = (totalMoveLevel / 3).round();
-      if (crossingBonus > 0) {
-        addBonusPowerLevelsSilent('Atravessar', crossingBonus);
-      }
-    }
     final int totalElementalLevel = getPowerLevel('Manipulação Elemental');
     if (totalElementalLevel > 0) {
       final int damageBonus = (totalElementalLevel / 2).round();
       if (damageBonus > 0) {
-        addBonusPowerLevelsSilent('Dano', damageBonus);
+        _addPowerInteractionBonus('Dano', damageBonus);
       }
     }
   }
   void _updateCalculatedValues() {
     if (_isRecalculatingFromCharacter) return;
     _isRecalculatingFromCharacter = true;
-    const int maxIterations = 10;
+    const int maxIterations = 5;
     for (int i = 0; i < maxIterations; i++) {
-      final Map<String, int> oldBonuses = Map.from(_bonusPowers);
-      clearBonusPowers();
+      final Map<String, int> oldBonuses = Map.from(_powerInteractionBonuses);
+      _clearPowerInteractionBonuses();
       _applyBonusRules();
-      bool haveBonusesChanged = oldBonuses.length != _bonusPowers.length || oldBonuses.keys.any((key) => oldBonuses[key] != _bonusPowers[key]);
+
+      bool haveBonusesChanged = oldBonuses.length != _powerInteractionBonuses.length || oldBonuses.keys.any((key) => oldBonuses[key] != _powerInteractionBonuses[key]);
+
       if (!haveBonusesChanged) {
         break;
-      }
-      if (i == maxIterations - 1) {
-        debugPrint("Aviso: Cálculo de bônus de poder atingiu o limite de iterações.");
       }
     }
     notifyListeners();

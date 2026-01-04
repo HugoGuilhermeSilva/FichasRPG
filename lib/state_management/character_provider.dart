@@ -122,7 +122,7 @@ class CharacterProvider with ChangeNotifier {
   }
   void recalculateAllStats() {
     advantagesProvider.clearBonusAdvantagesSilently();
-    powerProvider.clearBonusPowers();
+    powerProvider.clearSkillBonuses();
     activeArchetype = null;
     lifeBase = 0;
     skillPointPerLevel = 0;
@@ -233,7 +233,7 @@ class CharacterProvider with ChangeNotifier {
       if(skillName == 'Cada vez mais Rapido'){
         int accelerateBonus = 2 + (level / 5).round();
         powerProvider.ensurePowerExists('Acelerar');
-        powerProvider.addBonusPowerLevels('Acelerar', accelerateBonus);
+        powerProvider.addSkillBonus('Acelerar', accelerateBonus);
       }
       if(skillName == 'Ponto Fraco'){
         criticalReductionWeakPoint = 2;
@@ -250,7 +250,7 @@ class CharacterProvider with ChangeNotifier {
       if(skillName == 'Franchiesco Virgulino'){
         int bonusFrantiescoC = powerProvider.getPowerLevel('Mover-se');
         powerProvider.ensurePowerExists('Dano');
-        powerProvider.addBonusPowerLevels('Dano', bonusFrantiescoC);
+        powerProvider.addSkillBonus('Dano', bonusFrantiescoC);
       }
       if(skillName == 'Zevyr'){
         zevyrBonus = 2;
@@ -259,7 +259,7 @@ class CharacterProvider with ChangeNotifier {
         advantagesProvider.addBonusAdvantageSilently('Aperfeiçoamento');
         int bonusDamage = level;
         powerProvider.ensurePowerExists('Dano');
-        powerProvider.addBonusPowerLevels('Dano', bonusDamage);
+        powerProvider.addSkillBonus('Dano', bonusDamage);
       }
       if(skillName == 'Tank'){
         advantagesProvider.addBonusAdvantageSilently('Ler Movimentos');
@@ -273,13 +273,13 @@ class CharacterProvider with ChangeNotifier {
       if(skillName == 'Postura Defensiva'){
         int bonusDefend = level;
         powerProvider.ensurePowerExists('Defender');
-        powerProvider.addBonusPowerLevels('Defender', bonusDefend);
+        powerProvider.addSkillBonus('Defender', bonusDefend);
         postureRdBonus = 2;
       }
       if(skillName == 'Mestre do Combate'){
         int bonus = 2;
         powerProvider.ensurePowerExists('Acelerar');
-        powerProvider.addBonusPowerLevels('Acelerar', bonus);
+        powerProvider.addSkillBonus('Acelerar', bonus);
       }
       if(skillName == 'Amassar Seu Crânio'){
         int damage = powerProvider.getPowerLevel('Dano');
@@ -296,7 +296,7 @@ class CharacterProvider with ChangeNotifier {
       if(skillName == 'Imutavel'){
         int bonus = 2;
         powerProvider.ensurePowerExists('Acelerar');
-        powerProvider.addBonusPowerLevels('Acelerar', bonus);
+        powerProvider.addSkillBonus('Acelerar', bonus);
         int totalAccelerate = powerProvider.getPowerLevel('Acelerar');
         immutableBonus = (totalAccelerate / 4).round();
       }
@@ -331,7 +331,7 @@ class CharacterProvider with ChangeNotifier {
       if(skillName == 'Sempre Mais'){
         areaMultiplier = 5;
         powerProvider.ensurePowerExists('Área');
-        powerProvider.addBonusPowerLevels('Área', level);
+        powerProvider.addSkillBonus('Área', level);
       }
       if(skillName == 'Esguio'){
         int bonusRange = powerProvider.getPowerLevel('Alcance');
