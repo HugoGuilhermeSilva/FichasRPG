@@ -17,17 +17,19 @@ class ArchetypeHeader extends StatelessWidget {
     if (title == null && level == null && archetypeDescription == null) {
       return const SizedBox.shrink();
     }
-
+    final bool hasDescription = archetypeDescription != null && archetypeDescription!.isNotEmpty;
     return Container(
       width: 300,
-      padding: const EdgeInsets.all(4),
+      height: hasDescription ? 300 : null,
+      padding: const EdgeInsets.all(8),
       margin: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.deepPurple),
-        borderRadius: BorderRadius.circular(4),
+        border: Border.all(color: Colors.deepPurple, width: 1.0),
+        borderRadius: BorderRadius.circular(8),
         color: Colors.black,
       ),
       child: Column(
+        mainAxisSize: hasDescription ? MainAxisSize.max : MainAxisSize.min,
         children: [
           if (title != null)
             Text(
@@ -39,6 +41,7 @@ class ArchetypeHeader extends StatelessWidget {
               ),
               textAlign: TextAlign.center,
             ),
+          if (title != null && level != null) const SizedBox(height: 4),
           if (level != null)
             Text(
               'Nível: $level',
@@ -49,15 +52,21 @@ class ArchetypeHeader extends StatelessWidget {
               ),
               textAlign: TextAlign.center,
             ),
-          if (archetypeDescription != null)
-            Text(
-              archetypeDescription!,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 20,
+          if (hasDescription) ...[
+            const Divider(color: Colors.deepPurple, height: 16),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Text(
+                  archetypeDescription!,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
               ),
-              textAlign: TextAlign.center,
             ),
+          ],
         ],
       ),
     );
@@ -76,16 +85,19 @@ class ArchetypeCard extends StatelessWidget {
     required this.selected,
     required this.onChanged,
   });
-
   @override
   Widget build(BuildContext context) {
     return Container(
       width: 300,
-      padding: const EdgeInsets.all(4),
+      height: 220,
+      padding: const EdgeInsets.all(8),
       margin: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.deepPurple),
-        borderRadius: BorderRadius.circular(4),
+        border: Border.all(
+          color: selected ? Colors.yellowAccent[700]! : Colors.deepPurple,
+          width: selected ? 2.0 : 1.0,
+        ),
+        borderRadius: BorderRadius.circular(8),
         color: Colors.black,
       ),
       child: Column(
@@ -97,23 +109,35 @@ class ArchetypeCard extends StatelessWidget {
                 child: Text(
                   name,
                   style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 26,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 26,
                   ),
                   textAlign: TextAlign.center,
                 ),
               ),
-              Checkbox(value: selected, onChanged: onChanged)
+              Checkbox(
+                value: selected,
+                onChanged: onChanged,
+                activeColor: Colors.yellowAccent[700],
+                checkColor: Colors.black,
+              )
             ],
           ),
-          const SizedBox(height: 8),
-          Text(
-            description,
-            style:
-            const TextStyle(color: Colors.white, fontSize: 16),
-            textAlign: TextAlign.center,
-          )
+          const Divider(color: Colors.deepPurple),
+          const SizedBox(height: 4),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Text(
+                description,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
         ],
       ),
     );

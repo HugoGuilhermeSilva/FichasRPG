@@ -139,8 +139,10 @@ class AttributesProvider with ChangeNotifier {
     final bool hasFlash = characterProvider.advantagesProvider.allSelectedAdvantages.contains('Flash');
     final flashBonus = hasFlash ? (characterProvider.level / 2).round() : 0;
     final bool hasAttentive = characterProvider.advantagesProvider.allSelectedAdvantages.contains('Prontidão Aprimorada');
+    final bool hasReflexes = characterProvider.powerProvider.allActivePowerNames.contains('Reflexos Melhorados');
+    final int reflexBonus = hasReflexes ? (characterProvider.powerProvider.getPowerLevel('Mover-se') / 3).floor() : 0;
     final attentiveBonus = hasAttentive ? 10 : 0;
-    final totalInitiative = totalAgility + totalReadness + agilBonus + flashBonus + attentiveBonus;
+    final totalInitiative = totalAgility + totalReadness + agilBonus + flashBonus + attentiveBonus + reflexBonus;
     return totalInitiative;
   }
   int get remainingAttributePoints {
@@ -221,7 +223,9 @@ class AttributesProvider with ChangeNotifier {
     if(expertiseName == 'Furtividade'){
       final bool hasMislead = characterProvider.advantagesProvider.allSelectedAdvantages.contains('Despistar');
       final misleadBonus = hasMislead ? (characterProvider.level / 2).round() : 0;
-      skillBonus = misleadBonus;
+      final bool hasSilent = characterProvider.powerProvider.allActivePowerNames.contains('Silencioso');
+      final int silentBonus = hasSilent ? (characterProvider.powerProvider.getPowerLevel('Som') / 4).floor() : 0;
+      skillBonus = misleadBonus + silentBonus;
     }
     if(expertiseName == 'Intuição'){
       final bool basSherlock = characterProvider.advantagesProvider.allSelectedAdvantages.contains('Sherlock Holmes');
@@ -236,7 +240,9 @@ class AttributesProvider with ChangeNotifier {
       final bool hasVeloC = characterProvider.powerProvider.allActivePowerNames.contains('Percepção Acelerada');
       final int moveBonus = (characterProvider.powerProvider.getPowerLevel('Mover-se') / 5).round();
       final int velocBonus = hasVeloC ? moveBonus : 0;
-      skillBonus = sherlockBonus + velocBonus;
+      final bool hasSilent = characterProvider.powerProvider.allActivePowerNames.contains('Ecolocalização');
+      final int silentBonus = hasSilent ? (characterProvider.powerProvider.getPowerLevel('Som') / 6).floor() : 0;
+      skillBonus = sherlockBonus + velocBonus + silentBonus;
     }
     if(expertiseName == 'Rastrear'){
       final bool hasBatman = characterProvider.advantagesProvider.allSelectedAdvantages.contains('Investigador Nato');
@@ -244,7 +250,9 @@ class AttributesProvider with ChangeNotifier {
       final bool basSherlock = characterProvider.advantagesProvider.allSelectedAdvantages.contains('Sherlock Holmes');
       final int bonusByInt = int.tryParse(getAttributeTotalFor('Inteligencia')) ?? 0;
       final int sherlockBonus = basSherlock ? bonusByInt : 0;
-      skillBonus = batmanBonus + sherlockBonus;
+      final bool hasSilent = characterProvider.powerProvider.allActivePowerNames.contains('Ecolocalização');
+      final int silentBonus = hasSilent ? (characterProvider.powerProvider.getPowerLevel('Som') / 6).floor() : 0;
+      skillBonus = batmanBonus + sherlockBonus + silentBonus;
     }
     if(expertiseName == 'Investigação'){
       final bool hasBatman = characterProvider.advantagesProvider.allSelectedAdvantages.contains('Investigador Nato');
@@ -257,7 +265,9 @@ class AttributesProvider with ChangeNotifier {
       final bool hasVeloC = characterProvider.powerProvider.allActivePowerNames.contains('Percepção Acelerada');
       final int moveBonus = (characterProvider.powerProvider.getPowerLevel('Mover-se') / 5).round();
       final int velocBonus = hasVeloC ? moveBonus : 0;
-      skillBonus = paranoidBonus + velocBonus;
+      final bool hasSilent = characterProvider.powerProvider.allActivePowerNames.contains('Ecolocalização');
+      final int silentBonus = hasSilent ? (characterProvider.powerProvider.getPowerLevel('Som') / 6).floor() : 0;
+      skillBonus = paranoidBonus + velocBonus + silentBonus;
     }
     final newTotal = baseExpertiseValue + bonusValue + skillBonus;
 

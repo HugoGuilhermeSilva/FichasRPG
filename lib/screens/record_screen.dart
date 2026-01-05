@@ -702,7 +702,9 @@ class RecordScreen extends StatelessWidget {
                                 width: 192,
                                 height: 280,
                                 child: ListView(
-                                  children: powerProvider.allActivePowerNames.map((powerName){
+                                  children: powerProvider.allActivePowerNames.where((powerName) {
+                                    return powerProvider.getPowerLevel(powerName) > 0;
+                                  }).map((powerName) {
                                     final powerLevel = powerProvider.getPowerLevel(powerName);
                                     return CardListWidget(
                                       nameCard: '$powerName\n(Graus: $powerLevel)',

@@ -62,7 +62,7 @@ const List<Archetype> allArchetypes = [
     skills: [
       Skill(levelRequirement: 1, name: 'Atacante', description: 'Recebe Aperfeiçoamento e graus de dano iguais a seu nivel.'),
       Skill(levelRequirement: 1, name: 'Tank', description: 'Recebe Ler Movimentos e bloqueio igual seu nivel.'),
-      Skill(levelRequirement: 1, name: 'Hibrido', description: 'Recebe Agil e Ambidestria.'),
+      Skill(levelRequirement: 1, name: 'Hibrido', description: 'Recebe Ataques Rapidos e Ambidestria.'),
       Skill(levelRequirement: 8, name: 'Mestre das Armas', description: 'Aumenta seu limite de armas simultâneas em 1'),
       Skill(levelRequirement: 8, name: 'Postura Defensiva', description: 'Recebe seu nivel em defender e o rd aumenta em 2.'),
       Skill(levelRequirement: 8, name: 'Mestre do Combate', description: 'Recebe 2 de acelerar.'),

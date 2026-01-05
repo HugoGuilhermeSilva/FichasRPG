@@ -142,12 +142,9 @@ class PowerProvider with ChangeNotifier{
   }
   int get totalDisplacement {
     const baseDisplacement = 10;
-    final bool hasGrav = allActivePowerNames.contains('Ancora Gravitacional');
-    final gravBonus = (getPowerLevel('Gravidade') / 2).round();
-    final gravMoveBonus = hasGrav ? gravBonus : 0;
     final modifierDisplacementLevel = characterProvider.modifierDisplacementLevel;
     final boltMultiplier = characterProvider.boltMultiplier;
-    final moveLevel = getPowerLevel('Mover-se') + gravMoveBonus;
+    final moveLevel = getPowerLevel('Mover-se');
     final totalDisplacement = (baseDisplacement + (modifierDisplacementLevel * moveLevel)) * boltMultiplier;
     return totalDisplacement;
   }
@@ -163,11 +160,8 @@ class PowerProvider with ChangeNotifier{
   }
   int get defendLevel{
     final defend = getPowerLevel('Defender');
-    final bool hasGrav = allActivePowerNames.contains('Gravidade Pessoal');
-    final gravBonus = (getPowerLevel('Gravidade') / 2).round();
-    final gravDefendBonus = hasGrav ? gravBonus : 0;
     final bonus1C = characterProvider.defendBonus;
-    final defendLevel = (defend * bonus1C) + gravDefendBonus;
+    final defendLevel = (defend * bonus1C);
     return defendLevel;
   }
   int get rdLevel{
@@ -179,14 +173,9 @@ class PowerProvider with ChangeNotifier{
   }
   int get totalDagame{
     final damage = getPowerLevel('Dano');
-    final elementalDamage = getPowerLevel('Manipulação Elemental');
-    final ramDagame = getPowerLevel('Pente de RAM');
-    final gravDagame = getPowerLevel('Gravidade');
-    final soundDamage = getPowerLevel('Som');
-    final psiDamage = getPowerLevel('Telecinese');
     final bool hasBestiary = allActivePowerNames.contains('Forma da Criatura');
     final bestiaryBonus = hasBestiary ? characterProvider.level : 0;
-    final totalDamage = (damage + (elementalDamage / 2) + (ramDagame) + (gravDagame / 2) + (soundDamage) + (psiDamage / 2) ).round() + bestiaryBonus;
+    final totalDamage = damage + bestiaryBonus;
     return totalDamage;
   }
   int get baseDamage{
@@ -196,11 +185,15 @@ class PowerProvider with ChangeNotifier{
     final bonusByFlyingKick = hasFlyingKick ? getPowerLevel('Mover-se') : 0;
     final bool hasAggravating = advantagesProvider.allSelectedAdvantages.contains('Ataque Agravante');
     final bonusByAggravating = hasAggravating ? characterProvider.level : 0;
+    final bool hasMind = allActivePowerNames.contains('Mente Afiada');
+    final int intBonus = int.tryParse(characterProvider.attributesProvider.getAttributeTotalFor('Inteligencia')) ?? 0;
+    final int vontBonus = int.tryParse(characterProvider.attributesProvider.getAttributeTotalFor('Vontade')) ?? 0;
+    final int mindBonus = hasMind ? ((intBonus + vontBonus) / 2).round() : 0;
     final archetypeSMI = characterProvider.flatDamageByMov;
     final archetypeBH = characterProvider.breakReadBonus;
     final archetypeWar = characterProvider.warBonus;
     final archetypeSniper = characterProvider.sniperBonus;
-    final totalBaseDamage = (elementalDamage * 2) + (gravDamage * 2) + archetypeSMI + archetypeBH + archetypeWar + archetypeSniper + bonusByAggravating + bonusByFlyingKick;
+    final totalBaseDamage = (elementalDamage * 2) + (gravDamage * 2) + archetypeSMI + archetypeBH + archetypeWar + archetypeSniper + bonusByAggravating + bonusByFlyingKick + mindBonus;
     return totalBaseDamage;
   }
   int get criticalMerge{
@@ -249,15 +242,6 @@ class PowerProvider with ChangeNotifier{
   int get rangeTotal{
     int rangeBase = getPowerLevel('Alcance');
     int areaBase = getPowerLevel('Área');
-    final elementalBonus = getPowerLevel('Manipulação Elemental');
-    if(rangeBase > areaBase){
-      rangeBase += elementalBonus;
-    }
-    else if(areaBase > rangeBase){
-      areaBase += elementalBonus;
-    } else {
-      rangeBase += elementalBonus;
-    }
     final archetypeBaseRangeMultiplier = characterProvider.rangeMultiplier;
     final archetypeAreaMultiplier = characterProvider.areaMultiplier;
     final archetypeSniperBonus = characterProvider.rangeBonusMultiplier;
@@ -276,29 +260,194 @@ class PowerProvider with ChangeNotifier{
     return totalCost;
   }
   void _applyBonusRules() {
-    final int totalElementalLevel = getPowerLevel('Manipulação Elemental');
-    if (totalElementalLevel > 0) {
-      final int damageBonus = (totalElementalLevel / 2).round();
-      if (damageBonus > 0) {
-        _addPowerInteractionBonus('Dano', damageBonus);
+    final Set<String> rulePowers = {};
+    rulePowers.addAll(_selectedPowers.keys);
+    rulePowers.addAll(_skillAndArchetypeBonuses.keys);
+    for (String powerName in rulePowers) {
+      if (
+      powerName == 'Aprimoramento elemental' ||
+          powerName == 'Esfera elemental' ||
+          powerName == 'Prisão elemental' ||
+          powerName == 'Fisiologia elemental' ||
+          powerName == 'Consumir elemento' ||
+          powerName == 'Barreira elemental' ||
+          powerName == 'Mestre elemental' ||
+          powerName == 'Anatomia elemental' ||
+          powerName == 'Moldar grandes quantidades' ||
+          powerName == 'Golpe elemental'
+      ) {
+        if ((_selectedPowers[powerName] ?? 0) > 0 || (_skillAndArchetypeBonuses[powerName] ?? 0) > 0) {
+          ensurePowerExists('Manipulação Elemental');
+          _addPowerInteractionBonus('Manipulação Elemental', 1);
+        }
+      }
+      if(
+      powerName == 'Mente Cibernética'||
+          powerName == 'PEM'||
+          powerName == 'Tecnocinese'||
+          powerName == 'Curto Circuito'||
+          powerName == 'Desabilitar Arma'||
+          powerName == 'Esgotamento de Sinápse'||
+          powerName == 'Reiniciar Optica'||
+          powerName == 'Defeito de Cibernética'||
+          powerName == 'Aprimoramento Cibernetico'||
+          powerName == 'Turbinagem'
+      ){
+        if ((_selectedPowers[powerName] ?? 0) > 0 || (_skillAndArchetypeBonuses[powerName] ?? 0) > 0) {
+          ensurePowerExists('Pente de RAM');
+          _addPowerInteractionBonus('Pente de RAM', 1);
+        }
+      }
+      if(
+        powerName == 'Atravessar Resistencias' ||
+        powerName == 'Atravessar Ataque'
+      ){
+        if ((_selectedPowers[powerName] ?? 0) > 0 || (_skillAndArchetypeBonuses[powerName] ?? 0) > 0) {
+          ensurePowerExists('Atravessar');
+          _addPowerInteractionBonus('Atravessar', 1);
+        }
+      }
+      if(
+        powerName == 'Aumento de Força G'||
+        powerName == 'Manipulação Gravitacional'||
+        powerName == 'Amplificação Gravitacional'||
+        powerName == 'Agravamento'||
+        powerName == 'MUGEN'||
+        powerName == 'Ancora Gravitacional'||
+        powerName == 'Gravidade Pessoal'
+      ){
+        if ((_selectedPowers[powerName] ?? 0) > 0 || (_skillAndArchetypeBonuses[powerName] ?? 0) > 0) {
+          ensurePowerExists('Gravidade');
+          _addPowerInteractionBonus('Gravidade', 1);
+        }
+      }
+      if(
+        powerName == 'Aceleração Sonora'||
+        powerName == 'Intensificação Sonora'||
+        powerName == 'Reverberação'||
+        powerName == 'Anulação Sonora'||
+        powerName == 'Silenciar'||
+        powerName == 'Silencioso'||
+        powerName == 'Ecolocalização'||
+        powerName == 'Terremoto'
+      ){
+        if ((_selectedPowers[powerName] ?? 0) > 0 || (_skillAndArchetypeBonuses[powerName] ?? 0) > 0) {
+          ensurePowerExists('Som');
+          _addPowerInteractionBonus('Som', 1);
+        }
+      }
+      if(
+        powerName == 'Existência Fora do Fluxo'||
+        powerName == 'Rebobinar'||
+        powerName == 'Quebra no tempo'||
+        powerName == 'Prever'||
+        powerName == 'Isolamento Temporal'||
+        powerName == 'Congelamento Temporal'
+      ){
+        if ((_selectedPowers[powerName] ?? 0) > 0 || (_skillAndArchetypeBonuses[powerName] ?? 0) > 0) {
+          ensurePowerExists('Tempo');
+          _addPowerInteractionBonus('Tempo', 1);
+        }
+      }
+      if(
+        powerName == 'Proteção'||
+        powerName == 'Agressão'||
+        powerName == 'Mente Afiada'||
+        powerName == 'Detecção Aprimorada'||
+        powerName == 'Chamado de Arma'||
+        powerName == 'Telepatico'
+      ){
+        if ((_selectedPowers[powerName] ?? 0) > 0 || (_skillAndArchetypeBonuses[powerName] ?? 0) > 0) {
+          ensurePowerExists('Telecinese');
+          _addPowerInteractionBonus('Telecinese', 1);
+        }
+      }
+    }
+    if(isPowerSelected('Proteção')){
+      int teleBonus = (getPowerLevel('Telecinese') / 2).floor();
+      if(teleBonus > 0){
+        _addPowerInteractionBonus('Defender', teleBonus);
+      }
+    }
+    if(isPowerSelected('Agressão')){
+      int teleBonus = (getPowerLevel('Telecinese') / 2).floor();
+      if(teleBonus > 0){
+        _addPowerInteractionBonus('Dano', teleBonus);
+      }
+    }
+    if(isPowerSelected('Aceleração Sonora')){
+      int soundBonus = getPowerLevel('Som');
+      if(soundBonus > 0){
+        _addPowerInteractionBonus('Mover-se', soundBonus);
+      }
+    }
+    if(isPowerSelected('Intensificação Sonora')){
+      int soundBonus = getPowerLevel('Som');
+      if(soundBonus > 0){
+        _addPowerInteractionBonus('Dano', soundBonus);
+      }
+    }
+    if(isPowerSelected('Reflexos Melhorados')){
+      int moveBonus = (getPowerLevel('Mover-se') / 3).floor();
+      if(moveBonus > 0){
+        _addPowerInteractionBonus('Atravessar', moveBonus);
+      }
+    }
+    if(isPowerSelected('Gravidade Pessoal')){
+      int gravBonus = (getPowerLevel('Gravidade') / 2).floor();
+      if(gravBonus > 0){
+        _addPowerInteractionBonus('Defender', gravBonus);
+      }
+    }
+    if(isPowerSelected('Ancora Gravitacional')){
+      int gravBonus = (getPowerLevel('Gravidade') / 2).floor();
+      if(gravBonus > 0){
+        _addPowerInteractionBonus('Mover-se', gravBonus);
+      }
+    }
+    if(isPowerSelected('Manipulação Gravitacional')){
+      int gravBonus = (getPowerLevel('Gravidade') / 2).floor();
+      if(gravBonus > 0){
+        _addPowerInteractionBonus('Mover-Algo', gravBonus);
+      }
+    }
+    if(isPowerSelected('Amplificação Gravitacional')){
+      int gravBonus = getPowerLevel('Gravidade');
+      if(gravBonus > 0){
+        _addPowerInteractionBonus("Dano", gravBonus);
+      }
+    }
+    if(isPowerSelected('Aprimoramento Cibernetico')){
+      int ramBonus = getPowerLevel('Pente de RAM');
+      if(ramBonus > 0){
+        _addPowerInteractionBonus('Dano', ramBonus);
+      }
+    }
+    if (isPowerSelected('Anatomia elemental')) {
+      int elementalBonus = (getPowerLevel('Manipulação Elemental') / 4).floor();
+      if (elementalBonus > 0) {
+        _addPowerInteractionBonus('Mover-se', elementalBonus);
+        _addPowerInteractionBonus('Defender', elementalBonus);
+      }
+    }
+    if (isPowerSelected('Moldar grandes quantidades')) {
+      int elementalBonus = getPowerLevel('Manipulação Elemental');
+      if (elementalBonus > 0) {
+        _addPowerInteractionBonus('Alcance', elementalBonus);
+      }
+    }
+    if (isPowerSelected('Golpe elemental')) {
+      int elementalBonus = getPowerLevel('Manipulação Elemental');
+      if (elementalBonus > 0) {
+        _addPowerInteractionBonus('Dano', (elementalBonus / 2).floor());
       }
     }
   }
   void _updateCalculatedValues() {
     if (_isRecalculatingFromCharacter) return;
     _isRecalculatingFromCharacter = true;
-    const int maxIterations = 5;
-    for (int i = 0; i < maxIterations; i++) {
-      final Map<String, int> oldBonuses = Map.from(_powerInteractionBonuses);
-      _clearPowerInteractionBonuses();
-      _applyBonusRules();
-
-      bool haveBonusesChanged = oldBonuses.length != _powerInteractionBonuses.length || oldBonuses.keys.any((key) => oldBonuses[key] != _powerInteractionBonuses[key]);
-
-      if (!haveBonusesChanged) {
-        break;
-      }
-    }
+    _clearPowerInteractionBonuses();
+    _applyBonusRules();
     notifyListeners();
     onPowersChangedForRecalculation?.call();
     _isRecalculatingFromCharacter = false;

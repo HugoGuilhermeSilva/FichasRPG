@@ -267,7 +267,7 @@ class CharacterProvider with ChangeNotifier {
         blockTankBonus = bonusBlock;
       }
       if(skillName == 'Hibrido'){
-        advantagesProvider.addBonusAdvantageSilently('Agil');
+        advantagesProvider.addBonusAdvantageSilently('Ataques Rápidos');
         advantagesProvider.addBonusAdvantageSilently('Ambidestria');
       }
       if(skillName == 'Postura Defensiva'){
