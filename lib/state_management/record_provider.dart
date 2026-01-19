@@ -1,5 +1,6 @@
 import 'package:fichas/state_management/attributes_provider.dart';
 import 'package:fichas/state_management/character_provider.dart';
+import 'package:fichas/state_management/minions_provider.dart';
 import 'package:fichas/state_management/power_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
@@ -17,6 +18,7 @@ class RecordProvider with ChangeNotifier {
   late final CharacterProvider characterProvider;
   late final AttributesProvider attributesProvider;
   late final PassivesProvider passivesProvider;
+  late final MinionsProvider minionsProvider;
 
   List<Record> get records => _records;
   Record? get activeRecord => _activeRecord;
@@ -63,6 +65,11 @@ class RecordProvider with ChangeNotifier {
     powerProvider = tempPower;
     attributesProvider = tempAttributes;
     passivesProvider = PassivesProvider(characterProvider: characterProvider);
+    minionsProvider = MinionsProvider(
+      onDataChanged: (newData) {
+        updateActiveRecordData(minionsData: newData);
+      },
+    );
     loadAllRecords();
   }
   Future<void> loadAllRecords() async {
@@ -109,6 +116,7 @@ class RecordProvider with ChangeNotifier {
     powerProvider.updateFromRecord(_activeRecord);
     characterProvider.updateFromRecord(_activeRecord);
     attributesProvider.updateFromRecord(_activeRecord);
+    minionsProvider.updateFromRecord(_activeRecord);
     //todo passivesProvider.updateFromRecord(_activeRecord);
   }
   void selectedRecord(String recordId) {
@@ -129,6 +137,7 @@ class RecordProvider with ChangeNotifier {
     Map<String, dynamic>? powersData,
     List<String>? advantagesData,
     String? passivesNotes,
+    List<Map<String, dynamic>>? minionsData,
 }){
     if (_activeRecord == null) return;
     if (characterLevel != null ) _activeRecord!.characterLevel = characterLevel;
@@ -138,6 +147,7 @@ class RecordProvider with ChangeNotifier {
     if (powersData != null) _activeRecord!.powersData = powersData;
     if (advantagesData != null) _activeRecord!.advantagesData = advantagesData;
     if (passivesNotes != null) _activeRecord!.passivesNotes = passivesNotes;
+    if (minionsData != null) _activeRecord!.minionsData = minionsData;
     _saveAllRecords();
     notifyListeners();
   }

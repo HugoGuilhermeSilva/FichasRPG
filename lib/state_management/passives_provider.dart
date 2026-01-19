@@ -25,7 +25,7 @@ class PassiveCardModel {
   String id;
   TextEditingController titleController;
   TextEditingController descController;
-  List<PassiveEntry> bonusEntries; // Cada card tem sua própria lista de bônus
+  List<PassiveEntry> bonusEntries;
 
   PassiveCardModel({
     required this.id,
@@ -37,20 +37,14 @@ class PassiveCardModel {
 
 class PassivesProvider with ChangeNotifier {
   final CharacterProvider characterProvider;
-
-  // MUDANÇA: Agora gerenciamos uma lista de Cards
   List<PassiveCardModel> cards = [];
-
   PassivesProvider({required this.characterProvider});
-
-  // --- FUNÇÕES DE CARD ---
-
   void addNewCard() {
     cards.add(PassiveCardModel(
       id: const Uuid().v4(),
       titleController: TextEditingController(),
       descController: TextEditingController(),
-      bonusEntries: [], // Começa sem nenhum bônus
+      bonusEntries: [],
     ));
     notifyListeners();
   }
@@ -60,9 +54,6 @@ class PassivesProvider with ChangeNotifier {
     applyAllPassiveBonuses();
     notifyListeners();
   }
-
-  // --- FUNÇÕES DE BÔNUS (DENTRO DO CARD) ---
-
   void addNewPassiveLine(String cardId) {
     try{
       final card = cards.firstWhere((c) => c.id == cardId);
@@ -86,8 +77,6 @@ class PassivesProvider with ChangeNotifier {
     applyAllPassiveBonuses();
     notifyListeners();
   }
-
-  // Funções de Seleção atualizadas para encontrar o card e a linha correta
   void selectPower(String cardId, String entryId, String powerName) {
     final card = cards.firstWhere((c) => c.id == cardId);
     final entry = card.bonusEntries.firstWhere((e) => e.id == entryId);
@@ -120,15 +109,10 @@ class PassivesProvider with ChangeNotifier {
     applyAllPassiveBonuses();
     notifyListeners();
   }
-
-  // --- CÁLCULO FINAL ---
-
   void applyAllPassiveBonuses() {
     characterProvider.powerProvider.clearPassivesBonus();
     characterProvider.advantagesProvider.clearPassivesBonusAdvantages();
     characterProvider.attributesProvider.clearAllPassiveBonuses();
-
-    // Percorre todos os cards e todos os bônus de cada card
     for (var card in cards) {
       for (var entry in card.bonusEntries) {
         int value = int.tryParse(entry.controller.text) ?? 0;

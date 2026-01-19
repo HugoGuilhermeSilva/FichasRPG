@@ -23,7 +23,7 @@ class PassiveCardWidget extends StatelessWidget {
 
     return SizedBox(
       width: 500,
-      height: 600,
+      height: 400,
       child: Card(
         color: Colors.black87,
         shape: RoundedRectangleBorder(
