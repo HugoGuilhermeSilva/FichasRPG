@@ -64,7 +64,12 @@ class RecordProvider with ChangeNotifier {
     );
     powerProvider = tempPower;
     attributesProvider = tempAttributes;
-    passivesProvider = PassivesProvider(characterProvider: characterProvider);
+    passivesProvider = PassivesProvider(
+      characterProvider: characterProvider,
+      onDataChanged: (newData) {
+        updateActiveRecordData(passivesData: newData);
+      },
+    );
     minionsProvider = MinionsProvider(
       onDataChanged: (newData) {
         updateActiveRecordData(minionsData: newData);
@@ -117,7 +122,7 @@ class RecordProvider with ChangeNotifier {
     characterProvider.updateFromRecord(_activeRecord);
     attributesProvider.updateFromRecord(_activeRecord);
     minionsProvider.updateFromRecord(_activeRecord);
-    //todo passivesProvider.updateFromRecord(_activeRecord);
+    passivesProvider.updateFromRecord(_activeRecord);
   }
   void selectedRecord(String recordId) {
     try{
@@ -138,6 +143,7 @@ class RecordProvider with ChangeNotifier {
     List<String>? advantagesData,
     String? passivesNotes,
     List<Map<String, dynamic>>? minionsData,
+    List<Map<String, dynamic>>? passivesData,
 }){
     if (_activeRecord == null) return;
     if (characterLevel != null ) _activeRecord!.characterLevel = characterLevel;
@@ -148,6 +154,7 @@ class RecordProvider with ChangeNotifier {
     if (advantagesData != null) _activeRecord!.advantagesData = advantagesData;
     if (passivesNotes != null) _activeRecord!.passivesNotes = passivesNotes;
     if (minionsData != null) _activeRecord!.minionsData = minionsData;
+    if (passivesData != null) _activeRecord!.passivesData = passivesData;
     _saveAllRecords();
     notifyListeners();
   }

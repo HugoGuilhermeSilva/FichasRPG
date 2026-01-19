@@ -2,6 +2,7 @@ import 'package:fichas/state_management/character_provider.dart';
 import 'package:fichas/data/attribute_and_expertise_data.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
+import 'package:fichas/models/record_model.dart';
 
 class PassiveEntry {
   String id;
@@ -19,6 +20,26 @@ class PassiveEntry {
     this.type = 'attr_skill',
     required this.controller,
   });
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'selectedPower': selectedPower,
+      'selectedAdvantage': selectedAdvantage,
+      'selectedAttributeOrSkill': selectedAttributeOrSkill,
+      'type': type,
+      'value': controller.text,
+    };
+  }
+  factory PassiveEntry.fromMap(Map<String, dynamic> map, VoidCallback onUpdate) {
+    return PassiveEntry(
+      id: map['id'],
+      selectedPower: map['selectedPower'],
+      selectedAdvantage: map['selectedAdvantage'],
+      selectedAttributeOrSkill: map['selectedAttributeOrSkill'],
+      type: map['type'] ?? 'attr_skill',
+      controller: TextEditingController(text: map['value'] ?? '0')..addListener(onUpdate),
+    );
+  }
 }
 
 class PassiveCardModel {
@@ -33,12 +54,50 @@ class PassiveCardModel {
     required this.descController,
     required this.bonusEntries,
   });
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'title': titleController.text,
+      'desc': descController.text,
+      'bonusEntries': bonusEntries.map((e) => e.toMap()).toList(),
+    };
+  }
+  factory PassiveCardModel.fromMap(Map<String, dynamic> map, VoidCallback onUpdate) {
+    return PassiveCardModel(
+      id: map['id'],
+      titleController: TextEditingController(text: map['title'])..addListener(onUpdate),
+      descController: TextEditingController(text: map['desc'])..addListener(onUpdate),
+      bonusEntries: (map['bonusEntries'] as List)
+          .map((e) => PassiveEntry.fromMap(e, onUpdate))
+          .toList(),
+    );
+  }
 }
 
 class PassivesProvider with ChangeNotifier {
   final CharacterProvider characterProvider;
   List<PassiveCardModel> cards = [];
-  PassivesProvider({required this.characterProvider});
+  final Function(List<Map<String, dynamic>>)? onDataChanged;
+  PassivesProvider({required this.characterProvider, this.onDataChanged});
+  void _notifyAndSave() {
+    applyAllPassiveBonuses();
+    if (onDataChanged != null) {
+      onDataChanged!(cards.map((c) => c.toMap()).toList());
+    }
+  }
+  void updateFromRecord(Record? record) {
+    if (record == null) return;
+
+    if (record.passivesData != null && record.passivesData!.isNotEmpty) {
+      cards = record.passivesData!
+          .map((c) => PassiveCardModel.fromMap(c, _notifyAndSave))
+          .toList();
+    } else {
+      cards = [];
+    }
+    applyAllPassiveBonuses();
+  }
+
   void addNewCard() {
     cards.add(PassiveCardModel(
       id: const Uuid().v4(),
@@ -46,13 +105,12 @@ class PassivesProvider with ChangeNotifier {
       descController: TextEditingController(),
       bonusEntries: [],
     ));
-    notifyListeners();
+    _notifyAndSave();
   }
-
   void removeCard(String cardId) {
     cards.removeWhere((c) => c.id == cardId);
     applyAllPassiveBonuses();
-    notifyListeners();
+    _notifyAndSave();
   }
   void addNewPassiveLine(String cardId) {
     try{
@@ -65,7 +123,7 @@ class PassivesProvider with ChangeNotifier {
       });
 
       card.bonusEntries.add(PassiveEntry(id: newId, controller: newController));
-      notifyListeners();
+      _notifyAndSave();
     } catch (e){
       print("Erro: Card não encontrado no Provider!");
     }
@@ -75,7 +133,7 @@ class PassivesProvider with ChangeNotifier {
     final card = cards.firstWhere((c) => c.id == cardId);
     card.bonusEntries.removeWhere((e) => e.id == entryId);
     applyAllPassiveBonuses();
-    notifyListeners();
+    _notifyAndSave();
   }
   void selectPower(String cardId, String entryId, String powerName) {
     final card = cards.firstWhere((c) => c.id == cardId);
@@ -85,7 +143,7 @@ class PassivesProvider with ChangeNotifier {
     entry.selectedAdvantage = null;
     entry.selectedAttributeOrSkill = null;
     applyAllPassiveBonuses();
-    notifyListeners();
+    _notifyAndSave();
   }
 
   void selectAdvantage(String cardId, String entryId, String advantageName) {
@@ -96,7 +154,7 @@ class PassivesProvider with ChangeNotifier {
     entry.selectedPower = null;
     entry.selectedAttributeOrSkill = null;
     applyAllPassiveBonuses();
-    notifyListeners();
+    _notifyAndSave();
   }
 
   void selectAttributeOrSkill(String cardId, String entryId, String name) {
@@ -107,7 +165,7 @@ class PassivesProvider with ChangeNotifier {
     entry.selectedPower = null;
     entry.selectedAdvantage = null;
     applyAllPassiveBonuses();
-    notifyListeners();
+    _notifyAndSave();
   }
   void applyAllPassiveBonuses() {
     characterProvider.powerProvider.clearPassivesBonus();

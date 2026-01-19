@@ -11,6 +11,7 @@ class Record {
   List<String>? advantagesData;
   String passivesNotes;
   List<Map<String, dynamic>>? minionsData;
+  List<Map<String, dynamic>>? passivesData;
 
   Record({
     required this.id,
@@ -22,6 +23,7 @@ class Record {
     Map<String, dynamic>? powersData,
     List<String>? advantagesData,
     this.passivesNotes = '',
+    this.passivesData = const [],
     this.minionsData = const [],
   })  : this.selectedSkills = selectedSkills ?? [],
         this.attributesData = attributesData ?? {},
@@ -38,6 +40,7 @@ class Record {
       'powersData': powersData,
       'advantagesData': advantagesData,
       'passivesNotes': passivesNotes,
+      'passivesData': passivesData,
       'minionsData': minionsData,
     };
   }
@@ -53,6 +56,7 @@ class Record {
       advantagesData: List<String>.from(map['advantagesData'] ?? []),
       passivesNotes: map['passivesNotes'] ?? 0,
       minionsData: (map['minionsData'] as List?)?.map((e) => Map<String, dynamic>.from(e)).toList() ?? [],
+      passivesData: (map['passivesData'] as List?)?.map((e) => Map<String, dynamic>.from(e)).toList() ?? [],
     );
   }
   String toJson() => json.encode(toMap());
