@@ -20,8 +20,9 @@ class PowerScreen extends StatelessWidget {
       final playerLevel = powerProvider.selectedPowers[power.name] ?? 0;
       final bonusArchetypeLevel = powerProvider.skillArchetypeBonuses[power.name] ?? 0;
       final bonusPowerLevel = powerProvider.powerInteractionsBonuses[power.name] ?? 0;
+      final bonusPowerPassive = powerProvider.passivesPowerBonus[power.name] ?? 0;
 
-      if (playerLevel > 0 || bonusArchetypeLevel > 0 || bonusPowerLevel > 0) {
+      if (playerLevel > 0 || bonusArchetypeLevel > 0 || bonusPowerLevel > 0 || bonusPowerPassive > 0) {
         selectedPowersUI.add(power);
       } else {
         generalPowersUI.add(power);

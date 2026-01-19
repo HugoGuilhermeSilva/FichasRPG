@@ -6,6 +6,7 @@ import 'package:uuid/uuid.dart';
 import 'package:fichas/models/record_model.dart';
 import 'package:fichas/services/record_storage_service.dart';
 import 'package:fichas/state_management/advantages_provider.dart';
+import 'package:fichas/state_management/passives_provider.dart';
 
 class RecordProvider with ChangeNotifier {
   final RecordStorageService _storageService = RecordStorageService();
@@ -15,6 +16,7 @@ class RecordProvider with ChangeNotifier {
   late final PowerProvider powerProvider;
   late final CharacterProvider characterProvider;
   late final AttributesProvider attributesProvider;
+  late final PassivesProvider passivesProvider;
 
   List<Record> get records => _records;
   Record? get activeRecord => _activeRecord;
@@ -60,7 +62,7 @@ class RecordProvider with ChangeNotifier {
     );
     powerProvider = tempPower;
     attributesProvider = tempAttributes;
-
+    passivesProvider = PassivesProvider(characterProvider: characterProvider);
     loadAllRecords();
   }
   Future<void> loadAllRecords() async {
@@ -107,6 +109,7 @@ class RecordProvider with ChangeNotifier {
     powerProvider.updateFromRecord(_activeRecord);
     characterProvider.updateFromRecord(_activeRecord);
     attributesProvider.updateFromRecord(_activeRecord);
+    //todo passivesProvider.updateFromRecord(_activeRecord);
   }
   void selectedRecord(String recordId) {
     try{

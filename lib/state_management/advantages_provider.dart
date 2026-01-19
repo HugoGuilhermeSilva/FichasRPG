@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 class AdvantagesProvider with ChangeNotifier {
   List<String> _selectedAdvantages = [];
   List<String> _bonusAdvantages = [];
+  List<String> _bonusAdvantagesByPassives = [];
   List<String> get selectedAdvantages => _selectedAdvantages;
-  List<String> get allSelectedAdvantages => [..._selectedAdvantages, ..._bonusAdvantages];
+  List<String> get allSelectedAdvantages => [..._selectedAdvantages, ..._bonusAdvantages, ..._bonusAdvantagesByPassives];
   final Function(List<String>)? onDataChanged;
   final VoidCallback? onAdvantagesChangedForRecalculation;
 
@@ -17,6 +18,16 @@ class AdvantagesProvider with ChangeNotifier {
       return advantage.description;
     } catch (e) {
       return 'Descrição não encontrada.';
+    }
+  }
+  void clearPassivesBonusAdvantages(){
+    _bonusAdvantagesByPassives.clear();
+    notifyListeners();
+  }
+  void addPassivesBonusAdvantages(String advantageName){
+    if(!_bonusAdvantagesByPassives.contains(advantageName)){
+      _bonusAdvantagesByPassives.add(advantageName);
+      notifyListeners();
     }
   }
   void clearBonusAdvantagesSilently() {

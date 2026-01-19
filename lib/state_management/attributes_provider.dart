@@ -19,6 +19,9 @@ class AttributesProvider with ChangeNotifier {
   final Map<String, int> _attributesTotals = {};
   final Map<String, int> _expertiseTotals = {};
   final Map<String, int> _combatTotals = {};
+  Map<String, int> _passiveAttributeBonuses = {};
+  Map<String, int> _passiveExpertiseBonuses = {};
+  Map<String, int> _passiveCombatBonuses = {};
 
   AttributesProvider({this.onDataChanged, required this.characterProvider}) {
     _initializeControllers();
@@ -96,6 +99,23 @@ class AttributesProvider with ChangeNotifier {
       notifyListeners();
     }
   }
+  void addPassiveAttributeBonus(String name, int value) {
+    _passiveAttributeBonuses.update(name, (current) => current + value, ifAbsent: () => value);
+    _recalculateAndNotify();
+  }
+  void addPassiveExpertiseBonus(String name, int value) {
+    _passiveExpertiseBonuses.update(name, (current) => current + value, ifAbsent: () => value);
+    _recalculateAndNotify();
+  }
+  void addPassiveCombatBonus(String name, int value) {
+    _passiveCombatBonuses.update(name, (current) => current + value, ifAbsent: () => value);
+    _recalculateAndNotify();
+  }
+  void clearAllPassiveBonuses() {
+    _passiveAttributeBonuses.clear();
+    _passiveExpertiseBonuses.clear();
+    _passiveCombatBonuses.clear();
+  }
   int get totalLife {
     final currentLevel = characterProvider.level;
     final currentForce = _attributesTotals['Vigor'] ?? 0;
@@ -157,22 +177,16 @@ class AttributesProvider with ChangeNotifier {
     final remaining = totalAvailable - spentExpertisePoints;
     return remaining;
   }
-  String getAttributeTotalFor(String attributeName) =>
-      (_attributesTotals[attributeName] ?? 0).toString();
-  String getExpertiseTotalFor(String expertiseName) =>
-      (_expertiseTotals[expertiseName] ?? 0).toString();
-  String getCombatTotalFor(String combatName) =>
-      (_combatTotals[combatName] ?? 0).toString();
-  void _updateTotalsFor(
-      {String? attributeName, String? expertiseName, String? combatName}) {
+  String getAttributeTotalFor(String attributeName) => (_attributesTotals[attributeName] ?? 0).toString();
+  String getExpertiseTotalFor(String expertiseName) => (_expertiseTotals[expertiseName] ?? 0).toString();
+  String getCombatTotalFor(String combatName) => (_combatTotals[combatName] ?? 0).toString();
+  void _updateTotalsFor({String? attributeName, String? expertiseName, String? combatName}) {
     bool somethingChanged = false;
     if (attributeName != null) {
-      final baseValue = int.tryParse(
-          baseControllers[attributeName]?.text ?? '') ?? 0;
-      final bonusValue = int.tryParse(
-          bonusControllers[attributeName]?.text ?? '') ?? 0;
-      final newTotal = baseValue + bonusValue;
-
+      final baseValue = int.tryParse(baseControllers[attributeName]?.text ?? '') ?? 0;
+      final bonusValue = int.tryParse(bonusControllers[attributeName]?.text ?? '') ?? 0;
+      final passiveValue = _passiveAttributeBonuses[attributeName] ?? 0;
+      final newTotal = baseValue + bonusValue + passiveValue;
       if (_attributesTotals[attributeName] != newTotal) {
         _attributesTotals[attributeName] = newTotal;
         somethingChanged = true;
@@ -193,7 +207,6 @@ class AttributesProvider with ChangeNotifier {
         somethingChanged = true;
       }
     }
-
     if (combatName != null) {
       if (_updateCombatTotal(combatName)) {
         somethingChanged = true;
@@ -219,6 +232,7 @@ class AttributesProvider with ChangeNotifier {
     final attributeValue = (_attributesTotals[dependentAttribute] ?? 0);
     final baseExpertiseValue = (attributeValue / 2).round();
     final bonusValue = int.tryParse(expertiseBonusControllers[expertiseName]?.text ?? '') ?? 0;
+    final passiveValue = _passiveExpertiseBonuses[expertiseName] ?? 0;
     int skillBonus = 0;
     if(expertiseName == 'Furtividade'){
       final bool hasMislead = characterProvider.advantagesProvider.allSelectedAdvantages.contains('Despistar');
@@ -269,8 +283,7 @@ class AttributesProvider with ChangeNotifier {
       final int silentBonus = hasSilent ? (characterProvider.powerProvider.getPowerLevel('Som') / 6).floor() : 0;
       skillBonus = paranoidBonus + velocBonus + silentBonus;
     }
-    final newTotal = baseExpertiseValue + bonusValue + skillBonus;
-
+    final newTotal = baseExpertiseValue + bonusValue + skillBonus + passiveValue;
     if (_expertiseTotals[expertiseName] != newTotal) {
       _expertiseTotals[expertiseName] = newTotal;
       return true;
@@ -293,6 +306,7 @@ class AttributesProvider with ChangeNotifier {
     final specificValue = combatBaseValueMap[combatName] ?? 0;
     final attributeValue = (_attributesTotals[dependentAttribute] ?? 0);
     final bonusValue = int.tryParse(combatBonusControllers[combatName]?.text ?? '') ?? 0;
+    final passiveValue = _passiveCombatBonuses[combatName] ?? 0;
     int skillBonus = 0;
     if (combatName == 'Força de Vontade'){
       final bool hasIronWill = characterProvider.advantagesProvider.allSelectedAdvantages.contains('Vontade de Ferro');
@@ -324,7 +338,7 @@ class AttributesProvider with ChangeNotifier {
       final int mindBonus = hasMind ? ((characterProvider.level) / 3).round() + 2 : 0;
       skillBonus = mindBonus;
     }
-    final newTotal = specificValue + attributeValue + bonusValue + skillBonus;
+    final newTotal = specificValue + attributeValue + bonusValue + skillBonus + passiveValue;
     if (_combatTotals[combatName] != newTotal) {
       _combatTotals[combatName] = newTotal;
       return true;

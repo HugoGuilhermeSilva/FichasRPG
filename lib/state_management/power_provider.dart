@@ -16,6 +16,7 @@ class PowerProvider with ChangeNotifier{
   Map<String, int> _powerInteractionBonuses = {};
   Map<String, int> get powerInteractionsBonuses => _powerInteractionBonuses;
   Map<String, int> _passiveBonuses = {};
+  Map<String, int> get passivesPowerBonus => _passiveBonuses;
   final Function(Map<String, int>)? onDataChanged;
   bool _isRecalculatingFromCharacter = false;
   final VoidCallback? onPowersChangedForRecalculation;
@@ -24,6 +25,15 @@ class PowerProvider with ChangeNotifier{
   void ensurePowerExists(String powerName) {
     if (!_selectedPowers.containsKey(powerName)) {
       _selectedPowers[powerName] = 0;
+    }
+  }
+  void addPowerByPassives(String powerName, int levelsToAdd){
+    _passiveBonuses[powerName] = (_passiveBonuses[powerName] ?? 0) + levelsToAdd;
+    _notifyAndSaveChanges();
+  }
+  void clearPassivesBonus(){
+    if(_passiveBonuses.isNotEmpty){
+      _passiveBonuses.clear();
     }
   }
   void addSkillBonus(String powerName, int levelsToAdd) {
@@ -68,7 +78,7 @@ class PowerProvider with ChangeNotifier{
       if(currentLevel > 1){
         _selectedPowers[powerName] = currentLevel - 1;
       } else {
-        if ((_skillAndArchetypeBonuses[powerName] ?? 0) == 0) {
+        if ((_skillAndArchetypeBonuses[powerName] ?? 0) == 0 || (_passiveBonuses[powerName] ?? 0) == 0) {
           _selectedPowers.remove(powerName);
         } else {
           _selectedPowers[powerName] = 0;
@@ -88,7 +98,7 @@ class PowerProvider with ChangeNotifier{
     if (isSelected) {
       _selectedPowers[powerName] = 1;
     } else {
-      if ((_skillAndArchetypeBonuses[powerName] ?? 0) > 0) {
+      if ((_skillAndArchetypeBonuses[powerName] ?? 0) > 0 || (_passiveBonuses[powerName] ?? 0) > 0) {
         _selectedPowers[powerName] = 0;
       } else {
         _selectedPowers.remove(powerName);
@@ -100,7 +110,7 @@ class PowerProvider with ChangeNotifier{
     if (level > 0) {
       _selectedPowers[powerName] = level;
     } else {
-      if ((_skillAndArchetypeBonuses[powerName] ?? 0) == 0) {
+      if ((_skillAndArchetypeBonuses[powerName] ?? 0) == 0 || (_passiveBonuses[powerName] ?? 0) == 0) {
         _selectedPowers.remove(powerName);
       } else {
         _selectedPowers[powerName] = 0;
@@ -113,6 +123,7 @@ class PowerProvider with ChangeNotifier{
     powerSet.addAll(_selectedPowers.keys);
     powerSet.addAll(_skillAndArchetypeBonuses.keys);
     powerSet.addAll(_powerInteractionBonuses.keys);
+    powerSet.addAll(_passiveBonuses.keys);
     return powerSet.toList();
   }
   int get totalHeal{
