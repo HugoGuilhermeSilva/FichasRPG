@@ -1,5 +1,6 @@
 import 'package:fichas/common/drawer.dart';
 import 'package:fichas/models/card_list_widget.dart';
+import 'package:fichas/models/combat_fields.dart';
 import 'package:fichas/models/expertise_fields.dart';
 import 'package:fichas/models/passives_show_card_widget.dart';
 import 'package:fichas/state_management/record_provider.dart';
@@ -1000,7 +1001,7 @@ class RecordScreen extends StatelessWidget {
                             children: combatValue.map((name) {
                               return Padding(
                                 padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                child: ExpertiseFields(
+                                child: CombatFields(
                                   name: name,
                                   bonus: attributesProvider.combatBonusControllers[name] ?? TextEditingController(),
                                   total: attributesProvider.getCombatTotalFor(name),

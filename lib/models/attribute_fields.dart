@@ -37,28 +37,37 @@ class AttributeFields extends StatelessWidget {
         Spacer(),
         SizedBox(
           width: 75,
-          child: TextField(
-            textAlign: TextAlign.center,
-            controller: base,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
+          child: Tooltip(
+            message:'O valor base dos atributos não pode passar seu nivel +1',
+            textStyle: TextStyle(color: Colors.white,fontSize: 20),
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.deepPurple,
+              borderRadius: BorderRadius.circular(8),
             ),
-            decoration: InputDecoration(
-              labelText: 'Base',
-              labelStyle: const TextStyle(color: Colors.deepPurple),
-              enabledBorder: OutlineInputBorder(
-                borderSide: const BorderSide(
-                  color: Colors.deepPurple, width: 2
-                ),
-                borderRadius: BorderRadius.circular(8),
+            child: TextField(
+              textAlign: TextAlign.center,
+              controller: base,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
               ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                    color: Colors.purpleAccent,
-                    width: 3
-                )
+              decoration: InputDecoration(
+                labelText: 'Base',
+                labelStyle: const TextStyle(color: Colors.deepPurple),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(
+                    color: Colors.deepPurple, width: 2
+                  ),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                      color: Colors.purpleAccent,
+                      width: 3
+                  )
+                ),
               ),
             ),
           ),
