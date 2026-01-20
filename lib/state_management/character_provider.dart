@@ -15,10 +15,15 @@ class CharacterProvider with ChangeNotifier {
   int? characterLevel,
   String? archetypeName,
   List<String>? selectedSkills,
+  Map<String, dynamic>? extraData,
   })? onDataChanged;
   final TextEditingController xpController = TextEditingController();
   final TextEditingController manaController = TextEditingController();
   final TextEditingController levelController = TextEditingController();
+  final Map<String, TextEditingController> extraControllers = {
+    'xpExtra' : TextEditingController(text: '0'),
+    'vantagensExtra' : TextEditingController(text: '0')
+  };
 
   int baseMana = 0;
   int finalLife = 0;
@@ -58,6 +63,7 @@ class CharacterProvider with ChangeNotifier {
   int rangeBonusMultiplier = 0;
   int sniperBonus = 0;
   int slenderBonus = 0;
+  int bonusAdvantages = 0;
   String? activeArchetype;
   PowerProvider get powerProvider => getPowerProvider();
   AttributesProvider get attributesProvider => getAttributesProvider();
@@ -71,16 +77,26 @@ class CharacterProvider with ChangeNotifier {
     required this.getAttributesProvider,
     required this.advantagesProvider,
     this.onDataChanged}) {
+    extraControllers.forEach((key, controller){
+      controller.addListener(_handleDataChangeAndSave);
+    });
     levelController.addListener(_handleDataChangeAndSave);
-    //powerProvider.addListener(recalculateAllStats);
   }
   void updateFromRecord(Record? record) {
     levelController.removeListener(_handleDataChangeAndSave);
+    extraControllers.forEach((k, v) => v.removeListener(_handleDataChangeAndSave));
 
     if (record != null) {
       levelController.text = record.characterLevel.toString();
       _selectedSkillNames = record.selectedSkills ?? [];
       activeArchetype = record.archetypeName;
+      if (record.extraData != null) {
+        extraControllers.forEach((key, controller) {
+          if (record.extraData!.containsKey(key)) {
+            controller.text = record.extraData![key].toString();
+          }
+        });
+      }
     } else {
       levelController.text = '1';
       _selectedSkillNames = [];
@@ -88,13 +104,16 @@ class CharacterProvider with ChangeNotifier {
     }
     recalculateAllStats();
     levelController.addListener(_handleDataChangeAndSave);
+    extraControllers.forEach((k, v) => v.addListener(_handleDataChangeAndSave));
   }
   void _handleDataChangeAndSave() {
     recalculateAllStats();
+    final Map<String, String> extraValues = extraControllers.map((key, controller) => MapEntry(key, controller.text));
     onDataChanged?.call(
       characterLevel: level,
       archetypeName: activeArchetype,
       selectedSkills: _selectedSkillNames,
+      extraData: extraValues,
     );
   }
   void toggleSkill(String skillName) {
@@ -158,6 +177,7 @@ class CharacterProvider with ChangeNotifier {
     rangeBonusMultiplier = 0;
     sniperBonus = 0;
     slenderBonus = 0;
+    bonusAdvantages = int.tryParse(extraControllers['vantagensExtra']?.text ?? '0') ?? 0;
 
     if (_selectedSkillNames.isNotEmpty) {
       for (String skillName in _selectedSkillNames) {
@@ -352,7 +372,8 @@ class CharacterProvider with ChangeNotifier {
       baseXp = ((archetypeData.baseXp + bonusXp1 + bonusXp2 + mutantBonus) * level) * slenderXpBonus;
     }
     manaController.text = baseMana.toString();
-    int currentXp = baseXp - powerProvider.totalPowersCost;
+    int xpExtra = int.tryParse(extraControllers['xpExtra']?.text ?? '0') ?? 0;
+    int currentXp = (baseXp + xpExtra) - powerProvider.totalPowersCost;
     xpController.text = currentXp.toString();
     if (!_isRecalculatingFromAttributes) {
       notifyListeners();
@@ -361,6 +382,9 @@ class CharacterProvider with ChangeNotifier {
   @override
   void dispose() {
     levelController.removeListener(_handleDataChangeAndSave);
+    for (var c in extraControllers.values) {
+      c.dispose();
+    }
     levelController.dispose();
     xpController.dispose();
     manaController.dispose();

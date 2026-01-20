@@ -29,16 +29,22 @@ class PassivesScreen1 extends StatelessWidget {
             onPressed: () {
               passivesProvider.addNewCard();
             },
+            style: TextButton.styleFrom(
+              backgroundColor: Colors.purple
+            ),
             icon: const Icon(Icons.add, color: Colors.white),
             label: const Text(
-                "Adicionar Passiva", style: TextStyle(color: Colors.white)),
+              "Adicionar Passiva", style: TextStyle(color: Colors.white)
+            ),
           ),
           const SizedBox(width: 10),
           TextButton.icon(
             onPressed: () => recordProvider.minionsProvider.addNewMinion(),
+            style: TextButton.styleFrom(backgroundColor: Colors.blueAccent),
             icon: const Icon(Icons.person_add, color: Colors.white),
             label: const Text(
-                "Adicionar Minion", style: TextStyle(color: Colors.white)),
+              "Adicionar Minion", style: TextStyle(color: Colors.white)
+            ),
           ),
           const SizedBox(width: 10),
         ],
@@ -63,16 +69,17 @@ class PassivesScreen1 extends StatelessWidget {
                         final cards = passiveProv.cards;
                         if (cards.isEmpty) {
                           return const Center(child: Text(
-                              "Nenhuma passiva adicionada...",
-                              style: TextStyle(color: Colors.white54)));
+                            "Nenhuma passiva adicionada...",
+                            style: TextStyle(color: Colors.white54)
+                          ));
                         }
                         return ListView.builder(
                           scrollDirection: Axis.horizontal,
+                          physics: const AlwaysScrollableScrollPhysics(),
                           itemCount: cards.length,
                           itemBuilder: (context, index) {
                             return Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 8.0),
+                              padding: const EdgeInsets.symmetric(horizontal: 8.0),
                               child: PassiveCardWidget(cardModel: cards[index]),
                             );
                           },
@@ -101,18 +108,21 @@ class PassivesScreen1 extends StatelessWidget {
                         final minions = minionProv.minions;
                         if (minions.isEmpty) {
                           return const Center(child: Text(
-                              "Nenhum minion adicionado...",
-                              style: TextStyle(color: Colors.white54)));
+                            "Nenhum minion adicionado...",
+                            style: TextStyle(color: Colors.white54)
+                          ));
                         }
                         return ListView.builder(
                           scrollDirection: Axis.horizontal,
+                          physics: const AlwaysScrollableScrollPhysics(),
                           itemCount: minions.length,
                           itemBuilder: (context, index) {
                             return Padding(
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 8.0),
+                                horizontal: 8.0),
                               child: Center(child: MinionCardWidget(
-                                  minion: minions[index])),
+                                minion: minions[index])
+                              ),
                             );
                           },
                         );

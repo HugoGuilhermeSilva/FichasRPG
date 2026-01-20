@@ -27,25 +27,85 @@ class AdvantagesScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(
-              width: 350,
-              child: Card(
-                shape: RoundedRectangleBorder(
-                  side: const BorderSide(
-                    color: Colors.purpleAccent, width: 2),
-                  borderRadius: BorderRadius.circular(8)),
-                color: Colors.black,
-                elevation: 4,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16.0, vertical: 8.0),
-                  child: Text(
-                    'Disponível = ${(characterProvider.advantagesAvailable - advantagesProvider.selectedAdvantages.length)}',
-                    style: const TextStyle(color: Colors.white, fontSize: 22),
-                    textAlign: TextAlign.center,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 275,
+                  height: 55,
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                        side: const BorderSide(
+                          color: Colors.purpleAccent,
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(8)),
+                    color: Colors.black,
+                    elevation: 4,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const Text(
+                            'Vantagens Extras:',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 22,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+
+                          Expanded(
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: TextField(
+                                controller: characterProvider.extraControllers['vantagensExtra'],
+                                decoration: const InputDecoration(
+                                  isCollapsed: true,
+                                  hintText: '0',
+                                  border: InputBorder.none,
+                                  hintStyle: TextStyle(color: Colors.white24),
+                                  contentPadding: EdgeInsets.symmetric(vertical: 12.5),
+                                ),
+                                textAlign: TextAlign.center,
+                                textAlignVertical: TextAlignVertical.center,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                keyboardType: TextInputType.number,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
-              ),
+                SizedBox(width: 8,),
+                SizedBox(
+                  width: 300,
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      side: const BorderSide(
+                        color: Colors.purpleAccent, width: 2),
+                      borderRadius: BorderRadius.circular(8)),
+                    color: Colors.black,
+                    elevation: 4,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0, vertical: 8.0),
+                      child: Text(
+                        'Disponível = ${(((characterProvider.advantagesAvailable + characterProvider.bonusAdvantages) - advantagesProvider.selectedAdvantages.length))}',
+                        style: const TextStyle(color: Colors.white, fontSize: 22),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
             const Text('Selecionadas',
               style: TextStyle(color: Colors.white, fontSize: 22)),

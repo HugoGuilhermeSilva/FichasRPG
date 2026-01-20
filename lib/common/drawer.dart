@@ -1,6 +1,6 @@
 import 'package:fichas/screens/advantagens_screen.dart';
 import 'package:fichas/screens/archetype_screen.dart';
-import 'package:fichas/screens/passives_screen.dart';
+import 'package:fichas/screens/note_screen.dart';
 import 'package:fichas/screens/passives_screen1.dart';
 import 'package:fichas/screens/power_screen.dart';
 import 'package:fichas/screens/record_screen.dart';
@@ -56,18 +56,18 @@ class MyDrawer extends StatelessWidget{
               },
             ),
             ListTile(
-              title: const Text('Passivas', style: TextStyle(color: Colors.white),),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => PassivesScreen())
-                );
-              },
-            ),
-            ListTile(
               title: const Text('Passivas, Armas e Minions', style: TextStyle(color: Colors.white),),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => PassivesScreen1())
+                );
+              },
+            ),
+            ListTile(
+              title: const Text('Anotações', style: TextStyle(color: Colors.white),),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => PassivesScreen())
                 );
               },
             ),

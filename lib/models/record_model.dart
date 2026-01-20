@@ -12,6 +12,7 @@ class Record {
   String passivesNotes;
   List<Map<String, dynamic>>? minionsData;
   List<Map<String, dynamic>>? passivesData;
+  Map<String, dynamic>? extraData;
 
   Record({
     required this.id,
@@ -25,6 +26,7 @@ class Record {
     this.passivesNotes = '',
     this.passivesData = const [],
     this.minionsData = const [],
+    this.extraData = const {},
   })  : this.selectedSkills = selectedSkills ?? [],
         this.attributesData = attributesData ?? {},
         this.powersData = powersData ?? {},
@@ -42,6 +44,7 @@ class Record {
       'passivesNotes': passivesNotes,
       'passivesData': passivesData,
       'minionsData': minionsData,
+      'extraData': extraData,
     };
   }
   factory Record.fromMap(Map<String, dynamic> map){
@@ -56,6 +59,7 @@ class Record {
       advantagesData: List<String>.from(map['advantagesData'] ?? []),
       passivesNotes: map['passivesNotes'] ?? 0,
       minionsData: (map['minionsData'] as List?)?.map((e) => Map<String, dynamic>.from(e)).toList() ?? [],
+      extraData: Map<String, dynamic>.from(map['extraData'] ?? {}),
       passivesData: (map['passivesData'] as List?)?.map((e) => Map<String, dynamic>.from(e)).toList() ?? [],
     );
   }

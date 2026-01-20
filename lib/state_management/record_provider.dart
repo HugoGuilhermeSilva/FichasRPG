@@ -38,11 +38,12 @@ class RecordProvider with ChangeNotifier {
       getPowerProvider: () => tempPower,
       getAttributesProvider: () => tempAttributes,
       advantagesProvider: advantagesProvider,
-      onDataChanged: ({String? archetypeName, int? characterLevel, List<String>? selectedSkills}) {
+      onDataChanged: ({String? archetypeName, int? characterLevel, List<String>? selectedSkills, Map<String, dynamic>? extraData}) {
         updateActiveRecordData(
             archetypeName: archetypeName,
             characterLevel: characterLevel,
-            selectedSkills: selectedSkills
+            selectedSkills: selectedSkills,
+            extraData: extraData,
         );
       },
     );
@@ -144,6 +145,7 @@ class RecordProvider with ChangeNotifier {
     String? passivesNotes,
     List<Map<String, dynamic>>? minionsData,
     List<Map<String, dynamic>>? passivesData,
+    Map<String, dynamic>? extraData,
 }){
     if (_activeRecord == null) return;
     if (characterLevel != null ) _activeRecord!.characterLevel = characterLevel;
@@ -155,6 +157,7 @@ class RecordProvider with ChangeNotifier {
     if (passivesNotes != null) _activeRecord!.passivesNotes = passivesNotes;
     if (minionsData != null) _activeRecord!.minionsData = minionsData;
     if (passivesData != null) _activeRecord!.passivesData = passivesData;
+    if (extraData != null) _activeRecord!.extraData = extraData;
     _saveAllRecords();
     notifyListeners();
   }

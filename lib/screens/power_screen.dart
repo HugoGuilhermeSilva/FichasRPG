@@ -48,29 +48,89 @@ class PowerScreen extends StatelessWidget {
           children: [
             Align(
               alignment: Alignment.centerRight,
-              child: SizedBox(
-                width: 300,
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                    side: const BorderSide(
-                      color: Colors.purpleAccent,
-                      width: 2,
-                    ),
-                    borderRadius: BorderRadius.circular(8)),
-                  color: Colors.black,
-                  elevation: 4,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                    child: Text(
-                      'XP Disponível = ${characterProvider.xpController.text}',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 22,
+              child: Row(
+                children: [
+                  Spacer(),
+                  SizedBox(
+                    width: 200,
+                    height: 55,
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                          side: const BorderSide(
+                            color: Colors.purpleAccent,
+                            width: 2,
+                          ),
+                          borderRadius: BorderRadius.circular(8)),
+                      color: Colors.black,
+                      elevation: 4,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const Text(
+                              'Xp Extra:',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 22,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+
+                            Expanded(
+                              child: Container(
+                                alignment: Alignment.center,
+                                child: TextField(
+                                  controller: characterProvider.extraControllers['xpExtra'],
+                                  decoration: const InputDecoration(
+                                    isCollapsed: true,
+                                    hintText: '0',
+                                    border: InputBorder.none,
+                                    hintStyle: TextStyle(color: Colors.white24),
+                                    contentPadding: EdgeInsets.symmetric(vertical: 12.5),
+                                  ),
+                                  textAlign: TextAlign.center,
+                                  textAlignVertical: TextAlignVertical.center,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  keyboardType: TextInputType.number,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                      textAlign: TextAlign.center,
                     ),
                   ),
-                ),
+                  SizedBox(width: 8,),
+                  SizedBox(
+                    width: 300,
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        side: const BorderSide(
+                          color: Colors.purpleAccent,
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(8)),
+                      color: Colors.black,
+                      elevation: 4,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                        child: Text(
+                          'XP Disponível = ${characterProvider.xpController.text}',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 22,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
             SizedBox(height: 16),

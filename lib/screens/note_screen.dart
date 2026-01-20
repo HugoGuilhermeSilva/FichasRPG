@@ -39,7 +39,7 @@ class _PassivesScreenState extends State<PassivesScreen> {
       drawer: const MyDrawer(),
       backgroundColor: Colors.grey[900],
       appBar: AppBar(
-        title: const Text("Passivas, Armas e Anotações"),
+        title: const Text("Anotações"),
         backgroundColor: Colors.deepPurple,
       ),
       body: Padding(
