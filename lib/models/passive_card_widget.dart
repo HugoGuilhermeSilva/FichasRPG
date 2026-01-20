@@ -2,12 +2,12 @@ import 'package:fichas/data/advantages_data.dart';
 import 'package:fichas/data/attribute_and_expertise_data.dart';
 import 'package:fichas/data/power_list.dart';
 import 'package:fichas/state_management/passives_provider.dart';
-import 'package:fichas/state_management/record_provider.dart'; // Importante para acessar o provider central
+import 'package:fichas/state_management/record_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class PassiveCardWidget extends StatelessWidget {
-  final PassiveCardModel cardModel; // Agora recebe o modelo completo do card
+  final PassiveCardModel cardModel;
 
   const PassiveCardWidget({
     super.key,
@@ -16,11 +16,7 @@ class PassiveCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Usamos context.read para as funções e Consumer para a lista interna
-    final provider = context
-        .read<RecordProvider>()
-        .passivesProvider;
-
+    final provider = context.read<RecordProvider>().passivesProvider;
     return SizedBox(
       width: 500,
       height: 400,
@@ -34,40 +30,39 @@ class PassiveCardWidget extends StatelessWidget {
           padding: const EdgeInsets.all(8),
           child: Column(
             children: [
-              // --- BOTÃO DE FECHAR/REMOVER CARD ---
-              Align(
-                alignment: Alignment.topRight,
-                child: IconButton(
-                  icon: const Icon(Icons.close, color: Colors.redAccent),
-                  onPressed: () => provider.removeCard(cardModel.id),
-                ),
-              ),
-
-              // --- NOME ---
-              SizedBox(
-                height: 70,
-                child: TextField(
-                  controller: cardModel.titleController,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: SizedBox(
+                      height: 70,
+                      child: TextField(
+                        controller: cardModel.titleController,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        decoration: const InputDecoration(
+                          labelText: 'Nome da Passiva',
+                          labelStyle: TextStyle(
+                              color: Colors.deepPurple, fontWeight: FontWeight.bold),
+                          enabledBorder: OutlineInputBorder(borderSide: BorderSide(
+                              color: Colors.deepPurple, width: 2)),
+                          focusedBorder: OutlineInputBorder(borderSide: BorderSide(
+                              color: Colors.purpleAccent, width: 3)),
+                        ),
+                      ),
+                    ),
                   ),
-                  decoration: const InputDecoration(
-                    labelText: 'Nome da Passiva',
-                    labelStyle: TextStyle(
-                        color: Colors.deepPurple, fontWeight: FontWeight.bold),
-                    enabledBorder: OutlineInputBorder(borderSide: BorderSide(
-                        color: Colors.deepPurple, width: 2)),
-                    focusedBorder: OutlineInputBorder(borderSide: BorderSide(
-                        color: Colors.purpleAccent, width: 3)),
+                  IconButton(
+                    icon: const Icon(Icons.close, color: Colors.redAccent),
+                    onPressed: () => provider.removeCard(cardModel.id),
                   ),
-                ),
+                ],
               ),
-              const SizedBox(height: 12),
-
-              // --- DESCRIÇÃO ---
+              const SizedBox(height: 2),
               Expanded(
                 flex: 2,
                 child: TextField(
@@ -92,8 +87,6 @@ class PassiveCardWidget extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 8),
-
-              // --- CABEÇALHO DE BÔNUS ---
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -104,7 +97,6 @@ class PassiveCardWidget extends StatelessWidget {
                   ),
                   IconButton(
                     onPressed: () {
-                      // Passa o ID deste card específico para adicionar a linha nele
                       provider.addNewPassiveLine(cardModel.id);
                     },
                     icon: const Icon(
@@ -114,16 +106,11 @@ class PassiveCardWidget extends StatelessWidget {
                 ],
               ),
               const Divider(color: Colors.deepPurpleAccent),
-
-              // --- LISTA DE BÔNUS ---
               Expanded(
                 flex: 3,
-                child: Consumer<RecordProvider>( // Escuta o RecordProvider
+                child: Consumer<RecordProvider>(
                   builder: (context, record, child) {
-                    // Busca o card atualizado dentro da lista do provider
-                    final currentCard = record.passivesProvider.cards
-                        .firstWhere((c) => c.id == cardModel.id);
-
+                    final currentCard = record.passivesProvider.cards.firstWhere((c) => c.id == cardModel.id);
                     return ListView.builder(
                       itemCount: currentCard.bonusEntries.length,
                       itemBuilder: (context, index) {
@@ -153,9 +140,7 @@ class PassiveBonusRowWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = context
-        .read<RecordProvider>()
-        .passivesProvider;
+    final provider = context.read<RecordProvider>().passivesProvider;
 
     final allPowerNames = allPowers.map((p) => p.name).toList();
     final allAdvantageNames = allAdvantages.map((a) => a.name).toList();
@@ -169,67 +154,104 @@ class PassiveBonusRowWidget extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         children: [
-          // Dropdown Atributos/Perícias
           Expanded(
-            child: DropdownButton<String>(
-              isExpanded: true,
-              dropdownColor: Colors.black,
-              value: entry.selectedAttributeOrSkill,
-              hint: const Text("Atrib/Per",
-                  style: TextStyle(color: Colors.white54, fontSize: 10)),
-              style: const TextStyle(color: Colors.white, fontSize: 12),
-              items: allAttrSkillCombat.map((name) =>
-                  DropdownMenuItem(value: name, child: Text(name))).toList(),
-              onChanged: (val) =>
-                  provider.selectAttributeOrSkill(cardId, entry.id, val!),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.deepPurple, width: 1),
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<String>(
+                  isExpanded: true,
+                  dropdownColor: Colors.black,
+                  value: entry.selectedAttributeOrSkill,
+                  hint: const Text("Atributos/Pericias/Combate",
+                    style: TextStyle(color: Colors.white, fontSize: 10),
+                    textAlign: TextAlign.center,
+                    ),
+                  style: const TextStyle(color: Colors.white, fontSize: 12),
+                  items: allAttrSkillCombat.map((name) =>
+                      DropdownMenuItem(value: name, child: Text(name))).toList(),
+                  onChanged: (val) =>
+                      provider.selectAttributeOrSkill(cardId, entry.id, val!),
+                ),
+              ),
             ),
           ),
-          // Dropdown Poderes
           Expanded(
-            child: DropdownButton<String>(
-              isExpanded: true,
-              dropdownColor: Colors.black,
-              value: entry.selectedPower,
-              hint: const Text("Poder",
-                  style: TextStyle(color: Colors.white54, fontSize: 10)),
-              style: const TextStyle(color: Colors.white, fontSize: 12),
-              items: allPowerNames
-                  .map((name) =>
-                  DropdownMenuItem(value: name,
-                      child: Text(name, overflow: TextOverflow.ellipsis)))
-                  .toList(),
-              onChanged: (val) => provider.selectPower(cardId, entry.id, val!),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.deepPurple, width: 1),
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<String>(
+                  isExpanded: true,
+                  dropdownColor: Colors.black,
+                  value: entry.selectedPower,
+                  hint: const Text("Poderes",
+                      style: TextStyle(color: Colors.white, fontSize: 10), textAlign: TextAlign.center,),
+                  style: const TextStyle(color: Colors.white, fontSize: 12),
+                  items: allPowerNames
+                      .map((name) =>
+                      DropdownMenuItem(value: name,
+                          child: Text(name, overflow: TextOverflow.ellipsis)))
+                      .toList(),
+                  onChanged: (val) => provider.selectPower(cardId, entry.id, val!),
+                ),
+              ),
             ),
           ),
-          // Dropdown Vantagens
           Expanded(
-            child: DropdownButton<String>(
-              isExpanded: true,
-              dropdownColor: Colors.black,
-              value: entry.selectedAdvantage,
-              hint: const Text("Vant.",
-                  style: TextStyle(color: Colors.white54, fontSize: 10)),
-              style: const TextStyle(color: Colors.white, fontSize: 11),
-              items: allAdvantageNames
-                  .map((name) =>
-                  DropdownMenuItem(value: name,
-                      child: Text(name, overflow: TextOverflow.ellipsis)))
-                  .toList(),
-              onChanged: (val) =>
-                  provider.selectAdvantage(cardId, entry.id, val!),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.deepPurple, width: 1),
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<String>(
+                  isExpanded: true,
+                  dropdownColor: Colors.black,
+                  value: entry.selectedAdvantage,
+                  hint: const Text("Vantagens",
+                      style: TextStyle(color: Colors.white, fontSize: 10),textAlign: TextAlign.center,),
+                  style: const TextStyle(color: Colors.white, fontSize: 11),
+                  items: allAdvantageNames
+                      .map((name) =>
+                      DropdownMenuItem(value: name,
+                          child: Text(name, overflow: TextOverflow.ellipsis)))
+                      .toList(),
+                  onChanged: (val) =>
+                      provider.selectAdvantage(cardId, entry.id, val!),
+                ),
+              ),
             ),
           ),
-          // Valor
           SizedBox(
-            width: 40,
+            width: 70,
             child: TextField(
               controller: entry.controller,
-              keyboardType: TextInputType.number,
-              style: const TextStyle(color: Colors.white, fontSize: 14),
+              textAlign: TextAlign.center,
+              style: const TextStyle(color: Colors.white,
+                  fontWeight: FontWeight.bold),
               decoration: const InputDecoration(
-                  isDense: true,
-                  enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.deepPurpleAccent))
+                  labelText: 'Bonus',
+                  labelStyle: TextStyle(
+                      color: Colors.deepPurple,
+                      fontWeight: FontWeight.bold),
+                  enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Colors.deepPurple,
+                          width: 2)),
+                  focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Colors.deepPurple,
+                          width: 3
+                      )
+                  )
               ),
             ),
           ),
