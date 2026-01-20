@@ -186,67 +186,51 @@ class RecordScreen extends StatelessWidget {
                                 width: 2,
                               ),
                               Expanded(
-                                child: TextField(
-                                  readOnly: true,
-                                  controller: attributesProvider.remainingAttributesController,
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
+                                child: Tooltip(
+                                  message: "Pontos disponíveis para distribuir em Atributos e Perícias",
+                                  padding: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    color: Colors.deepPurple,
+                                    borderRadius: BorderRadius.circular(8),
                                   ),
-                                  decoration: const InputDecoration(
-                                    labelText: 'Pontos de Atributo',
-                                    labelStyle: TextStyle(
-                                      color: Colors.deepPurple,
+                                  textStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                                  child: TextField(
+                                    readOnly: true,
+                                    key: ValueKey(attributesProvider.remainingAttributePoints),
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                      color: Colors.white,
                                       fontWeight: FontWeight.bold,
                                     ),
-                                    enabledBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Colors.deepPurple,
-                                            width: 2)),
-                                    focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Colors.purpleAccent,
-                                            width: 3)),
+                                    decoration: InputDecoration(
+                                      labelText: 'Atributos | Pericia',
+                                      hintText: '${attributesProvider.remainingAttributePoints}     |     ${attributesProvider.remainingExpertisePoints}',
+                                      hintStyle: const TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      floatingLabelBehavior: FloatingLabelBehavior.always,
+                                      labelStyle: const TextStyle(
+                                        color: Colors.purpleAccent,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      enabledBorder: const OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Colors.purpleAccent,
+                                              width: 2)),
+                                      focusedBorder: const OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Colors.purpleAccent,
+                                              width: 3)),
+                                    ),
                                   ),
                                 ),
                               ),
                             ],
                           ),
-                          const SizedBox(
-                            height: 8,
-                          ),
+                          const SizedBox(height: 8,),
                           Row(
                             children: [
-                              Expanded(
-                                child: TextField(
-                                  readOnly: true,
-                                  controller: attributesProvider.remainingExpertisePointsController,
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  decoration: const InputDecoration(
-                                    labelText: 'Pontos de Pericia',
-                                    labelStyle: TextStyle(
-                                      color: Colors.deepPurple,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Colors.deepPurple,
-                                            width: 2)),
-                                    focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Colors.purpleAccent,
-                                            width: 3)),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 2,
-                              ),
                               Expanded(
                                 child: TextField(
                                   readOnly: true,
@@ -279,51 +263,28 @@ class RecordScreen extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
-                          const SizedBox(height: 8,),
-                          Row(
-                            children: [
-                              Expanded(child: TextField(readOnly: true,
-                                  controller: attributesProvider.initiativeController,
+                              const SizedBox(width: 2,),
+                              Expanded(child: TextField(
+                                  controller: attributesProvider.lostLifeController,
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(color: Colors.white,
                                       fontWeight: FontWeight.bold),
                                   decoration: const InputDecoration(
-                                      labelText: 'Iniciativa',
+                                      labelText: 'Dano Recebido',
                                       labelStyle: TextStyle(
-                                          color: Colors.yellow,
+                                          color: Colors.redAccent,
                                           fontWeight: FontWeight.bold),
                                       enabledBorder: OutlineInputBorder(
                                           borderSide: BorderSide(
-                                              color: Colors.yellow,
+                                              color: Colors.redAccent,
                                               width: 2)),
                                       focusedBorder: OutlineInputBorder(
                                           borderSide: BorderSide(
-                                              color: Colors.yellow,
-                                              width: 3))))),
-                              const SizedBox(width: 2,),
-                              Expanded(child: TextField(
-                                controller: attributesProvider.lostLifeController,
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(color: Colors.white,
-                                  fontWeight: FontWeight.bold),
-                                  decoration: const InputDecoration(
-                                  labelText: 'Dano Recebido',
-                                  labelStyle: TextStyle(
-                                    color: Colors.redAccent,
-                                    fontWeight: FontWeight.bold),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: Colors.redAccent,
-                                        width: 2)),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: Colors.red,
-                                        width: 3
+                                              color: Colors.red,
+                                              width: 3
+                                          )
                                       )
-                                    )
-                                )
+                                  )
                               )),
                             ],
                           ),
@@ -331,7 +292,7 @@ class RecordScreen extends StatelessWidget {
                           Row(
                             children: [
                               Expanded(child: TextField(
-                                readOnly: true,
+                                  readOnly: true,
                                   controller: characterProvider.manaController,
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(color: Colors.white,
@@ -348,107 +309,125 @@ class RecordScreen extends StatelessWidget {
                                       focusedBorder: OutlineInputBorder(
                                           borderSide: BorderSide(
                                               color: Colors.blueAccent,
-                                              width: 3))))),
+                                              width: 3
+                                          )
+                                      )
+                                  )
+                              )
+                              ),
                               const SizedBox(width: 2,),
-                              Expanded(
-                                child: TextField(
-                                  readOnly: true,
-                                  key: ValueKey(powerProvider.totalDisplacement),
+                              Expanded(child: TextField(
+                                  controller: characterProvider.extraControllers['manaGasta'],
                                   textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  decoration: InputDecoration(
-                                    labelText: 'Deslocamento | Alcance',
-                                    hintText: '${powerProvider.totalDisplacement}m     |     ${powerProvider.rangeTotal}m',
-                                    hintStyle: const TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                                    labelStyle: const TextStyle(
-                                      color: Colors.yellowAccent,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    enabledBorder: const OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Colors.yellowAccent,
-                                            width: 2)),
-                                    focusedBorder: const OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Colors.yellowAccent,
-                                            width: 3)),
-                                  ),
-                                ),
+                                  style: const TextStyle(color: Colors.white,
+                                      fontWeight: FontWeight.bold),
+                                  decoration: const InputDecoration(
+                                      labelText: 'Mana Gasta',
+                                      labelStyle: TextStyle(
+                                          color: Colors.blueAccent,
+                                          fontWeight: FontWeight.bold),
+                                      enabledBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Colors.blueAccent,
+                                              width: 2)),
+                                      focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Colors.blueAccent,
+                                              width: 3
+                                          )
+                                      )
+                                  )
+                              )
                               ),
                             ],
                           ),
-                          SizedBox(height: 8,),
+                          const SizedBox(height: 8,),
                           Row(
                             children: [
-                              Expanded(
-                                child: TextField(
-                                  readOnly: true,
-                                  key: ValueKey(powerProvider.turnDamage),
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
+                              SizedBox(
+                                width: 250,
+                                child: Tooltip(
+                                  message: "Iniciativa é o valor que voce rola a mais no d20 no inicio do combate para definir a ordem de ação.\n"
+                                      "Deslocamento é quando metros voce consegue andar\n"
+                                      "Alcance é a distancia que voce consegue agir com seu poder sem se mover (0 quer dizer que voce é completamente melee, nao importa o seu poder)",
+                                  padding: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    color: Colors.yellowAccent,
+                                    borderRadius: BorderRadius.circular(8),
                                   ),
-                                  decoration: InputDecoration(
-                                    labelText: 'Dano por turno',
-                                    hintText: '${powerProvider.turnDamage}D${powerProvider.turnDamageDegree}',
-                                    hintStyle: const TextStyle(
+                                  textStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                                  child: TextField(
+                                    readOnly: true,
+                                    key: ValueKey(attributesProvider.totalInitiative),
+                                    textAlign: TextAlign.start,
+                                    style: const TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
                                     ),
-                                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                                    labelStyle: const TextStyle(
-                                      color: Colors.deepPurpleAccent,
-                                      fontWeight: FontWeight.bold,
+                                    decoration: InputDecoration(
+                                      labelText: 'Iniciativa | Deslocamento | alcance',
+                                      hintText: '    ${attributesProvider.totalInitiative}      |      ${powerProvider.totalDisplacement}m     |      ${powerProvider.rangeTotal}m',
+                                      hintStyle: const TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      floatingLabelBehavior: FloatingLabelBehavior.always,
+                                      labelStyle: const TextStyle(
+                                        color: Colors.yellowAccent,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      enabledBorder: const OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Colors.yellowAccent,
+                                              width: 2)),
+                                      focusedBorder: const OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Colors.yellowAccent,
+                                              width: 3)),
                                     ),
-                                    enabledBorder: const OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Colors.deepPurpleAccent,
-                                            width: 2)),
-                                    focusedBorder: const OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Colors.deepPurpleAccent,
-                                            width: 3)),
                                   ),
                                 ),
                               ),
                               SizedBox(width: 2,),
                               Expanded(
-                                child: TextField(
-                                  readOnly: true,
-                                  key: ValueKey(powerProvider.defendLevel),
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
+                                child: Tooltip(
+                                  message:'É um dano que o inimigo recebe toda vez que chegar no turno dele, esse dano ignora quaisquer resistencias,\n'
+                                      'a duração do dano por turno é igual a metade dos seus graus',
+                                  padding: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    color: Colors.deepPurple,
+                                    borderRadius: BorderRadius.circular(8),
                                   ),
-                                  decoration: InputDecoration(
-                                    labelText: 'Defender',
-                                    hintText: '${powerProvider.defendLevel} RD${powerProvider.rdLevel}',
-                                    hintStyle: const TextStyle(
+                                  textStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                                  child: TextField(
+                                    readOnly: true,
+                                    key: ValueKey(powerProvider.turnDamage),
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
                                     ),
-                                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                                    labelStyle: const TextStyle(
-                                      color: Colors.brown,
-                                      fontWeight: FontWeight.bold,
+                                    decoration: InputDecoration(
+                                      labelText: 'Dano por turno',
+                                      hintText: '${powerProvider.turnDamage}D${powerProvider.turnDamageDegree}',
+                                      hintStyle: const TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      floatingLabelBehavior: FloatingLabelBehavior.always,
+                                      labelStyle: const TextStyle(
+                                        color: Colors.deepPurpleAccent,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      enabledBorder: const OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Colors.deepPurpleAccent,
+                                              width: 2)),
+                                      focusedBorder: const OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Colors.deepPurpleAccent,
+                                              width: 3)),
                                     ),
-                                    enabledBorder: const OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Colors.brown,
-                                            width: 2)),
-                                    focusedBorder: const OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Colors.brown,
-                                            width: 3)),
                                   ),
                                 ),
                               ),
@@ -458,67 +437,262 @@ class RecordScreen extends StatelessWidget {
                           Row(
                             children: [
                               Expanded(
-                                child: TextField(
-                                  readOnly: true,
-                                  key: ValueKey(powerProvider.totalDagame),
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
+                                child: Tooltip(
+                                  message:'É o valor de dano que voce vai rolar para cada ataque bem sucedido',
+                                  padding: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    color: Colors.purpleAccent,
+                                    borderRadius: BorderRadius.circular(8),
                                   ),
-                                  decoration: InputDecoration(
-                                    labelText: 'Dano',
-                                    hintText: '${powerProvider.totalDagame.toString()}D${powerProvider.stepDamage.toString()}',
-                                    hintStyle: const TextStyle(
+                                  textStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                                  child: TextField(
+                                    readOnly: true,
+                                    key: ValueKey(powerProvider.totalDagame),
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
                                     ),
-                                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                                    labelStyle: const TextStyle(
-                                      color: Colors.purpleAccent,
-                                      fontWeight: FontWeight.bold,
+                                    decoration: InputDecoration(
+                                      labelText: 'Dano',
+                                      hintText: '${powerProvider.totalDagame.toString()}D${powerProvider.stepDamage.toString()}+${powerProvider.baseDamage.toString()}',
+                                      hintStyle: const TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      floatingLabelBehavior: FloatingLabelBehavior.always,
+                                      labelStyle: const TextStyle(
+                                        color: Colors.purpleAccent,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      enabledBorder: const OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Colors.purpleAccent,
+                                              width: 2)),
+                                      focusedBorder: const OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Colors.purpleAccent,
+                                              width: 3)),
                                     ),
-                                    enabledBorder: const OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Colors.purpleAccent,
-                                            width: 2)),
-                                    focusedBorder: const OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Colors.purpleAccent,
-                                            width: 3)),
                                   ),
                                 ),
                               ),
                               SizedBox(width: 2,),
-                              Expanded(
+                              Expanded(child: Tooltip(
+                                message:'Aumenta o valor fixo do dano que vem junto com o seu dado de dano',
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: Colors.purpleAccent,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                textStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                                 child: TextField(
-                                  readOnly: true,
-                                  key: ValueKey(powerProvider.baseDamage),
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
+                                    controller: characterProvider.extraControllers['danoBaseExtra'],
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                    decoration: const InputDecoration(
+                                        labelText: 'Dano Fixo Extra',
+                                        labelStyle: TextStyle(
+                                            color: Colors.purpleAccent,
+                                            fontWeight: FontWeight.bold),
+                                        enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.purpleAccent,
+                                                width: 2)),
+                                        focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.purpleAccent,
+                                                width: 3
+                                            )
+                                        )
+                                    )
+                                ),
+                              )),
+                              SizedBox(width: 2,),
+                              Expanded(child: Tooltip(
+                                message:'Aumenta o seu dado de dano (de d6 para d8 por exemplo)',
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: Colors.purpleAccent,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                textStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                                child: TextField(
+                                    controller: characterProvider.extraControllers['passoDanoExtra'],
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                    decoration: const InputDecoration(
+                                        labelText: 'Passo de dano extra',
+                                        labelStyle: TextStyle(
+                                            color: Colors.purpleAccent,
+                                            fontWeight: FontWeight.bold),
+                                        enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.purpleAccent,
+                                                width: 2)),
+                                        focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.purpleAccent,
+                                                width: 3
+                                            )
+                                        )
+                                    )
+                                ),
+                              )
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 8,),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Tooltip(
+                                  message:'É o valor que voce vai rolar da sua cura por ação de cura',
+                                  padding: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    color: Colors.greenAccent,
+                                    borderRadius: BorderRadius.circular(8),
                                   ),
-                                  decoration: InputDecoration(
-                                    labelText: 'Dano Fixo',
-                                    hintText: powerProvider.baseDamage.toString(),
-                                    hintStyle: const TextStyle(
+                                  textStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                                  child: TextField(
+                                    readOnly: true,
+                                    key: ValueKey(powerProvider.totalHeal),
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
                                     ),
-                                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                                    labelStyle: const TextStyle(
-                                      color: Colors.purpleAccent,
+                                    decoration: InputDecoration(
+                                      labelText: 'Cura',
+                                      hintText: '${powerProvider.totalHeal.toString()}D${powerProvider.stepHeal.toString()}+${powerProvider.baseHeal.toString()}',
+                                      hintStyle: const TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      floatingLabelBehavior: FloatingLabelBehavior.always,
+                                      labelStyle: const TextStyle(
+                                        color: Colors.greenAccent,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      enabledBorder: const OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Colors.greenAccent,
+                                              width: 2)),
+                                      focusedBorder: const OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Colors.greenAccent,
+                                              width: 3)),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 2,),
+                              Expanded(child: Tooltip(
+                                message:'Aumenta o seu dado de cura (de d6 para d8 por exemplo)',
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: Colors.greenAccent,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                textStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                                child: TextField(
+                                    controller: characterProvider.extraControllers['passoCuraExtra'],
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                    decoration: const InputDecoration(
+                                        labelText: 'Passo de Cura Extra',
+                                        labelStyle: TextStyle(
+                                            color: Colors.greenAccent,
+                                            fontWeight: FontWeight.bold),
+                                        enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.greenAccent,
+                                                width: 2)),
+                                        focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.greenAccent,
+                                                width: 3
+                                            )
+                                        )
+                                    )
+                                ),
+                              )
+                              ),
+                              SizedBox(width: 2,),
+                              Expanded(child: Tooltip(
+                                message:'É um valor fixo de cura que vem junto com seu dado de cura',
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: Colors.greenAccent,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                textStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                                child: TextField(
+                                    controller: characterProvider.extraControllers['curaBaseExtra'],
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                    decoration: const InputDecoration(
+                                        labelText: 'Cura Extra',
+                                        labelStyle: TextStyle(
+                                            color: Colors.greenAccent,
+                                            fontWeight: FontWeight.bold),
+                                        enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.greenAccent,
+                                                width: 2)),
+                                        focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.greenAccent,
+                                                width: 3
+                                            )
+                                        )
+                                    )
+                                ),
+                              )
+                              ),
+                              SizedBox(width: 2,),
+                              Expanded(
+                                child: Tooltip(
+                                  message:'É um valor fixo que voce vai curar a cada turno que se passa no combate',
+                                  padding: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    color: Colors.greenAccent,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  textStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                                  child: TextField(
+                                    readOnly: true,
+                                    key: ValueKey(powerProvider.baseHeal),
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                      color: Colors.white,
                                       fontWeight: FontWeight.bold,
                                     ),
-                                    enabledBorder: const OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Colors.purpleAccent,
-                                            width: 2)),
-                                    focusedBorder: const OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Colors.purpleAccent,
-                                            width: 3)),
+                                    decoration: InputDecoration(
+                                      labelText: 'Regeneração',
+                                      hintText: '${powerProvider.regenTotal}',
+                                      hintStyle: const TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      floatingLabelBehavior: FloatingLabelBehavior.always,
+                                      labelStyle: const TextStyle(
+                                        color: Colors.greenAccent,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      enabledBorder: const OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Colors.greenAccent,
+                                              width: 2)),
+                                      focusedBorder: const OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Colors.greenAccent,
+                                              width: 3)),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -527,37 +701,81 @@ class RecordScreen extends StatelessWidget {
                           SizedBox(height: 8,),
                           Row(
                             children: [
+                              SizedBox(width: 2,),
                               Expanded(
-                                child: TextField(
-                                  readOnly: true,
-                                  key: ValueKey(powerProvider.criticalMerge),
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
+                                child: Tooltip(
+                                  message:'É uma redução de dano por cada ataque recebido, voce vai reduzir o dano do ataque que voce\n'
+                                      'recebeu pelo seu valor de defender multiplicado pelo rd (10 de defender com rd 2 diminuem 20 de dano de cada ataque recebido)',
+                                  padding: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    color: Colors.brown,
+                                    borderRadius: BorderRadius.circular(8),
                                   ),
-                                  decoration: InputDecoration(
-                                    labelText: 'Critico',
-                                    hintText: '${powerProvider.criticalMerge} X${powerProvider.criticalMultiplier}',
-                                    hintStyle: const TextStyle(
+                                  textStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                                  child: TextField(
+                                    readOnly: true,
+                                    key: ValueKey(powerProvider.defendLevel),
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
                                     ),
-                                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                                    labelStyle: const TextStyle(
-                                      color: Color(0xFFff6600),
-                                      fontWeight: FontWeight.bold,
+                                    decoration: InputDecoration(
+                                      labelText: 'Defender',
+                                      hintText: '${powerProvider.defendLevel} RD${powerProvider.rdLevel}',
+                                      hintStyle: const TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      floatingLabelBehavior: FloatingLabelBehavior.always,
+                                      labelStyle: const TextStyle(
+                                        color: Colors.brown,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      enabledBorder: const OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Colors.brown,
+                                              width: 2)),
+                                      focusedBorder: const OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Colors.brown,
+                                              width: 3)),
                                     ),
-                                    enabledBorder: const OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Color(0xFFff6600),
-                                            width: 2)),
-                                    focusedBorder: const OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Color(0xFFff6600),
-                                            width: 3)),
                                   ),
                                 ),
+                              ),
+                              SizedBox(width: 2,),
+                              Expanded(child: Tooltip(
+                                message:'Aumenta o quanto o seu defender vai diminuir do dano recebido',
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: Colors.brown,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                textStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                                child: TextField(
+                                    controller: characterProvider.extraControllers['rdExtra'],
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                    decoration: const InputDecoration(
+                                        labelText: 'RD Extra',
+                                        labelStyle: TextStyle(
+                                            color: Colors.brown,
+                                            fontWeight: FontWeight.bold),
+                                        enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.brown,
+                                                width: 2)),
+                                        focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.brown,
+                                                width: 3
+                                            )
+                                        )
+                                    )
+                                ),
+                              )
                               ),
                               SizedBox(width: 2,),
                               Expanded(
@@ -570,7 +788,7 @@ class RecordScreen extends StatelessWidget {
                                     fontWeight: FontWeight.bold,
                                   ),
                                   decoration: InputDecoration(
-                                    labelText: 'Ataques por turno',
+                                    labelText: 'Ataques/turno',
                                     hintText: '${powerProvider.totalStrikes}',
                                     hintStyle: const TextStyle(
                                       color: Colors.white,
@@ -598,69 +816,112 @@ class RecordScreen extends StatelessWidget {
                           Row(
                             children: [
                               Expanded(
-                                child: TextField(
-                                  readOnly: true,
-                                  key: ValueKey(powerProvider.totalHeal),
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
+                                child: Tooltip(
+                                  message:'Quando o valor original do seu dado atinge o valor do seu critico ou mais o ataque é um critico\n'
+                                      'quando for um critico voce multiplica o dano total do ataque pelo multiplicador do critico',
+                                  padding: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    color: Color(0xFFff6600),
+                                    borderRadius: BorderRadius.circular(8),
                                   ),
-                                  decoration: InputDecoration(
-                                    labelText: 'Graus de cura',
-                                    hintText: '${powerProvider.totalHeal.toString()}D${powerProvider.stepHeal.toString()}',
-                                    hintStyle: const TextStyle(
+                                  textStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                                  child: TextField(
+                                    readOnly: true,
+                                    key: ValueKey(powerProvider.criticalMerge),
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
                                     ),
-                                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                                    labelStyle: const TextStyle(
-                                      color: Colors.greenAccent,
-                                      fontWeight: FontWeight.bold,
+                                    decoration: InputDecoration(
+                                      labelText: 'Critico',
+                                      hintText: '${powerProvider.criticalMerge} X${powerProvider.criticalMultiplier}',
+                                      hintStyle: const TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      floatingLabelBehavior: FloatingLabelBehavior.always,
+                                      labelStyle: const TextStyle(
+                                        color: Color(0xFFff6600),
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      enabledBorder: const OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Color(0xFFff6600),
+                                              width: 2)),
+                                      focusedBorder: const OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Color(0xFFff6600),
+                                              width: 3)),
                                     ),
-                                    enabledBorder: const OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Colors.greenAccent,
-                                            width: 2)),
-                                    focusedBorder: const OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Colors.greenAccent,
-                                            width: 3)),
                                   ),
                                 ),
                               ),
                               SizedBox(width: 2,),
-                              Expanded(
-                                child: TextField(
-                                  readOnly: true,
-                                  key: ValueKey(powerProvider.baseHeal),
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  decoration: InputDecoration(
-                                    labelText: 'Cura fixa | Regeneração',
-                                    hintText: '${powerProvider.baseHeal.toString()}        |        ${powerProvider.regenTotal}',
-                                    hintStyle: const TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                                    labelStyle: const TextStyle(
-                                      color: Colors.greenAccent,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    enabledBorder: const OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Colors.greenAccent,
-                                            width: 2)),
-                                    focusedBorder: const OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Colors.greenAccent,
-                                            width: 3)),
-                                  ),
+                              Expanded(child: Tooltip(
+                                message:'Diminui o valor necessário do dado para o ataque ser um critico',
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: Color(0xFFff6600),
+                                  borderRadius: BorderRadius.circular(8),
                                 ),
+                                textStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                                child: TextField(
+                                    controller: characterProvider.extraControllers['margemCritExtra'],
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                    decoration: const InputDecoration(
+                                        labelText: 'Bonus Crit',
+                                        labelStyle: TextStyle(
+                                            color: Color(0xFFff6600),
+                                            fontWeight: FontWeight.bold),
+                                        enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Color(0xFFff6600),
+                                                width: 2)),
+                                        focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Color(0xFFff6600),
+                                                width: 3
+                                            )
+                                        )
+                                    )
+                                ),
+                              )
+                              ),
+                              SizedBox(width: 2,),
+                              Expanded(child: Tooltip(
+                                message:'Aumenta o quanto o seu dano vai ser multiplicado em um critico',
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: Color(0xFFff6600),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                textStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                                child: TextField(
+                                    controller: characterProvider.extraControllers['multCritExtra'],
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                    decoration: const InputDecoration(
+                                        labelText: 'Muiltplicador Crit',
+                                        labelStyle: TextStyle(
+                                            color: Color(0xFFff6600),
+                                            fontWeight: FontWeight.bold),
+                                        enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Color(0xFFff6600),
+                                                width: 2)),
+                                        focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Color(0xFFff6600),
+                                                width: 3
+                                            )
+                                        )
+                                    )
+                                ),
+                              )
                               ),
                             ],
                           ),

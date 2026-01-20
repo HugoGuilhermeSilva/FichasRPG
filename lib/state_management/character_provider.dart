@@ -22,7 +22,15 @@ class CharacterProvider with ChangeNotifier {
   final TextEditingController levelController = TextEditingController();
   final Map<String, TextEditingController> extraControllers = {
     'xpExtra' : TextEditingController(text: '0'),
-    'vantagensExtra' : TextEditingController(text: '0')
+    'vantagensExtra' : TextEditingController(text: '0'),
+    'manaGasta' : TextEditingController(text: '0'),
+    'danoBaseExtra' : TextEditingController(text: '0'),
+    'curaBaseExtra' : TextEditingController(text: '0'),
+    'passoCuraExtra' : TextEditingController(text: '0'),
+    'rdExtra' : TextEditingController(text: '0'),
+    'margemCritExtra' : TextEditingController(text: '0'),
+    'multCritExtra' : TextEditingController(text: '0'),
+    'passoDanoExtra' : TextEditingController(text: '0'),
   };
 
   int baseMana = 0;
@@ -64,6 +72,14 @@ class CharacterProvider with ChangeNotifier {
   int sniperBonus = 0;
   int slenderBonus = 0;
   int bonusAdvantages = 0;
+  int manaWaste = 0;
+  int baseDamageExtra = 0;
+  int baseHealExtra = 0;
+  int stepHealExtra = 0;
+  int rdExtra = 0;
+  int marginCritExtra = 0;
+  int multCritExtra = 0;
+  int stepDamageExtra = 0;
   String? activeArchetype;
   PowerProvider get powerProvider => getPowerProvider();
   AttributesProvider get attributesProvider => getAttributesProvider();
@@ -178,6 +194,14 @@ class CharacterProvider with ChangeNotifier {
     sniperBonus = 0;
     slenderBonus = 0;
     bonusAdvantages = int.tryParse(extraControllers['vantagensExtra']?.text ?? '0') ?? 0;
+    manaWaste = int.tryParse(extraControllers['manaGasta']?.text ?? '0') ?? 0;
+    baseDamageExtra = int.tryParse(extraControllers['danoBaseExtra']?.text ?? '0') ?? 0;
+    baseHealExtra = int.tryParse(extraControllers['curaBaseExtra']?.text ?? '0') ?? 0;
+    stepHealExtra = int.tryParse(extraControllers['passoCuraExtra']?.text ?? '0') ?? 0;
+    rdExtra = int.tryParse(extraControllers['rdExtra']?.text ?? '0') ?? 0;
+    marginCritExtra = int.tryParse(extraControllers['margemCritExtra']?.text ?? '0') ?? 0;
+    multCritExtra = int.tryParse(extraControllers['multCritExtra']?.text ?? '0') ?? 0;
+    stepDamageExtra = int.tryParse(extraControllers['passoDanoExtra']?.text ?? '0') ?? 0;
 
     if (_selectedSkillNames.isNotEmpty) {
       for (String skillName in _selectedSkillNames) {
@@ -371,7 +395,7 @@ class CharacterProvider with ChangeNotifier {
       final int mutantBonus = hasMutant ? 40 : 0;
       baseXp = ((archetypeData.baseXp + bonusXp1 + bonusXp2 + mutantBonus) * level) * slenderXpBonus;
     }
-    manaController.text = baseMana.toString();
+    manaController.text = (baseMana - manaWaste).toString();
     int xpExtra = int.tryParse(extraControllers['xpExtra']?.text ?? '0') ?? 0;
     int currentXp = (baseXp + xpExtra) - powerProvider.totalPowersCost;
     xpController.text = currentXp.toString();

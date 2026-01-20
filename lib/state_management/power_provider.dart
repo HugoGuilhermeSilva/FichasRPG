@@ -135,12 +135,14 @@ class PowerProvider with ChangeNotifier{
     final int baseHealFromArchetype = characterProvider.healBonus;
     final bool hasMedicExpert = characterProvider.advantagesProvider.allSelectedAdvantages.contains('Especialista Médica');
     final medicExpertBonus = hasMedicExpert ? characterProvider.level * 3 : 0;
-    final baseHeal = baseHealFromArchetype + medicExpertBonus;
+    final baseHealExtra = characterProvider.baseHealExtra;
+    final baseHeal = baseHealFromArchetype + medicExpertBonus + baseHealExtra;
     return baseHeal;
   }
   int get stepHeal{
     final int bonusStepHealFromArchetype = characterProvider.stepHeal;
-    final stepHeal = bonusStepHealFromArchetype + 6;
+    final stepHealExtra = characterProvider.stepHealExtra;
+    final stepHeal = bonusStepHealFromArchetype + 6 + (stepHealExtra * 2);
     return stepHeal;
   }
   int get stepDamage{
@@ -148,8 +150,18 @@ class PowerProvider with ChangeNotifier{
     final oneGunBonus = has1Gun ? 2 : 0;
     final bonusByFirePower = characterProvider.bonusByFirePower;
     final bonusByDestroyer = characterProvider.destroyerBonus;
-    final stepDamage = 6 + bonusByFirePower * 2 + bonusByDestroyer * 2 + oneGunBonus;
-    return stepDamage;
+    final stepDamageExtra = characterProvider.stepDamageExtra * 2;
+    final rawStepDamage = 6 + bonusByFirePower * 2 + bonusByDestroyer * 2 + oneGunBonus + stepDamageExtra;
+    return rawStepDamage > 30 ? 30 : rawStepDamage;
+  }
+  int get _stepDamageOverflow {
+    final has1Gun = characterProvider.advantagesProvider.allSelectedAdvantages.contains('Estilo de 1 arma');
+    final oneGunBonus = has1Gun ? 2 : 0;
+    final bonusByFirePower = characterProvider.bonusByFirePower;
+    final bonusByDestroyer = characterProvider.destroyerBonus;
+    final stepDamageExtra = characterProvider.stepDamageExtra * 2;
+    final rawStepDamage = 6 + bonusByFirePower * 2 + bonusByDestroyer * 2 + oneGunBonus + stepDamageExtra;
+    return rawStepDamage > 30 ? (rawStepDamage - 30) : 0;
   }
   int get totalDisplacement {
     const baseDisplacement = 10;
@@ -179,7 +191,8 @@ class PowerProvider with ChangeNotifier{
     final rd = 2;
     final rdByPosture = characterProvider.postureRdBonus;
     final rdByImmutable = characterProvider.immutableBonus;
-    final rdLevel = rd + rdByPosture + rdByImmutable;
+    final rdExtra = characterProvider.rdExtra * 2;
+    final rdLevel = rd + rdByPosture + rdByImmutable + rdExtra;
     return rdLevel;
   }
   int get totalDagame{
@@ -204,7 +217,9 @@ class PowerProvider with ChangeNotifier{
     final archetypeBH = characterProvider.breakReadBonus;
     final archetypeWar = characterProvider.warBonus;
     final archetypeSniper = characterProvider.sniperBonus;
-    final totalBaseDamage = (elementalDamage * 2) + (gravDamage * 2) + archetypeSMI + archetypeBH + archetypeWar + archetypeSniper + bonusByAggravating + bonusByFlyingKick + mindBonus;
+    final bonusByExtra = characterProvider.baseDamageExtra;
+    final overflowFromStep = _stepDamageOverflow;
+    final totalBaseDamage = (elementalDamage * 2) + (gravDamage * 2) + archetypeSMI + archetypeBH + archetypeWar + archetypeSniper + bonusByAggravating + bonusByFlyingKick + mindBonus + bonusByExtra + overflowFromStep;
     return totalBaseDamage;
   }
   int get criticalMerge{
@@ -214,7 +229,8 @@ class PowerProvider with ChangeNotifier{
     final has1Gun = characterProvider.advantagesProvider.allSelectedAdvantages.contains('Estilo de 1 arma');
     final oneGunBonus = has1Gun ? 1 : 0;
     final archetypeWP = characterProvider.criticalReductionWeakPoint;
-    final finalCriticalMerge = baseCriticalMerge - archetypeWP - bonusByPlusCritical - oneGunBonus;
+    final mergeExtra = characterProvider.marginCritExtra;
+    final finalCriticalMerge = baseCriticalMerge - archetypeWP - bonusByPlusCritical - oneGunBonus - mergeExtra;
     return finalCriticalMerge;
   }
   int get criticalMultiplier{
@@ -227,7 +243,8 @@ class PowerProvider with ChangeNotifier{
     final zevyrBonus = characterProvider.zevyrBonus;
     final hasElementalSphere = allActivePowerNames.contains('Esfera elemental');
     final elementalSphereBonus = hasElementalSphere ? 1 : 0;
-    final finalCriticalMultiplier = baseCriticalMultiplier + criticalMultiplierByPowerfulStrike + zevyrBonus + bonusByPlusCritical + oneGunBonus + elementalSphereBonus;
+    final multCritExtra = characterProvider.multCritExtra;
+    final finalCriticalMultiplier = baseCriticalMultiplier + criticalMultiplierByPowerfulStrike + zevyrBonus + bonusByPlusCritical + oneGunBonus + elementalSphereBonus + multCritExtra;
     return finalCriticalMultiplier;
   }
   int get totalStrikes{
