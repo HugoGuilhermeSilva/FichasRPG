@@ -95,6 +95,7 @@ class RecordScreen extends StatelessWidget {
                               return Padding(
                                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                                 child: AttributeFields(
+                                  characterProvider: characterProvider,
                                   name: name,
                                   base: attributesProvider.baseControllers[name] ?? TextEditingController(),
                                   bonus: attributesProvider.bonusControllers[name] ?? TextEditingController(),
@@ -124,6 +125,7 @@ class RecordScreen extends StatelessWidget {
                               return Padding(
                                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                                 child: ExpertiseFields(
+                                  characterProvider: characterProvider,
                                   name: name,
                                   bonus: attributesProvider.expertiseBonusControllers[name] ?? TextEditingController(),
                                   total: attributesProvider.getExpertiseTotalFor(name),

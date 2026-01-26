@@ -4,6 +4,7 @@ import 'package:fichas/screens/note_screen.dart';
 import 'package:fichas/screens/passives_screen1.dart';
 import 'package:fichas/screens/power_screen.dart';
 import 'package:fichas/screens/record_screen.dart';
+import 'package:fichas/screens/level_table_screen.dart';
 import 'package:flutter/material.dart';
 
 class MyDrawer extends StatelessWidget{
@@ -60,6 +61,14 @@ class MyDrawer extends StatelessWidget{
               onTap: () {
                 Navigator.pop(context);
                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => PassivesScreen1())
+                );
+              },
+            ),
+            ListTile(
+              title: const Text('Tabela de Nível', style: TextStyle(color: Colors.white),),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LevelTable())
                 );
               },
             ),

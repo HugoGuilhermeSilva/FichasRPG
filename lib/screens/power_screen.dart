@@ -6,9 +6,16 @@ import 'package:fichas/data/power_list.dart';
 import 'package:provider/provider.dart';
 import 'package:fichas/models/power_box_widget.dart';
 
-class PowerScreen extends StatelessWidget {
+class PowerScreen extends StatefulWidget {
   const PowerScreen({super.key});
 
+  @override
+  State<PowerScreen> createState() => _PowerScreenState();
+}
+
+class _PowerScreenState extends State<PowerScreen> {
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
   @override
   Widget build(BuildContext context) {
     final recordProvider = context.watch<RecordProvider>();
@@ -16,7 +23,10 @@ class PowerScreen extends StatelessWidget {
     final characterProvider = recordProvider.characterProvider;
     final List<Power> selectedPowersUI = [];
     final List<Power> generalPowersUI = [];
-    for (var power in allPowers) {
+    final filteredPowers = allPowers.where((power){
+      return power.name.toLowerCase().contains(_searchQuery.toLowerCase());
+    });
+    for (var power in filteredPowers) {
       final playerLevel = powerProvider.selectedPowers[power.name] ?? 0;
       final bonusArchetypeLevel = powerProvider.skillArchetypeBonuses[power.name] ?? 0;
       final bonusPowerLevel = powerProvider.powerInteractionsBonuses[power.name] ?? 0;
@@ -46,6 +56,29 @@ class PowerScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: TextField(
+                controller: _searchController,
+                style: const TextStyle(color: Colors.white),
+                decoration: InputDecoration(
+                  hintText: "Pesquisar poder...",
+                  hintStyle: const TextStyle(color: Colors.white54),
+                  prefixIcon: const Icon(Icons.search, color: Colors.purpleAccent),
+                  filled: true,
+                  fillColor: Colors.black,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: const BorderSide(color: Colors.purpleAccent),
+                  ),
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    _searchQuery = value;
+                  });
+                },
+              ),
+            ),
             Align(
               alignment: Alignment.centerRight,
               child: Row(

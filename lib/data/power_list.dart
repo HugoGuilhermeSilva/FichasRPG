@@ -9,7 +9,7 @@ final List<Power> allPowers = _powersData.map((data) => Power.fromMap(data)).toL
     {'name': 'Atravessar', 'description': 'Aumenta seus graus de "Atravessar"', 'cost': 20},
     {'name': 'Atravessar Resistencias', 'description': 'Voce consegue ignorar graus de defender do alvo iguais aos seus graus de atravessar', 'cost': 60},
     {'name': 'Atravessar Ataque', 'description': 'Com sua reação voce pode ignorar graus de dano de quem estiver te atacando iguais aos seus graus de atravessar', 'cost': 60},
-    {'name': 'Forma da Criatura', 'description': 'Voce se transforma em uma criatura da ficção recebendo 1/4 do nivel +1 em 2 atributos a sua escolha, tambem recebe seu nivel em graus de dano', 'cost': 120},
+    {'name': 'Forma da Criatura', 'description': 'Voce se transforma em uma criatura da ficção recebendo 1/4 do nivel +2 em 2 atributos a sua escolha, tambem recebe seu nivel em graus de dano', 'cost': 120},
     {'name': 'Passiva da Criatura', 'description': 'Recebe uma passiva adicional baseada na criatura', 'cost': 120},
     {'name': 'Habilidade de Criatura', 'description': 'Recebe uma habilidade da criatura', 'cost': 120},
     {'name': 'Comunicar', 'description': 'Voce tem a capacidade de se comunicar de outras formas alem da fala', 'cost': 10},

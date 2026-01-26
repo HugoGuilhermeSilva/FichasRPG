@@ -80,6 +80,10 @@ class CharacterProvider with ChangeNotifier {
   int marginCritExtra = 0;
   int multCritExtra = 0;
   int stepDamageExtra = 0;
+  int metLevel = 0;
+  int tercLevel = 0;
+  int quartLevel = 0;
+  int quintLevel = 0;
   String? activeArchetype;
   PowerProvider get powerProvider => getPowerProvider();
   AttributesProvider get attributesProvider => getAttributesProvider();
@@ -155,6 +159,7 @@ class CharacterProvider with ChangeNotifier {
       return 0;
     }
   }
+
   void recalculateAllStats() {
     advantagesProvider.clearBonusAdvantagesSilently();
     powerProvider.clearSkillBonuses();
@@ -193,6 +198,10 @@ class CharacterProvider with ChangeNotifier {
     rangeBonusMultiplier = 0;
     sniperBonus = 0;
     slenderBonus = 0;
+    metLevel = (level/2).round();
+    tercLevel = (level/3).round();
+    quartLevel = (level/4).round();
+    quintLevel = (level/5).round();
     bonusAdvantages = int.tryParse(extraControllers['vantagensExtra']?.text ?? '0') ?? 0;
     manaWaste = int.tryParse(extraControllers['manaGasta']?.text ?? '0') ?? 0;
     baseDamageExtra = int.tryParse(extraControllers['danoBaseExtra']?.text ?? '0') ?? 0;

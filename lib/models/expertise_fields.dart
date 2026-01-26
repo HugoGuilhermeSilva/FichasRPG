@@ -1,11 +1,14 @@
+import 'package:fichas/state_management/character_provider.dart';
 import 'package:flutter/material.dart';
 
 class ExpertiseFields extends StatelessWidget{
+  final CharacterProvider characterProvider;
   final String name;
   final TextEditingController bonus;
   final String total;
 
   const ExpertiseFields({
+    required this.characterProvider,
     required this.name,
     required this.bonus,
     required this.total,
@@ -36,7 +39,7 @@ class ExpertiseFields extends StatelessWidget{
       SizedBox(
         width: 90,
         child: Tooltip(
-          message:'O valor bonus das Pericias não pode ser maior que metade do seu nivel arredondado para cima',
+          message:'O valor bonus das Pericias não pode ser maior que metade do seu nivel arredondado para cima = (${characterProvider.metLevel})',
           textStyle: TextStyle(color: Colors.white,fontSize: 20),
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
