@@ -1,17 +1,20 @@
 import 'package:fichas/data/advantages_data.dart';
 import 'package:fichas/data/attribute_and_expertise_data.dart';
 import 'package:fichas/data/power_list.dart';
+import 'package:fichas/state_management/character_provider.dart';
 import 'package:fichas/state_management/passives_provider.dart';
 import 'package:fichas/state_management/record_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class PassiveCardWidget extends StatelessWidget {
+  final CharacterProvider characterProvider;
   final PassiveCardModel cardModel;
 
   const PassiveCardWidget({
     super.key,
     required this.cardModel,
+    required this.characterProvider
   });
 
   @override
@@ -115,6 +118,7 @@ class PassiveCardWidget extends StatelessWidget {
                       itemCount: currentCard.bonusEntries.length,
                       itemBuilder: (context, index) {
                         return PassiveBonusRowWidget(
+                            characterProvider: characterProvider,
                             cardId: cardModel.id,
                             entry: currentCard.bonusEntries[index]
                         );
@@ -132,11 +136,12 @@ class PassiveCardWidget extends StatelessWidget {
 }
 
 class PassiveBonusRowWidget extends StatelessWidget {
+  final CharacterProvider characterProvider;
   final String cardId;
   final PassiveEntry entry;
 
   const PassiveBonusRowWidget(
-      {super.key, required this.cardId, required this.entry});
+      {super.key, required this.cardId, required this.entry, required this.characterProvider});
 
   @override
   Widget build(BuildContext context) {
@@ -232,26 +237,40 @@ class PassiveBonusRowWidget extends StatelessWidget {
           ),
           SizedBox(
             width: 70,
-            child: TextField(
-              controller: entry.controller,
-              textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.white,
-                  fontWeight: FontWeight.bold),
-              decoration: const InputDecoration(
-                  labelText: 'Bonus',
-                  labelStyle: TextStyle(
-                      color: Colors.deepPurple,
-                      fontWeight: FontWeight.bold),
-                  enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Colors.deepPurple,
-                          width: 2)),
-                  focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Colors.deepPurple,
-                          width: 3
-                      )
-                  )
+            child: Tooltip(
+              message: 'Tabela de Nível:\n'
+                  'Nível Atual = ${characterProvider.level.toString()}\n'
+                  "1/2 do nível = ${characterProvider.metLevel.toString()}\n"
+                  "1/3 do nível = ${characterProvider.tercLevel.toString()}\n"
+                  "1/4 do nível = ${characterProvider.quartLevel.toString()}\n"
+                  "1/5 do nível = ${characterProvider.quintLevel.toString()}\n",
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.deepPurple,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              textStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              child: TextField(
+                controller: entry.controller,
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: Colors.white,
+                    fontWeight: FontWeight.bold),
+                decoration: const InputDecoration(
+                    labelText: 'Bonus',
+                    labelStyle: TextStyle(
+                        color: Colors.deepPurple,
+                        fontWeight: FontWeight.bold),
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Colors.deepPurple,
+                            width: 2)),
+                    focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Colors.deepPurple,
+                            width: 3
+                        )
+                    )
+                ),
               ),
             ),
           ),

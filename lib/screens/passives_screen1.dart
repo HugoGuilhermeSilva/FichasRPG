@@ -14,6 +14,7 @@ class PassivesScreen1 extends StatelessWidget {
   Widget build(BuildContext context) {
     final recordProvider = context.read<RecordProvider>();
     final passivesProvider = recordProvider.passivesProvider;
+    final characterProvider = recordProvider.characterProvider;
 
     return Scaffold(
       backgroundColor: Colors.grey[900],
@@ -80,7 +81,7 @@ class PassivesScreen1 extends StatelessWidget {
                           itemBuilder: (context, index) {
                             return Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: PassiveCardWidget(cardModel: cards[index]),
+                              child: PassiveCardWidget(characterProvider: characterProvider,cardModel: cards[index]),
                             );
                           },
                         );
