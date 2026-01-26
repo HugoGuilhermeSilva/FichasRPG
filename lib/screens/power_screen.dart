@@ -24,7 +24,7 @@ class _PowerScreenState extends State<PowerScreen> {
     final List<Power> selectedPowersUI = [];
     final List<Power> generalPowersUI = [];
     final filteredPowers = allPowers.where((power){
-      return power.name.toLowerCase().contains(_searchQuery.toLowerCase());
+      return power.name.toLowerCase().contains(_searchQuery.toLowerCase()) || power.description.toLowerCase().contains(_searchQuery.toLowerCase());
     });
     for (var power in filteredPowers) {
       final playerLevel = powerProvider.selectedPowers[power.name] ?? 0;

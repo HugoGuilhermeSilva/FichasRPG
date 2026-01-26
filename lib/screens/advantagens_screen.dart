@@ -22,7 +22,8 @@ class _AdvantagesScreenState extends State<AdvantagesScreen> {
     final advantagesProvider = recordProvider.advantagesProvider;
     final characterProvider = recordProvider.characterProvider;
     final filteredAdvantages = allAdvantages.where((a) {
-      return a.name.toLowerCase().contains(_searchQuery.toLowerCase());
+      return a.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+          a.description.toLowerCase().contains(_searchQuery.toLowerCase());
     }).toList();
     final List<Advantage> selected = filteredAdvantages.where((a) => advantagesProvider.isAdvantageSelected(a.name)).toList();
     final List<Advantage> general = filteredAdvantages.where((a) => !advantagesProvider.isAdvantageSelected(a.name)).toList();
