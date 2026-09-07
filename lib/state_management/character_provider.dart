@@ -250,7 +250,7 @@ class CharacterProvider with ChangeNotifier {
         int bonusCharAttacks = int.tryParse(attributesProvider.getAttributeTotalFor('Carisma')) ?? 0;
         int bonusWillAttacks = int.tryParse(attributesProvider.getAttributeTotalFor('Vontade')) ?? 0;
         int biggerAttacks = max(bonusWillAttacks, max(bonusIntAttacks,bonusCharAttacks));
-        maxAttacks = 1 + (biggerAttacks / 5).round();
+        maxAttacks =(biggerAttacks / 5).round();
       }
       if(skillName == 'Busca por Conhecimento'){
         int intelligenceLifeBonus = int.tryParse(attributesProvider.getAttributeTotalFor('Inteligencia')) ?? 0;

@@ -159,7 +159,7 @@ class AttributesProvider with ChangeNotifier {
     final bool hasFlash = characterProvider.advantagesProvider.allSelectedAdvantages.contains('Flash');
     final flashBonus = hasFlash ? (characterProvider.level / 2).round() : 0;
     final bool hasAttentive = characterProvider.advantagesProvider.allSelectedAdvantages.contains('Prontidão Aprimorada');
-    final bool hasReflexes = characterProvider.powerProvider.allActivePowerNames.contains('Reflexos Melhorados');
+    final bool hasReflexes = characterProvider.powerProvider.allActivePowerNames.contains('(Velocidade)Reflexos Melhorados');
     final int reflexBonus = hasReflexes ? (characterProvider.powerProvider.getPowerLevel('Mover-se') / 3).floor() : 0;
     final attentiveBonus = hasAttentive ? 10 : 0;
     final totalInitiative = totalAgility + totalReadness + agilBonus + flashBonus + attentiveBonus + reflexBonus;
@@ -237,7 +237,7 @@ class AttributesProvider with ChangeNotifier {
     if(expertiseName == 'Furtividade'){
       final bool hasMislead = characterProvider.advantagesProvider.allSelectedAdvantages.contains('Despistar');
       final misleadBonus = hasMislead ? (characterProvider.level / 2).round() : 0;
-      final bool hasSilent = characterProvider.powerProvider.allActivePowerNames.contains('Silencioso');
+      final bool hasSilent = characterProvider.powerProvider.allActivePowerNames.contains('(Som)Silencioso');
       final int silentBonus = hasSilent ? (characterProvider.powerProvider.getPowerLevel('Som') / 4).floor() : 0;
       skillBonus = misleadBonus + silentBonus;
     }
@@ -251,10 +251,10 @@ class AttributesProvider with ChangeNotifier {
       final bool basSherlock = characterProvider.advantagesProvider.allSelectedAdvantages.contains('Sherlock Holmes');
       final int bonusByInt = int.tryParse(getAttributeTotalFor('Inteligencia')) ?? 0;
       final int sherlockBonus = basSherlock ? bonusByInt : 0;
-      final bool hasVeloC = characterProvider.powerProvider.allActivePowerNames.contains('Percepção Acelerada');
+      final bool hasVeloC = characterProvider.powerProvider.allActivePowerNames.contains('(Velocidade)Percepção Acelerada');
       final int moveBonus = (characterProvider.powerProvider.getPowerLevel('Mover-se') / 5).round();
       final int velocBonus = hasVeloC ? moveBonus : 0;
-      final bool hasSilent = characterProvider.powerProvider.allActivePowerNames.contains('Ecolocalização');
+      final bool hasSilent = characterProvider.powerProvider.allActivePowerNames.contains('(Som)Ecolocalização');
       final int silentBonus = hasSilent ? (characterProvider.powerProvider.getPowerLevel('Som') / 6).floor() : 0;
       skillBonus = sherlockBonus + velocBonus + silentBonus;
     }
@@ -264,7 +264,7 @@ class AttributesProvider with ChangeNotifier {
       final bool basSherlock = characterProvider.advantagesProvider.allSelectedAdvantages.contains('Sherlock Holmes');
       final int bonusByInt = int.tryParse(getAttributeTotalFor('Inteligencia')) ?? 0;
       final int sherlockBonus = basSherlock ? bonusByInt : 0;
-      final bool hasSilent = characterProvider.powerProvider.allActivePowerNames.contains('Ecolocalização');
+      final bool hasSilent = characterProvider.powerProvider.allActivePowerNames.contains('(Som)Ecolocalização');
       final int silentBonus = hasSilent ? (characterProvider.powerProvider.getPowerLevel('Som') / 6).floor() : 0;
       skillBonus = batmanBonus + sherlockBonus + silentBonus;
     }
@@ -276,10 +276,10 @@ class AttributesProvider with ChangeNotifier {
     if(expertiseName == 'Prontidão'){
       final bool hasParanoid = characterProvider.advantagesProvider.allSelectedAdvantages.contains('Paranoico');
       final int paranoidBonus = hasParanoid ? characterProvider.level : 0;
-      final bool hasVeloC = characterProvider.powerProvider.allActivePowerNames.contains('Percepção Acelerada');
+      final bool hasVeloC = characterProvider.powerProvider.allActivePowerNames.contains('(Velocidade)Percepção Acelerada');
       final int moveBonus = (characterProvider.powerProvider.getPowerLevel('Mover-se') / 5).round();
       final int velocBonus = hasVeloC ? moveBonus : 0;
-      final bool hasSilent = characterProvider.powerProvider.allActivePowerNames.contains('Ecolocalização');
+      final bool hasSilent = characterProvider.powerProvider.allActivePowerNames.contains('(Som)Ecolocalização');
       final int silentBonus = hasSilent ? (characterProvider.powerProvider.getPowerLevel('Som') / 6).floor() : 0;
       skillBonus = paranoidBonus + velocBonus + silentBonus;
     }

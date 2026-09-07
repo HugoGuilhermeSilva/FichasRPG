@@ -197,7 +197,7 @@ class PowerProvider with ChangeNotifier{
   }
   int get totalDagame{
     final damage = getPowerLevel('Dano');
-    final bool hasBestiary = allActivePowerNames.contains('Forma da Criatura');
+    final bool hasBestiary = allActivePowerNames.contains('(Bestiário)Forma da Criatura');
     final bestiaryBonus = hasBestiary ? characterProvider.level : 0;
     final totalDamage = damage + bestiaryBonus;
     return totalDamage;
@@ -209,7 +209,7 @@ class PowerProvider with ChangeNotifier{
     final bonusByFlyingKick = hasFlyingKick ? getPowerLevel('Mover-se') : 0;
     final bool hasAggravating = advantagesProvider.allSelectedAdvantages.contains('Ataque Agravante');
     final bonusByAggravating = hasAggravating ? characterProvider.level : 0;
-    final bool hasMind = allActivePowerNames.contains('Mente Afiada');
+    final bool hasMind = allActivePowerNames.contains('(Telecinese)Mente Afiada');
     final int intBonus = int.tryParse(characterProvider.attributesProvider.getAttributeTotalFor('Inteligencia')) ?? 0;
     final int vontBonus = int.tryParse(characterProvider.attributesProvider.getAttributeTotalFor('Vontade')) ?? 0;
     final int mindBonus = hasMind ? ((intBonus + vontBonus) / 2).round() : 0;
@@ -241,7 +241,7 @@ class PowerProvider with ChangeNotifier{
     final oneGunBonus = has1Gun ? 1 : 0;
     final criticalMultiplierByPowerfulStrike = characterProvider.criticalMultiplierPowerfulStrike;
     final zevyrBonus = characterProvider.zevyrBonus;
-    final hasElementalSphere = allActivePowerNames.contains('Esfera elemental');
+    final hasElementalSphere = allActivePowerNames.contains('(Manipulação Elemental)Esfera elemental');
     final elementalSphereBonus = hasElementalSphere ? 1 : 0;
     final multCritExtra = characterProvider.multCritExtra;
     final finalCriticalMultiplier = baseCriticalMultiplier + criticalMultiplierByPowerfulStrike + zevyrBonus + bonusByPlusCritical + oneGunBonus + elementalSphereBonus + multCritExtra;
@@ -252,13 +252,14 @@ class PowerProvider with ChangeNotifier{
     final strikesBase = hasAmbidextery ? 3 : 1;
     final bonusStrikesByAcc = getPowerLevel('Acelerar');
     final baseStrikesBySlice = characterProvider.sliceBonus;
+    final knowledgeBonus = characterProvider.maxAttacks;
     int bonusStrikesBySlice;
     if (baseStrikesBySlice == 0) {
       bonusStrikesBySlice = 0;
     } else {
       bonusStrikesBySlice = ((strikesBase + bonusStrikesByAcc) / baseStrikesBySlice).round();
     }
-    final totalStrikes = strikesBase + bonusStrikesByAcc + bonusStrikesBySlice;
+    final totalStrikes = strikesBase + bonusStrikesByAcc + bonusStrikesBySlice + knowledgeBonus;
     return totalStrikes;
   }
   int get regenTotal{
@@ -293,16 +294,16 @@ class PowerProvider with ChangeNotifier{
     rulePowers.addAll(_skillAndArchetypeBonuses.keys);
     for (String powerName in rulePowers) {
       if (
-      powerName == 'Aprimoramento elemental' ||
-          powerName == 'Esfera elemental' ||
-          powerName == 'Prisão elemental' ||
-          powerName == 'Fisiologia elemental' ||
-          powerName == 'Consumir elemento' ||
-          powerName == 'Barreira elemental' ||
-          powerName == 'Mestre elemental' ||
-          powerName == 'Anatomia elemental' ||
-          powerName == 'Moldar grandes quantidades' ||
-          powerName == 'Golpe elemental'
+      powerName == '(Manipulação Elemental)Aprimoramento elemental' ||
+          powerName == '(Manipulação Elemental)Esfera elemental' ||
+          powerName == '(Manipulação Elemental)Prisão elemental' ||
+          powerName == '(Manipulação Elemental)Fisiologia elemental' ||
+          powerName == '(Manipulação Elemental)Consumir elemento' ||
+          powerName == '(Manipulação Elemental)Barreira elemental' ||
+          powerName == '(Manipulação Elemental)Mestre elemental' ||
+          powerName == '(Manipulação Elemental)Anatomia elemental' ||
+          powerName == '(Manipulação Elemental)Moldar grandes quantidades' ||
+          powerName == '(Manipulação Elemental)Golpe elemental'
       ) {
         if ((_selectedPowers[powerName] ?? 0) > 0 || (_skillAndArchetypeBonuses[powerName] ?? 0) > 0) {
           ensurePowerExists('Manipulação Elemental');
@@ -310,25 +311,25 @@ class PowerProvider with ChangeNotifier{
         }
       }
       if(
-      powerName == 'Mente Cibernética'||
-          powerName == 'PEM'||
-          powerName == 'Tecnocinese'||
-          powerName == 'Curto Circuito'||
-          powerName == 'Desabilitar Arma'||
-          powerName == 'Esgotamento de Sinápse'||
-          powerName == 'Reiniciar Optica'||
-          powerName == 'Defeito de Cibernética'||
-          powerName == 'Aprimoramento Cibernetico'||
-          powerName == 'Turbinagem'
+      powerName == '(Tecnocinese)Mente Cibernética'||
+          powerName == '(Tecnocinese)PEM'||
+          powerName == '(Tecnocinese)Tecnocinese'||
+          powerName == '(Tecnocinese)Curto Circuito'||
+          powerName == '(Tecnocinese)Desabilitar Arma'||
+          powerName == '(Tecnocinese)Esgotamento de Sinápse'||
+          powerName == '(Tecnocinese)Reiniciar Optica'||
+          powerName == '(Tecnocinese)Defeito de Cibernética'||
+          powerName == '(Tecnocinese)Aprimoramento Cibernetico'||
+          powerName == '(Tecnocinese)Turbinagem'
       ){
         if ((_selectedPowers[powerName] ?? 0) > 0 || (_skillAndArchetypeBonuses[powerName] ?? 0) > 0) {
-          ensurePowerExists('Pente de RAM');
-          _addPowerInteractionBonus('Pente de RAM', 1);
+          ensurePowerExists('(Tecnocinese)Pente de RAM');
+          _addPowerInteractionBonus('(Tecnocinese)Pente de RAM', 1);
         }
       }
       if(
-        powerName == 'Atravessar Resistencias' ||
-        powerName == 'Atravessar Ataque'
+        powerName == '(Atravessar)Atravessar Resistencias' ||
+        powerName == '(Atravessar)Atravessar Ataque'
       ){
         if ((_selectedPowers[powerName] ?? 0) > 0 || (_skillAndArchetypeBonuses[powerName] ?? 0) > 0) {
           ensurePowerExists('Atravessar');
@@ -336,13 +337,13 @@ class PowerProvider with ChangeNotifier{
         }
       }
       if(
-        powerName == 'Aumento de Força G'||
-        powerName == 'Manipulação Gravitacional'||
-        powerName == 'Amplificação Gravitacional'||
-        powerName == 'Agravamento'||
-        powerName == 'MUGEN'||
-        powerName == 'Ancora Gravitacional'||
-        powerName == 'Gravidade Pessoal'
+        powerName == '(Gravidade)Aumento de Força G'||
+        powerName == '(Gravidade)Manipulação Gravitacional'||
+        powerName == '(Gravidade)Amplificação Gravitacional'||
+        powerName == '(Gravidade)Agravamento'||
+        powerName == '(Gravidade)MUGEN'||
+        powerName == '(Gravidade)Ancora Gravitacional'||
+        powerName == '(Gravidade)Gravidade Pessoal'
       ){
         if ((_selectedPowers[powerName] ?? 0) > 0 || (_skillAndArchetypeBonuses[powerName] ?? 0) > 0) {
           ensurePowerExists('Gravidade');
@@ -350,14 +351,14 @@ class PowerProvider with ChangeNotifier{
         }
       }
       if(
-        powerName == 'Aceleração Sonora'||
-        powerName == 'Intensificação Sonora'||
-        powerName == 'Reverberação'||
-        powerName == 'Anulação Sonora'||
-        powerName == 'Silenciar'||
-        powerName == 'Silencioso'||
-        powerName == 'Ecolocalização'||
-        powerName == 'Terremoto'
+        powerName == '(Som)Aceleração Sonora'||
+        powerName == '(Som)Intensificação Sonora'||
+        powerName == '(Som)Reverberação'||
+        powerName == '(Som)Anulação Sonora'||
+        powerName == '(Som)Silenciar'||
+        powerName == '(Som)Silencioso'||
+        powerName == '(Som)Ecolocalização'||
+        powerName == '(Som)Terremoto'
       ){
         if ((_selectedPowers[powerName] ?? 0) > 0 || (_skillAndArchetypeBonuses[powerName] ?? 0) > 0) {
           ensurePowerExists('Som');
@@ -365,12 +366,12 @@ class PowerProvider with ChangeNotifier{
         }
       }
       if(
-        powerName == 'Existência Fora do Fluxo'||
-        powerName == 'Rebobinar'||
-        powerName == 'Quebra no tempo'||
-        powerName == 'Prever'||
-        powerName == 'Isolamento Temporal'||
-        powerName == 'Congelamento Temporal'
+        powerName == '(Tempo)Existência Fora do Fluxo'||
+        powerName == '(Tempo)Rebobinar'||
+        powerName == '(Tempo)Quebra no tempo'||
+        powerName == '(Tempo)Prever'||
+        powerName == '(Tempo)Isolamento Temporal'||
+        powerName == '(Tempo)Congelamento Temporal'
       ){
         if ((_selectedPowers[powerName] ?? 0) > 0 || (_skillAndArchetypeBonuses[powerName] ?? 0) > 0) {
           ensurePowerExists('Tempo');
@@ -378,12 +379,12 @@ class PowerProvider with ChangeNotifier{
         }
       }
       if(
-        powerName == 'Proteção'||
-        powerName == 'Agressão'||
-        powerName == 'Mente Afiada'||
-        powerName == 'Detecção Aprimorada'||
-        powerName == 'Chamado de Arma'||
-        powerName == 'Telepatico'
+        powerName == '(Telecinese)Proteção'||
+        powerName == '(Telecinese)Agressão'||
+        powerName == '(Telecinese)Mente Afiada'||
+        powerName == '(Telecinese)Detecção Aprimorada'||
+        powerName == '(Telecinese)Chamado de Arma'||
+        powerName == '(Telecinese)Telepatico'
       ){
         if ((_selectedPowers[powerName] ?? 0) > 0 || (_skillAndArchetypeBonuses[powerName] ?? 0) > 0) {
           ensurePowerExists('Telecinese');
@@ -391,80 +392,80 @@ class PowerProvider with ChangeNotifier{
         }
       }
     }
-    if(isPowerSelected('Proteção')){
+    if(isPowerSelected('(Telecinese)Proteção')){
       int teleBonus = (getPowerLevel('Telecinese') / 2).floor();
       if(teleBonus > 0){
         _addPowerInteractionBonus('Defender', teleBonus);
       }
     }
-    if(isPowerSelected('Agressão')){
+    if(isPowerSelected('(Telecinese)Agressão')){
       int teleBonus = (getPowerLevel('Telecinese') / 2).floor();
       if(teleBonus > 0){
         _addPowerInteractionBonus('Dano', teleBonus);
       }
     }
-    if(isPowerSelected('Aceleração Sonora')){
+    if(isPowerSelected('(Som)Aceleração Sonora')){
       int soundBonus = getPowerLevel('Som');
       if(soundBonus > 0){
         _addPowerInteractionBonus('Mover-se', soundBonus);
       }
     }
-    if(isPowerSelected('Intensificação Sonora')){
+    if(isPowerSelected('(Som)Intensificação Sonora')){
       int soundBonus = getPowerLevel('Som');
       if(soundBonus > 0){
         _addPowerInteractionBonus('Dano', soundBonus);
       }
     }
-    if(isPowerSelected('Reflexos Melhorados')){
+    if(isPowerSelected('(Velocidade)Reflexos Melhorados')){
       int moveBonus = (getPowerLevel('Mover-se') / 3).floor();
       if(moveBonus > 0){
         _addPowerInteractionBonus('Atravessar', moveBonus);
       }
     }
-    if(isPowerSelected('Gravidade Pessoal')){
+    if(isPowerSelected('(Gravidade)Gravidade Pessoal')){
       int gravBonus = (getPowerLevel('Gravidade') / 2).floor();
       if(gravBonus > 0){
         _addPowerInteractionBonus('Defender', gravBonus);
       }
     }
-    if(isPowerSelected('Ancora Gravitacional')){
+    if(isPowerSelected('(Gravidade)Ancora Gravitacional')){
       int gravBonus = (getPowerLevel('Gravidade') / 2).floor();
       if(gravBonus > 0){
         _addPowerInteractionBonus('Mover-se', gravBonus);
       }
     }
-    if(isPowerSelected('Manipulação Gravitacional')){
+    if(isPowerSelected('(Gravidade)Manipulação Gravitacional')){
       int gravBonus = (getPowerLevel('Gravidade') / 2).floor();
       if(gravBonus > 0){
         _addPowerInteractionBonus('Mover-Algo', gravBonus);
       }
     }
-    if(isPowerSelected('Amplificação Gravitacional')){
+    if(isPowerSelected('(Gravidade)Amplificação Gravitacional')){
       int gravBonus = getPowerLevel('Gravidade');
       if(gravBonus > 0){
         _addPowerInteractionBonus("Dano", gravBonus);
       }
     }
-    if(isPowerSelected('Aprimoramento Cibernetico')){
+    if(isPowerSelected('(Tecnocinese)Aprimoramento Cibernetico')){
       int ramBonus = getPowerLevel('Pente de RAM');
       if(ramBonus > 0){
         _addPowerInteractionBonus('Dano', ramBonus);
       }
     }
-    if (isPowerSelected('Anatomia elemental')) {
+    if (isPowerSelected('(Manipulação Elemental)Anatomia elemental')) {
       int elementalBonus = (getPowerLevel('Manipulação Elemental') / 4).floor();
       if (elementalBonus > 0) {
         _addPowerInteractionBonus('Mover-se', elementalBonus);
         _addPowerInteractionBonus('Defender', elementalBonus);
       }
     }
-    if (isPowerSelected('Moldar grandes quantidades')) {
+    if (isPowerSelected('(Manipulação Elemental)Moldar grandes quantidades')) {
       int elementalBonus = getPowerLevel('Manipulação Elemental');
       if (elementalBonus > 0) {
         _addPowerInteractionBonus('Alcance', elementalBonus);
       }
     }
-    if (isPowerSelected('Golpe elemental')) {
+    if (isPowerSelected('(Manipulação Elemental)Golpe elemental')) {
       int elementalBonus = getPowerLevel('Manipulação Elemental');
       if (elementalBonus > 0) {
         _addPowerInteractionBonus('Dano', (elementalBonus / 2).floor());

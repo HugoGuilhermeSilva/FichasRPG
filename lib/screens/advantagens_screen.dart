@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:fichas/models/advantages_widget.dart';
 import 'package:fichas/data/advantages_data.dart';
 import 'package:provider/provider.dart';
-
-// 1. Convertido para StatefulWidget para gerenciar o estado da pesquisa
 class AdvantagesScreen extends StatefulWidget {
   const AdvantagesScreen({super.key});
 

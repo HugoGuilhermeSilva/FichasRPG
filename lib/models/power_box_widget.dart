@@ -80,6 +80,7 @@ class _PowerCardState extends State<PowerCard> {
                       children: [
                         Text(
                           widget.power.name,
+                          textAlign: TextAlign.center,
                           style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
